@@ -16,24 +16,33 @@ function AppLayout() {
   }, [location.pathname]);
 
   return (
-    <>
-      <motion.button
-        whileTap={{ scale: 0.9 }}
-        className="px-4 py-2 bg-white text-black rounded fixed top-4 left-4"
-        onClick={() => setIsOpen((prev) => !prev)}
-      >
-        <img src="src\assets\sidebar_icon.png" alt="sidebar" style={{width: '20px'}}/>
-      </motion.button>
+    <div className="flex">
+      {/* Desktop Sidebar */}
+      <div className="hidden md:block  w-64">
+        <Sidebar isOpen={true} onClose={() => {}} />
+      </div>
 
-      {/* 사이드바 컴포넌트 */}
+      {/* Mobile Sidebar */}
       <Sidebar isOpen={isOpen} onClose={() => setIsOpen(false)} />
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/page1" element={<Page1 />} />
-        <Route path="/page2" element={<Page2 />} />
-      </Routes>
-    </>
+      {/* Main Content */}
+      <div className="flex-1">
+        <motion.button
+          whileTap={{ scale: 0.9 }}
+          className="px-4 py-2 fixed top-4 left-4 md:hidden"
+          onClick={() => setIsOpen((prev) => !prev)}
+        >
+          <img src="src\assets\sidebar_icon.png" alt="sidebar" style={{width: '20px'}}/>
+        </motion.button>
+
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/page1" element={<Page1 />} />
+          <Route path="/page2" element={<Page2 />} />
+        </Routes>
+      </div>
+
+    </div>
   );
 }
 
