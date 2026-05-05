@@ -16,7 +16,7 @@ function AppLayout() {
   }, [location.pathname]);
 
   return (
-    <div className="flex">
+    <div className="flex font-sans">
       {/* Desktop Sidebar */}
       <div className="hidden md:block w-64 bg-white">
         <Sidebar isOpen={true} onClose={() => {}} />
@@ -32,7 +32,11 @@ function AppLayout() {
           className="px-4 py-2 fixed top-4 left-4 md:hidden"
           onClick={() => setIsOpen((prev) => !prev)}
         >
-          <img src="src\assets\sidebar_icon.png" alt="sidebar" style={{width: '20px'}}/>
+          {
+            !isOpen &&
+              <img src="src\assets\sidebar_icon.png" alt="sidebar" style={{width: '20px'}}/>
+
+          }
         </motion.button>
 
         <Routes>

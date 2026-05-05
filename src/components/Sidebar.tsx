@@ -23,7 +23,7 @@ const Sidebar = ({isOpen, onClose}: SidebarProps) => {
             {/* 배경 dim */}
             <motion.div
             // 흐려보이게 함
-              className="fixed inset-0 bg-white/50"
+              className="fixed inset-0 bg-black/50 md:hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -58,7 +58,7 @@ const SidebarContent = ({ navigate }: { navigate: any }) => (
         Home
       </li>
       <li onClick={() => navigate('/page1')} className="hover:text-blue-500 cursor-pointer">
-        Page 1
+        게시판
       </li>
       <li onClick={() => navigate('/page2')} className="hover:text-blue-500 cursor-pointer">
         Page 2
