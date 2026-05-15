@@ -61,20 +61,22 @@ interface SidebarContentProps {
 
 const SidebarContent = ({ navigate, isAdmin }: SidebarContentProps) => (
   <div className="flex flex-col gap-10 mt-5">
-    <h2 className="text-xl font-bold">Menu</h2>
+    <h2 className="text-xl font-bold cursor-pointer" onClick={() => navigate('/home')}>
+      Menu
+    </h2>
 
     <ul className="flex flex-col gap-5">
-      <li onClick={() => navigate('/home')} className="hover:text-blue-500 cursor-pointer">
+      <li onClick={() => navigate('/home')} className="hover:text-blue-800 cursor-pointer">
         Home
       </li>
-      <li onClick={() => navigate('/page1')} className="hover:text-blue-500 cursor-pointer">
+      <li onClick={() => navigate('/page1')} className="hover:text-blue-800 cursor-pointer">
         게시판
       </li>
-      <li onClick={() => navigate('/page2')} className="hover:text-blue-500 cursor-pointer">
+      <li onClick={() => navigate('/page2')} className="hover:text-blue-800 cursor-pointer">
         Page 2
       </li>
       {isAdmin && (
-        <li onClick={() => navigate('/setting')} className="hover:text-blue-500 cursor-pointer">
+        <li onClick={() => navigate('/setting')} className="hover:text-blue-800 cursor-pointer">
           관리
         </li>
       )}
