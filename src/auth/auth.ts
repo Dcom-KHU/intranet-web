@@ -7,6 +7,7 @@ export interface User {
 export interface CurrentUser {
   username: string;
   isAdmin: boolean;
+  studentNumber?: string;
 }
 
 const USER_STORAGE_KEY = "user";
@@ -64,11 +65,11 @@ export const getCurrentUser = (): CurrentUser | null => {
   const token = localStorage.getItem("token");
 
   if (token?.includes("admin")) {
-    return { username: "admin", isAdmin: true };
+    return { username: "admin", isAdmin: true, studentNumber: "23" };
   }
 
   if (token?.includes("user")) {
-    return { username: "user", isAdmin: false };
+    return { username: "user", isAdmin: false, studentNumber: "22" };
   }
 
   return null;

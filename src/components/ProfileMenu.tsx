@@ -32,9 +32,9 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
             </div>
 
             <div>
-              <p className="text-xs font-medium text-gray-500">Admin</p>
+              <p className="text-xs font-medium text-gray-500">Student Number</p>
               <p className="mt-1 text-sm font-semibold">
-                {user.isAdmin ? "Yes" : "No"}
+                {user.studentNumber || "Not provided"}
               </p>
             </div>
 
