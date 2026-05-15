@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --color-primary: 37 99 235;
+    --color-secondary: 100 116 139;
+  }
+
   html, body, * {
     font-family: 'Pretendard', system-ui, sans-serif;
   }

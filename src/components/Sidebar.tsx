@@ -64,7 +64,7 @@ const SidebarContent = ({ navigate, isAdmin }: SidebarContentProps) => (
     <h2 className="text-xl font-bold">Menu</h2>
 
     <ul className="flex flex-col gap-5">
-      <li onClick={() => navigate('/')} className="hover:text-blue-500 cursor-pointer">
+      <li onClick={() => navigate('/home')} className="hover:text-blue-500 cursor-pointer">
         Home
       </li>
       <li onClick={() => navigate('/page1')} className="hover:text-blue-500 cursor-pointer">
