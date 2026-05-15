@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import type { CurrentUser } from "../auth/auth";
 import { logout } from "../auth/auth";
 
@@ -10,8 +10,24 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const initial = user.username.charAt(0).toUpperCase();
 
+  const menuRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // 메뉴 외부 클릭 시 닫기
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="fixed top-4 right-4 z-40">
+    <div ref={menuRef} className="fixed top-4 right-4 z-40">
       <button
         type="button"
         className="flex h-11 w-11 items-center justify-center rounded-full bg-black text-sm font-bold text-white shadow-lg transition hover:bg-gray-800"
