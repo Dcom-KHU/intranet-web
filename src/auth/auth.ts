@@ -12,13 +12,31 @@ export interface CurrentUser {
 
 const USER_STORAGE_KEY = "user";
 
+// 아이디 유효성 검사 
+const validateId = (id: string) => {
+  return id.length >= 4 && id.length <= 20;
+}
+
+// 비밀번호 유효성 검사
+const validatePassword = (pw: string) => {
+  // 최소 8자 + 영문 + 숫자 포함
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+  return passwordRegex.test(pw);
+}
+
+// 회원가입 함수 - 실제로는 서버 API 호출이 필요하지만, 여기서는 간단히 처리
 export const register = (user: User) => {
   // 실제로는 서버 API 호출이 필요하지만, 여기서는 간단히 처리
   const users: User[] = JSON.parse(localStorage.getItem("users") || "[]");
 
-  // 이미 존재하는 아이디인지 확인
+  // 중복 아이디 확인
   if (users.find((u) => u.id === user.id)) {
     return false; 
+  }
+
+  // 아이디와 비밀번호 유효성 검사
+  if (!validateId(user.id) || !validatePassword(user.pw)) {
+    return false;
   }
 
   // 새로운 사용자 추가
@@ -31,6 +49,7 @@ const saveUser = (user: CurrentUser) => {
   localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
 };
 
+// 로그인 함수 - 실제로는 서버 API 호출이 필요하지만, 여기서는 간단히 처리
 export const login = (id: string, pw: string) => {
   if (id === "admin" && pw === "1234") {
     localStorage.setItem("token", "mock-token-admin123456");
@@ -47,9 +66,11 @@ export const login = (id: string, pw: string) => {
   return false;
 };
 
+
 export const isLoggedIn = () => {
   return !!localStorage.getItem("token");
 };
+
 
 export const getCurrentUser = (): CurrentUser | null => {
   const savedUser = localStorage.getItem(USER_STORAGE_KEY);
