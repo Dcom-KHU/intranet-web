@@ -1,8 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import Container from "../components/ui/Container";
 import Card from "../components/ui/Card";
 import { useExamArchives } from "../features/exam-archive/hooks/useExamArchives";
 
 const Home = () => {
+    const navigate = useNavigate();
     const { data } = useExamArchives();
 
     return (
@@ -17,6 +19,8 @@ const Home = () => {
                                 key={item.id}
                                 title={item.title}
                                 description={item.description}
+                                onClick={() => navigate(`/exam-archive/${item.id}`)}
+
                             />
                         ))}
                     </div>
