@@ -6,12 +6,12 @@ import ProfileMenu from "./components/ProfileMenu";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
-import Page1 from "./pages/Page1";
+import ExamArchive from "./pages/Exam-Archive";
+import ExamArchiveDetail from "./pages/Exam-Archive-Detail";
 import Page2 from "./pages/Page2";
-import PostDetail from "./pages/PostDetail";
 import Setting from "./pages/Setting";
 import { motion } from "framer-motion";
-import { getCurrentUser, isLoggedIn as checkIsLoggedIn } from "./data/auth";
+import { getCurrentUser, isLoggedIn as checkIsLoggedIn } from "./features/auth";
 
 function AppLayout() {
   const [isOpen, setIsOpen] = useState(false);
@@ -63,18 +63,18 @@ function AppLayout() {
             }
           />
           <Route
-            path="/page1"
+            path="/exam-archive"
             element={
               <ProtectedRoute>
-                <Page1 />
+                <ExamArchive />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/post/:id"
+            path="/exam-archive/:id"
             element={
               <ProtectedRoute>
-                <PostDetail />
+                <ExamArchiveDetail />
               </ProtectedRoute>
             }
           />

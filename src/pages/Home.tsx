@@ -1,35 +1,37 @@
-import { posts } from "../data/post";
+import Card from "../components/ui/Card";
+import { exam_mock } from "../features/exam-archive/exam-archive.mock";
 
 const Home = () => {
     return (
         <div className="p-20"> 
-            <h1>Home</h1>
             <div className="mt-10 grid gap-5 grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">   
 
                 {/* 활동요약 */}
-                <div className="border p-6 rounded shadow-sm bg-white">
-                    <h2 className="text-xl font-bold mb-4">활동요약</h2>
-                    
+                <Card title="활동요약">
                     <div className="space-y-3">
-                        {posts.map(post => (
-                            <div key={post.id} className="border p-4 rounded">
-                                <h2 className="text-lg font-bold mb-2">{post.title}</h2>
+                        {exam_mock.map(exam => (
+                            <div key={exam.id} className="border p-4 rounded-xl shadow-md bg-gray-50">
+                                <h2 className="text-lg font-bold mb-2">{exam.title}</h2>
+                                <p className="text-gray-600 mb-2">{exam.description}</p>
                                 <div className="flex justify-between text-sm text-gray-500 mt-2">
-                                    <span>{post.author}</span>
-                                    <span>{post.date}</span>
+                                    <span>{exam.author}</span>
+                                    <span>{exam.date}</span>
                                 </div>                    
                             </div>
                         ))}
                     </div>
-                </div>
+                </Card>
 
                 {/* 공지사항 */}
-                <div className="border p-6 rounded shadow-sm bg-white">
-                    <h2 className="text-xl font-bold mb-4">공지사항</h2>
-                </div> 
+                <Card title="공지사항">
+                    <p>공지사항 내용</p>
+                </Card> 
+
+                
             </div>
         </div>
     );
 };
 
 export default Home;
+

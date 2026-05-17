@@ -1,0 +1,55 @@
+import { type ExamArchiveType } from "./exam-archive.type";
+
+// 게시글 데이터
+export const exam_mock: ExamArchiveType[] = [
+    {
+        id: 1,
+        title: "React 상태 관리 정리 노트",
+        subjectName: "프론트엔드",
+        professor: "김교수",
+        author: "홍길동",
+        date: "2026-05-16",
+        description: "useState, useReducer, Zustand까지 상태 관리 방법을 정리한 자료입니다.",
+        files: [],
+    },
+    {
+        id: 2,
+        title: "운영체제 스케줄링 알고리즘 요약",
+        subjectName: "운영체제",
+        professor: "이교수",
+        author: "김철수",
+        date: "2026-05-15",
+        description: "FCFS, SJF, RR 등 CPU 스케줄링 알고리즘 핵심 정리입니다.",
+        files: [],
+    },
+    {
+        id: 3,
+        title: "데이터베이스 정규화 예제 모음",
+        subjectName: "데이터베이스",
+        professor: "박교수",
+        author: "이영희",
+        date: "2026-05-14",
+        description: "1NF부터 3NF까지 정규화 과정 예제를 포함한 학습 자료입니다.",
+        files: [],
+    },
+    {
+        id: 4,
+        title: "네트워크 TCP/UDP 비교 정리",
+        subjectName: "컴퓨터네트워크",
+        professor: "최교수",
+        author: "김민수",
+        date: "2026-05-13",
+        description: "TCP와 UDP의 차이점 및 사용 사례를 정리한 문서입니다.",
+        files: [],
+    },
+    {
+        id: 5,
+        title: "자료구조 트리/그래프 핵심 개념",
+        subjectName: "자료구조",
+        professor: "정교수",
+        author: "박지은",
+        date: "2026-05-12",
+        description: "트리와 그래프의 구조, 탐색 알고리즘(BFS/DFS) 정리입니다.",
+        files: [],
+    },
+];

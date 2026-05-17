@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import type { NavigateFunction } from "react-router-dom";
-import { getCurrentUser } from "../data/auth";
+import { getCurrentUser } from "../features/auth";
 
 interface SidebarProps {
     isOpen: boolean;
@@ -69,8 +69,8 @@ const SidebarContent = ({ navigate, isAdmin }: SidebarContentProps) => (
       <li onClick={() => navigate('/home')} className="hover:text-blue-800 cursor-pointer">
         Home
       </li>
-      <li onClick={() => navigate('/page1')} className="hover:text-blue-800 cursor-pointer">
-        게시판
+      <li onClick={() => navigate('/exam-archive')} className="hover:text-blue-800 cursor-pointer">
+        족보
       </li>
       <li onClick={() => navigate('/page2')} className="hover:text-blue-800 cursor-pointer">
         Page 2
