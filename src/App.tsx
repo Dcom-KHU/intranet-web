@@ -9,7 +9,8 @@ import Home from "./pages/Home";
 import ExamArchive from "./pages/Exam-Archive";
 import ExamArchiveDetail from "./pages/Exam-Archive-Detail";
 import Page2 from "./pages/Page2";
-import Setting from "./pages/Setting";
+import Manage from "./pages/Manage";
+import Profile from "./pages/Profile";
 import { motion } from "framer-motion";
 import { getCurrentUser, isLoggedIn as checkIsLoggedIn } from "./features/auth";
 
@@ -90,11 +91,16 @@ function AppLayout() {
             path="/setting"
             element={
               <ProtectedRoute requireAdmin>
-                <Setting />
+                <Manage />
               </ProtectedRoute>
             }
           />
+
+          <Route path="/profile" element={<Profile />} />
+
         </Routes>
+
+        
       </div>
 
     </div>

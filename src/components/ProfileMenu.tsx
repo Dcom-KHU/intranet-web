@@ -1,12 +1,14 @@
 import { useRef, useState, useEffect } from "react";
 import type { CurrentUser } from "../features/auth";
 import { logout } from "../features/auth";
+import { useNavigate } from "react-router-dom";
 
 interface ProfileMenuProps {
   user: CurrentUser;
 }
 
 const ProfileMenu = ({ user }: ProfileMenuProps) => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const initial = user.username.charAt(0).toUpperCase();
 
@@ -53,6 +55,16 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
                 {user.studentNumber || "Not provided"}
               </p>
             </div>
+
+            <button
+              className="w-full bg-gray-200 text-gray-800 py-2 rounded hover:bg-gray-300"
+              onClick={() => {
+                navigate("/profile");
+                setIsOpen(false);
+              }}
+            >
+              My Profile
+            </button>
 
             <button 
               className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"

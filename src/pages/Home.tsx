@@ -9,7 +9,7 @@ const Home = () => {
 
     return (
         <div className="p-20"> 
-            <div className="mt-10 grid gap-5 grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">   
+            <div className="grid gap-5 grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">   
 
                 {/* 활동요약 */}
                 <Container title="활동요약">
