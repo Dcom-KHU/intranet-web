@@ -1,7 +1,7 @@
-import { image } from "framer-motion/client";
+import type { User } from "../user.type";
 
 // src/mocks/user.ts
-export const mockUser = {
+export const mockUser:User = {
   id: 1,
   username: "hong123",
   email: "hong@gmail.com",
@@ -9,4 +9,5 @@ export const mockUser = {
   studentNumber: "23",
   phoneNumber: "010-1234-5678",
   image: "",
+  password: "password",
 };

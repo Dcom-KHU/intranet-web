@@ -6,4 +6,5 @@ export type User = {
   studentNumber: string;
   phoneNumber: string;
   image: string;
+  password: string;
 };
