@@ -88,7 +88,7 @@ function AppLayout() {
             }
           />
           <Route
-            path="/setting"
+            path="/manage"
             element={
               <ProtectedRoute requireAdmin>
                 <Manage />

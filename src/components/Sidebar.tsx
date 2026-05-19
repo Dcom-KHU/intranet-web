@@ -76,7 +76,7 @@ const SidebarContent = ({ navigate, isAdmin }: SidebarContentProps) => (
         Page 2
       </li>
       {isAdmin && (
-        <li onClick={() => navigate('/setting')} className="hover:text-blue-800 cursor-pointer">
+        <li onClick={() => navigate('/manage')} className="hover:text-blue-800 cursor-pointer">
           관리
         </li>
       )}
