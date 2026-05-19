@@ -1,3 +1,4 @@
+// user.type.ts
 export type User = {
   id: number;
   username: string;
@@ -7,4 +8,5 @@ export type User = {
   phoneNumber: string;
   image: string;
   password: string;
+  // role: "USER" | "ADMIN";
 };

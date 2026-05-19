@@ -1,8 +1,4 @@
-export interface User {
-  id: string;
-  pw: string;
-  studentNumber?: string;
-}
+import { type User } from "./user.type";
 
 export interface CurrentUser {
   username: string;
@@ -12,9 +8,9 @@ export interface CurrentUser {
 
 const USER_STORAGE_KEY = "user";
 
-// 아이디 유효성 검사 
-const validateId = (id: string) => {
-  return id.length >= 4 && id.length <= 20;
+// 유저네임 유효성 검사 > Id를 Username으로 변경
+const validateId = (username: string) => {
+  return username.length >= 4 && username.length <= 20;
 }
 
 // 비밀번호 유효성 검사
@@ -35,7 +31,7 @@ export const register = (user: User) => {
   }
 
   // 아이디와 비밀번호 유효성 검사
-  if (!validateId(user.id) || !validatePassword(user.pw)) {
+  if (!validateId(user.username) || !validatePassword(user.password)) {
     return false;
   }
 
