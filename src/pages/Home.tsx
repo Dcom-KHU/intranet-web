@@ -2,12 +2,19 @@ import { useNavigate } from "react-router-dom";
 import Container from "../components/ui/Container";
 import Card from "../components/ui/Card";
 import { useExamArchives } from "../features/exam-archive/hooks/useExamArchives";
+import RotatingBackgroundBanner from "../components/RotatingBackgroundBanner";
+import khuBg from "../assets/khu-bg.png";
+
+const homeBackgroundImages = [khuBg];
 
 const Home = () => {
     const navigate = useNavigate();
     const { data } = useExamArchives();
 
     return (
+        <>
+        <RotatingBackgroundBanner images={homeBackgroundImages} />
+
         <div className="bg-red-400 px-4 py-8 sm:px-6 lg:px-20">
             <div className="mx-auto max-w-7xl">
 
@@ -35,6 +42,7 @@ const Home = () => {
                 </div>
             </div>
         </div>
+        </>
     );
 };
 

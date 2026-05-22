@@ -18,7 +18,7 @@ export default function MobileSidebarButton({
       onClick={onClick}
     >
       <img
-        src="/src/assets/sidebar_icon.png"
+        src="/src/assets/icon/sidebar.png"
         alt="sidebar"
         className="w-5"
       />

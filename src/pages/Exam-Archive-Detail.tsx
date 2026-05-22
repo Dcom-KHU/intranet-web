@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import backImg from "../assets/back.png";
+import backImg from "../assets/icon/back.png";
 import { useExamArchive } from "../features/exam-archive/hooks/useExamArchives-detail";
 
 const ExamArchiveDetail = () => {
