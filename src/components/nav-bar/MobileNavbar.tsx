@@ -71,7 +71,7 @@ export default function MobileNavbar({
                 </h2>
 
                 <div className="flex w-full flex-col gap-8">
-                  <ul className="flex flex-col gap-5">
+                  <ul className="flex flex-col gap-7">
                     {navMenu.map((item) => (
                       <li
                         key={item.path}
@@ -91,7 +91,7 @@ export default function MobileNavbar({
                           isActive("/manage") ? "text-white" : "text-gray-300"
                         }`}
                       >
-                        Admin
+                        관리
                       </li>
                     )}
                   </ul>

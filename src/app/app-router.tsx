@@ -13,6 +13,8 @@ import Manage from "../pages/Manage";
 import Profile from "../pages/Profile";
 
 import ProtectedRoute from "../components/ProtectedRoute";
+import Notice from "../pages/Notice";
+import Gallery from "../pages/Gallery";
 
 
 export default function AppRouter() {
@@ -66,6 +68,16 @@ const protectedRoutes: AppRoute[] = [
   {
     path: "/info-sharing",
     element: <InfoSharing />,
+    protected: true,
+  },
+  {
+    path: "/notice",
+    element: <Notice />,
+    protected: true,
+  },
+  {
+    path: "/gallery",
+    element: <Gallery />,
     protected: true,
   },
   {

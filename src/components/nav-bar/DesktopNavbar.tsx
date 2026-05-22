@@ -32,7 +32,7 @@ export default function DesktopNavbar({
                 key={item.path}
                 onClick={() => onNavigate(item.path)}
                 className={`cursor-pointer font-bold transition-colors hover:text-blue-400 ${
-                  isActive(item.path) ? "text-black" : "text-blue-500"
+                  isActive(item.path) ? "text-blue-500" : "text-black"
                 }`}
               >
                 {item.label}
@@ -43,10 +43,10 @@ export default function DesktopNavbar({
               <li
                 onClick={() => onNavigate("/manage")}
                 className={`cursor-pointer font-bold transition-colors hover:text-blue-400 ${
-                  isActive("/manage") ? "text-black" : "text-blue-500"
+                  isActive("/manage") ? "text-blue-500" : "text-black"
                 }`}
               >
-                Admin
+                관리
               </li>
             )}
           </ul>
