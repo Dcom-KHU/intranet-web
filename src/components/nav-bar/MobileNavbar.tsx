@@ -32,7 +32,7 @@ export default function MobileNavbar({
       {!isOpen && (
         <motion.button
           whileTap={{ scale: 0.9 }}
-          className="fixed left-4 top-6 z-[60] flex items-center justify-center rounded-md bg-white md:hidden"
+          className="fixed left-8 top-6 z-[60] flex items-center justify-center rounded-md bg-white md:hidden"
           onClick={onOpen}
           aria-label="Open navigation menu"
         >
