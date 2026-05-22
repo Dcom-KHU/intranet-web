@@ -34,6 +34,7 @@ const Navbar = ({ isOpen, onClose }: NavbarProps) => {
           isAdmin={isAdmin}
           currentPath={location.pathname}
           currentUser={currentUser}
+          variant="desktop"
         />
       </nav>
 
@@ -43,7 +44,7 @@ const Navbar = ({ isOpen, onClose }: NavbarProps) => {
           <>
             {/* dim */}
             <motion.div
-              className="fixed inset-0 bg-black/50 md:hidden"
+              className="fixed inset-0 z-[70] bg-black/50 md:hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -52,7 +53,7 @@ const Navbar = ({ isOpen, onClose }: NavbarProps) => {
 
             {/* sidebar */}
             <motion.div
-              className="fixed top-0 left-0 h-full w-64 bg-black text-white shadow-lg p-5"
+              className="fixed top-0 left-0 z-[80] h-full w-64 bg-black p-5 text-white shadow-lg md:hidden"
               initial={{ x: -300 }}
               animate={{ x: 0 }}
               exit={{ x: -300 }}
@@ -63,6 +64,8 @@ const Navbar = ({ isOpen, onClose }: NavbarProps) => {
                 isAdmin={isAdmin}
                 currentPath={location.pathname}
                 currentUser={currentUser}
+                variant="mobile"
+                onNavigate={onClose}
               />
             </motion.div>
           </>
@@ -79,6 +82,8 @@ interface NavbarContentProps {
   isAdmin: boolean;
   currentPath: string;
   currentUser: CurrentUser | null;
+  variant: "desktop" | "mobile";
+  onNavigate?: () => void;
 }
 
 const NavbarContent = ({
@@ -86,32 +91,49 @@ const NavbarContent = ({
   isAdmin,
   currentPath,
   currentUser,
+  variant,
+  onNavigate,
 }: NavbarContentProps) => {
   const isActive = (path: string) => currentPath === path;
+  const isMobile = variant === "mobile";
+  const handleNavigate = (path: string) => {
+    navigate(path);
+    onNavigate?.();
+  };
 
   return (
-    <div className="flex flex-row gap-10 ml-10 mr-10 h-full items-center justify-between">
+    <div
+      className={
+        isMobile
+          ? "flex h-full flex-col items-start gap-8"
+          : "flex h-full items-center justify-between px-4 md:px-10"
+      }
+    >      
       <h2
-        className="text-xl font-bold cursor-pointer"
-        onClick={() => navigate("/home")}
+        className={isMobile ? "cursor-pointer" : "ml-16 cursor-pointer md:ml-0"}
+        onClick={() => handleNavigate("/home")}
       >
         <img
           src={dcomLogo}
           alt="DCOM Logo"
-          className="w-20 inline-block mr-2"
+          className="mr-2 inline-block w-20 flex-shrink-0"
         />
       </h2>
 
-      <div className="flex items-center gap-20">
-        <ul className="flex flex-row gap-10">
+      <div className={isMobile ? "flex w-full flex-col gap-8" : "hidden items-center gap-20 md:flex"}>
+        <ul className={isMobile ? "flex flex-col gap-5" : "flex flex-row gap-10"}>
           {menu.map((item) => (
             <li
               key={item.path}
-              onClick={() => navigate(item.path)}
+              onClick={() => handleNavigate(item.path)}
               className={`cursor-pointer transition-colors hover:text-blue-400 ${
                 isActive(item.path)
-                  ? "text-black font-bold"
-                  : "text-blue-500 font-bold"
+                  ? isMobile
+                    ? "text-white font-bold"
+                    : "text-black font-bold"
+                  : isMobile
+                    ? "text-gray-300 font-bold"
+                    : "text-blue-500 font-bold"
               }`}
             >
               {item.label}
@@ -120,11 +142,15 @@ const NavbarContent = ({
 
           {isAdmin && (
             <li
-              onClick={() => navigate("/manage")}
+              onClick={() => handleNavigate("/manage")}
               className={`cursor-pointer transition-colors hover:text-blue-400 ${
                 isActive("/manage")
-                  ? "text-black font-bold"
-                  : "text-blue-500 font-bold"
+                  ? isMobile
+                    ? "text-white font-bold"
+                    : "text-black font-bold"
+                  : isMobile
+                    ? "text-gray-300 font-bold"
+                    : "text-blue-500 font-bold"
               }`}
             >
               관리

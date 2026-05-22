@@ -14,14 +14,15 @@ export default function MobileSidebarButton({
   return (
     <motion.button
       whileTap={{ scale: 0.9 }}
-      className="fixed top-4 left-4 px-4 py-2 md:hidden"
+      className="fixed left-4 top-4 z-[60] flex h-12 w-12 items-center justify-center rounded-md bg-white shadow-md md:hidden"
       onClick={onClick}
+      aria-label="Open navigation menu"
     >
-      <img
-        src="/src/assets/icon/sidebar.png"
-        alt="sidebar"
-        className="w-5"
-      />
+      <span className="flex flex-col gap-1.5">
+        <span className="h-0.5 w-5 rounded bg-gray-800" />
+        <span className="h-0.5 w-5 rounded bg-gray-800" />
+        <span className="h-0.5 w-5 rounded bg-gray-800" />
+      </span>
     </motion.button>
   );
 }

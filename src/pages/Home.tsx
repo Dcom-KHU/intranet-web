@@ -15,12 +15,15 @@ const Home = () => {
         <>
         <RotatingBackgroundBanner images={homeBackgroundImages} />
 
-        <div className="bg-red-400 px-4 py-8 sm:px-6 lg:px-20">
-            <div className="mx-auto max-w-7xl">
+        <div className="px-3 py-8 sm:px-4 lg:px-8">
+            <div className="w-full ml-5 mr-5">
 
                 <div className="grid gap-5 grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">   
 
-                    {/* 활동요약 */}
+                    <Container title="공지사항">
+                        <p>공지사항 내용</p>
+                    </Container> 
+
                     <Container title="활동요약">
                         {data.map(item => (
                             <Card
@@ -33,11 +36,9 @@ const Home = () => {
                         ))}
                     </Container>
 
-                    {/* 공지사항 */}
-                    <Container title="공지사항">
-                        <p>공지사항 내용</p>
-                    </Container> 
-                                    
+                    <Container title="정보공유">
+                        <p>정보공유게시판</p>
+                    </Container>       
                     
                 </div>
             </div>
