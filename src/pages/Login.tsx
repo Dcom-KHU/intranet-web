@@ -3,6 +3,9 @@ import type { FormEvent } from "react";
 import { login } from "../features/auth";
 import { useNavigate } from "react-router-dom";
 import Infoicon from "../assets/icon/info.png"
+import Input from "../components/ui/Input";
+import InputLabel from "../components/ui/InputLabel";
+import { Button } from "../components/ui/Button";
 
 const Login = () => {
   const [userID, setUserID] = useState("");
@@ -24,35 +27,28 @@ const Login = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-        <div className="w-full max-w-md p-8 bg-white rounded shadow">
+        <div className="w-full max-w-md p-8 bg-white">
             <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
             <form onSubmit={handleLogin}>
-                <div className="mb-4">
-                    <label className="block text-gray-700 mb-2" htmlFor="userID">User ID</label> 
-                    <input 
-                        className="w-full px-3 py-2 border rounded-xl" 
+                <div className="mb-6">
+                    <InputLabel>User ID</InputLabel>
+                    <Input 
                         type="text" 
                         id="user-id" 
                         placeholder="아이디를 입력하세요" 
                         value={userID} 
                         onChange={(e) => setUserID(e.target.value)} />
                 </div>
-                <div className="mb-6">
-                    <label className="block text-gray-700 mb-2" htmlFor="password">Password</label>
-                    <input 
-                        className="w-full px-3 py-2 border rounded-xl" 
+                <div className="mb-8">
+                    <InputLabel>비밀번호</InputLabel>
+                    <Input 
                         type="password" 
                         id="password" 
-                        placeholder="Enter your password" 
+                        placeholder="비밀번호를 입력하세요" 
                         value={password} 
                         onChange={(e) => setPassword(e.target.value)} />   
                 </div>
-                <button 
-                  className="w-full bg-[#0F2854] text-white py-2 rounded-xl hover:bg-[#a1c4ff]" 
-                  type="submit"
-                >
-                    Login
-                </button>
+                <Button type="submit">Login</Button>
                 <span className="text-sm text-gray-500 mt-5 block text-center">
                     Don't have an account? 
                     <a 
