@@ -28,9 +28,7 @@ export default function MobileNavbar({
 
   return (
     <>
-
-      
-        <nav className="fixed left-0 top-0 z-[50] w-full h-[80px] bg-white/95">
+        <nav className="fixed left-0 top-0 z-40 w-full h-[80px] bg-white/95">
           {!isOpen && (
           <motion.button
             whileTap={{ scale: 0.9 }}
@@ -42,7 +40,6 @@ export default function MobileNavbar({
           </motion.button>
           )}
         </nav>
-      
 
       <AnimatePresence>
         {isOpen && (
