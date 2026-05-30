@@ -75,18 +75,49 @@ const Manage = () => {
               title="회원 관리" 
               variant="secondary"
             >
-              {users?.slice(0, 5).map(user => (
-                <div key={user.id} className="flex items-center justify-between py-2 border-b">
-                    <p className="font-medium">{user.name} </p>
-                    <p className="text-sm text-gray-500">{user.studentNumber}</p>
-                    <p className="text-sm text-gray-500">{user.userID}</p>
-                  <div className="flex w-[100px] gap-2">
-                    <Button className="flex-1" variant="refusal">
-                      삭제
-                    </Button>
-                  </div>
-                </div>
-              ))}
+              <table className="w-full table-fixed">
+                <thead>
+                  <tr className="border-b">
+                    <th className="px-4 py-3 text-sm font-medium">
+                      이름
+                    </th>
+                    <th className="px-4 py-3 text-sm font-medium">
+                      학번
+                    </th>
+                    <th className="px-4 py-3 text-sm font-medium">
+                      아이디
+                    </th>
+                    <th className="px-4 py-3 text-sm font-medium">
+                      최근 접속일
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {users?.slice(0, 5).map(user => (
+                    <tr
+                      key={user.id}
+                      className="border-b hover:bg-gray-50 text-center"
+                    >
+                      <td className="px-4 py-3">{user.name}</td>
+                      <td className="px-4 py-3 text-gray-500">
+                        {user.studentNumber}
+                      </td>
+                      <td className="px-4 py-3 text-gray-500">
+                        {user.userID}
+                      </td>
+                      <td className="px-4 py-3 text-gray-500">
+                        최근접속일
+                        {/* <div className="flex w-[100px] gap-2">
+                          <Button className="flex-1" variant="refusal">
+                            삭제
+                          </Button>
+                        </div> */}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </Container>
         </div>
       </div>
