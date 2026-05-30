@@ -25,7 +25,7 @@ export default function DesktopNavbar({
           />
         </h2>
 
-        <div className="flex items-center gap-20 mr-32">
+        <div className="flex items-center gap-20 mr-32 whitespace-nowrap">
           <ul className="flex flex-row gap-10">
             {navMenu.map((item) => (
               <li
