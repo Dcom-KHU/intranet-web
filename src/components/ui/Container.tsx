@@ -7,6 +7,7 @@ type ContainerProps = {
     children: React.ReactNode;
     variant?: "primary" | "secondary";
     onViewAllClick?: () => void;
+    showViewAll?: boolean; 
 };
 
 // hover:bg-[#f0f8ff]
@@ -17,6 +18,7 @@ const Container = ({
     children,
     variant = "primary",
     onViewAllClick,
+    showViewAll = true,
 }: ContainerProps) => {
     const variants = {
         primary: `
@@ -30,6 +32,7 @@ const Container = ({
             transition-all
             duration-300
             text-[#0F2854]
+            whitespace-nowrap
         `,
         secondary: `
             border
@@ -41,6 +44,7 @@ const Container = ({
             transition-all
             duration-300
             text-[#0F2854]
+            whitespace-nowrap
         `,
     };
     return (
@@ -50,6 +54,8 @@ const Container = ({
             <h2 className="text-lg mb-4 flex items-center">
                 {Icon && <Icon className="w-4 mr-2 inline-block" />}
                 <p className="font-bold">{title}</p>
+                    
+                {showViewAll && (
                     <span 
                         onClick={onViewAllClick}
                         className="flex items-center text-sm text-gray-400 hover:text-[#B5D4F4] ml-auto cursor-pointer "
@@ -57,6 +63,7 @@ const Container = ({
                         View all
                         <IoChevronForward className="ml-1 group-hover:text-[#B5D4F4]" />
                     </span>
+                )}
             </h2>
 
             {children}

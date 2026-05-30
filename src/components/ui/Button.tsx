@@ -16,9 +16,9 @@ const variants: Record<Variant, string> = {
   // 흰색 배경에 남색 텍스트 + 테두리, 호버 시 연한 회색 배경
   secondary: "bg-white text-[#0F2854] border border-[#0F2854] hover:bg-gray-300",
   // 흰색 배경에 하늘색 텍스트 + 테두리, 호버 시 연한 하늘색 배경
-  third: "bg-blue-500 text-white border border-blue-500 hover:bg-blue-600",
+  third: "bg-white text-sm text-blue-500 border border-blue-500 hover:bg-[#f0f8ff] hover:shadow-md",
   // 흰색 배경에 회색 텍스트 + 테두리, 호버 시 더 연한 회색 배경
-  refusal: "bg-gray-500 text-white border border-gray-500 hover:bg-gray-600",
+  refusal: "bg-white text-sm text-gray-400 border border-gray-400 hover:bg-gray-200 hover:shadow-md",
 };
 
 export function Button({
