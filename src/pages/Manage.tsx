@@ -177,7 +177,6 @@ function PostManageCard({
         rounded-2xl
         bg-[#F8F9FC]
         hover:shadow-md
-        hover:bg-[#E6E6FA]
         transition-all
         duration-300
         text-[#0F2854]
