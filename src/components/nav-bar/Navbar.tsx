@@ -1,8 +1,7 @@
+// Navbar.tsx
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
 import { getCurrentUser } from "../../features/auth";
-
 import DesktopNavbar from "./DesktopNavbar";
 import MobileNavbar from "./MobileNavbar";
 import ProfileMenu from "../ProfileMenu";
@@ -25,7 +24,7 @@ export default function Navbar() {
   return (
     <>
       {currentUser && (
-        <div className="fixed right-8 top-4 z-[70]">
+        <div className="fixed right-8 top-4 z-[60]">
           <ProfileMenu user={currentUser} />
         </div>
       )}
@@ -35,8 +34,6 @@ export default function Navbar() {
         isAdmin={isAdmin}
         onNavigate={handleNavigate}
       />
-
-      
 
       <MobileNavbar
         isOpen={isOpen}

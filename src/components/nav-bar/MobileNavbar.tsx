@@ -29,22 +29,26 @@ export default function MobileNavbar({
   return (
     <>
 
-      {!isOpen && (
-        <motion.button
-          whileTap={{ scale: 0.9 }}
-          className="fixed left-8 top-6 z-[60] flex items-center justify-center rounded-md bg-white md:hidden"
-          onClick={onOpen}
-          aria-label="Open navigation menu"
-        >
-          <img src={sidebar} alt="sidbar-icon" className="w-8 "/>
-        </motion.button>
-      )}
+      
+        <nav className="fixed left-0 top-0 z-[50] w-full h-[80px] bg-white/95">
+          {!isOpen && (
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            className="ml-8 mt-6 md:hidden"
+            onClick={onOpen}
+            aria-label="Open navigation menu"
+          >
+            <img src={sidebar} alt="sidbar-icon" className="w-8 "/>
+          </motion.button>
+          )}
+        </nav>
+      
 
       <AnimatePresence>
         {isOpen && (
           <>
             <motion.div
-              className="fixed inset-0 z-[70] bg-black/50 md:hidden"
+              className="fixed inset-0 z-[90] bg-black/50 md:hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -52,7 +56,7 @@ export default function MobileNavbar({
             />
 
             <motion.nav
-              className="fixed left-0 top-0 z-[80] h-full w-64 bg-black p-5 text-white shadow-lg md:hidden"
+              className="fixed left-0 top-0 z-[100] h-full w-64 bg-black p-5 text-white shadow-lg md:hidden"
               initial={{ x: -300 }}
               animate={{ x: 0 }}
               exit={{ x: -300 }}
