@@ -1,18 +1,29 @@
 import { exam_mock, exam_archives_mock } from "./exam-archive.mock";
 
-// 전체 게시글 조회
 export const getExamArchives = async () => {
-    // 실제 API 호출이 필요한 경우 여기에 구현
-    return Promise.resolve(exam_archives_mock);
+  return Promise.resolve(exam_archives_mock);
 };
 
 export const getExam = async () => {
-    // 실제 API 호출이 필요한 경우 여기에 구현
-    return Promise.resolve(exam_mock);
+  return Promise.resolve(exam_mock);
 };
 
-// 상세 조회
 export const getExamArchiveById = async (id: number) => {
-  const item = exam_mock.find((exam) => exam.id === id);
-  return item ?? null;
+  const archive = exam_archives_mock.find((item) => item.id === id);
+
+  if (!archive) {
+    return null;
+  }
+
+  const posts = exam_mock.filter(
+    (exam) =>
+      exam.subject === archive.subject && exam.professor === archive.professor,
+  );
+
+  return {
+    id: archive.id,
+    subject: archive.subject,
+    professor: archive.professor,
+    posts,
+  };
 };

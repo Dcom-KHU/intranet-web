@@ -9,6 +9,13 @@ export interface ExamArchiveType {
     files: string[];
 }
 
+export interface ExamArchiveDetailType {
+    id: number;
+    subject: string;
+    professor: string;
+    posts: ExamArchiveType[];
+}
+
 export interface ExamArchiveListType {
     id: number;
     subject: string;

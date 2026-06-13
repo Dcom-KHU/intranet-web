@@ -2,39 +2,100 @@ import { useNavigate, useParams } from "react-router-dom";
 import backImg from "../assets/icon/back.png";
 import { useExamArchive } from "../features/exam-archive/hooks/useExamArchives-detail";
 import Loading from "../components/Loading";
+import { HiUpload } from "react-icons/hi";
+import { GoTrash } from "react-icons/go";
+import { Button } from "../components/ui/Button";
 
 const ExamArchiveDetail = () => {
-    const navigate = useNavigate();
-    const { id } = useParams();
-    const { data } = useExamArchive(Number(id));
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const { data } = useExamArchive(Number(id));
 
-    if (!data) {
-        return <Loading />;
-    }
+  if (!data) {
+    return <Loading />;
+  }
 
-    return (
-        <div className="px-4 py-8 sm:px-6 lg:px-20">           
+  return (
+    <div className="px-4 py-8 sm:px-6 lg:px-20">
+      <button
+        type="button"
+        onClick={() => navigate("/exam-archive")}
+        className="mb-3 flex items-center gap-2 text-sm text-gray-600 hover:text-gray-400"
+      >
+        <img src={backImg} alt="" className="size-3" />
+        족보 아카이브로 돌아가기
+      </button>
 
-        <div className="flex items-center gap-4">
-            <img 
-                src={backImg} 
-                alt="Back" 
-                onClick={() => navigate(-1)} 
-                className="cursor-pointer size-4 mb-4" 
-            />
-            <h1 className="text-2xl font-bold mb-4">{data.subject}</h1>
+      <div className="mb-8 flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-[#4988C4]">족보</h1>
+
+        <Button
+          variant="third"
+          className="flex w-[140px] items-center justify-center gap-2 text-sm"
+        >
+          <HiUpload />
+          UPLOAD
+        </Button>
+      </div>
+
+      <section className="overflow-hidden rounded-2xl border border-gray-200">
+        <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-7 py-4">
+          <h2 className="text-sm font-semibold text-[#0F2854]">
+            {data.subject}
+          </h2>
+          <span className="text-sm text-gray-500">{data.professor} 교수님</span>
         </div>
 
-            <p>{data.description}</p>
+        <div className="bg-white">
+          {data.posts.map((post) => (
+            <article
+              key={post.id}
+              className="relative min-h-[220px] border-b border-gray-200 px-7 py-7 last:border-b-0"
+            >
+              <div className="mb-8 flex items-start justify-between gap-4">
+                <p className="text-sm font-medium text-gray-900">
+                  {post.semester} {post.author}
+                </p>
+                <time className="shrink-0 text-sm text-gray-500">
+                  {post.date.replaceAll("-", ".")}
+                </time>
+              </div>
 
-            <div className="mt-4 text-sm text-gray-500">
-                <p>과목: {data.subject}</p>
-                <p>교수: {data.professor}</p>
-                <p>작성자: {data.author}</p>
-                <p>날짜: {data.date}</p>
-            </div>
+              {post.description && (
+                <p className="mb-6 whitespace-pre-line text-sm leading-6 text-gray-900">
+                  {post.description}
+                </p>
+              )}
+
+              {post.files.length > 0 && (
+                <ul className="space-y-3">
+                  {post.files.map((file) => (
+                    <li key={file}>
+                      <a
+                        href={`/${file}`}
+                        className="text-sm text-[#4988C4] underline underline-offset-2 hover:text-[#0F2854]"
+                        onClick={(event) => event.preventDefault()}
+                      >
+                        {file}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              <button
+                type="button"
+                aria-label="삭제"
+                className="absolute bottom-6 right-6 text-gray-400 hover:text-gray-600"
+              >
+                <GoTrash size={16} />
+              </button>
+            </article>
+          ))}
         </div>
-    );
+      </section>
+    </div>
+  );
 };
 
 export default ExamArchiveDetail;

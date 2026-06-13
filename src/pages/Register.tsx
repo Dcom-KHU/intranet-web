@@ -5,7 +5,6 @@ import type { User } from "../data/user.type";
 import Input from "../components/ui/Input";
 import InputLabel from "../components/ui/InputLabel";
 import { Button } from "../components/ui/Button";
-import { validatePassword, validatePasswordMatch } from "../features/auth";
 
 const Register = () => {
   const [name, setName] = useState("");
