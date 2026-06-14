@@ -15,7 +15,7 @@ const Login = () => {
   const handleLogin = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // 실제 로그인 로직은 auth.ts의 login 함수를 호출
+    // 실제 로그인 로직은 auth.utils.ts의 login 함수를 호출
     const success = login(userID, password);
 
     if (success) {
