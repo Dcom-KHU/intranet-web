@@ -5,11 +5,11 @@ import Underline from "@tiptap/extension-underline";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { IoAdd, IoAttach, IoClose } from "react-icons/io5";
-import { uploadPosts } from "../../features/upload/upload.api";
+import { uploadPosts } from "../../features/upload/api/upload.api";
 import type {
   UploadMode,
   UploadPostDraft,
-} from "../../features/upload/upload.type";
+} from "../../features/upload/types/upload.type";
 import { Button } from "../ui/Button";
 
 type UploadFormProps = {

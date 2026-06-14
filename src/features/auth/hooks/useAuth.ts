@@ -1,13 +1,13 @@
 // useAuth.ts
 
 import { useEffect, useState } from "react";
-import type { AuthUser } from "../data/authuser.type";
+import type { AuthUser } from "../types/authuser.type";
 import {
   getCurrentUser,
   isLoggedIn as checkIsLoggedIn,
   login as authLogin,
   logout as authLogout,
-} from "./auth";
+} from "../utils/auth.utils";
 
 export default function useAuth() {
   const [isLoggedIn, setIsLoggedIn] = useState(

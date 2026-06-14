@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import DesktopNavbar from "./DesktopNavbar";
 import MobileNavbar from "./MobileNavbar";
 import ProfileMenu from "../ProfileMenu";
-import useAuth from "../../features/useAuth";
+import useAuth from "../../features/auth/hooks/useAuth";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);

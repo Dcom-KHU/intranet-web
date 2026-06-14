@@ -1,4 +1,4 @@
-import type { ExamArchiveType, ExamArchiveListType } from "./exam-archive.type";
+import type { ExamArchiveType, ExamArchiveListType } from "../features/exam-archive/types/exam-archive.type";
 
 export const exam_archives_mock: ExamArchiveListType[] = [
   {

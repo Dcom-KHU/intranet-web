@@ -8,7 +8,7 @@ import Register from "../pages/Register";
 import Home from "../pages/Home";
 import ExamArchive from "../pages/Exam-Archive";
 import ExamArchiveDetail from "../pages/Exam-Archive-Detail";
-import ExamArchiveUpload from "../pages/ExamArchiveUpload";
+import ExamArchiveUpload from "../pages/Exam-Archive-Upload";
 import InfoSharing from "../pages/Info-Sharing";
 import Manage from "../pages/Manage";
 import Profile from "../pages/Profile";

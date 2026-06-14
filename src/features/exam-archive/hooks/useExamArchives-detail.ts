@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getExamArchiveById } from "../exam-archive.api";
-import { type ExamArchiveDetailType } from "../exam-archive.type";
+import { getExamArchiveById } from "../api/exam-archive.api";
+import { type ExamArchiveDetailType } from "../types/exam-archive.type";
 
 export const useExamArchive = (id: number) => {
   const [data, setData] = useState<ExamArchiveDetailType | null>(null);

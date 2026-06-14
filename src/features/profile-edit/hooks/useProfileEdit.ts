@@ -1,8 +1,8 @@
-// features/profile-edit/useProfileEdit.ts
+// features/profile-edit/hooks/useProfileEdit.ts
 
 import { useEffect, useState } from "react";
-import { fetchUser, updateUser } from "./profile-edit.api";
-import { type User } from "../../data/user.type";
+import { fetchUser, updateUser } from "../api/profile-edit.api";
+import { type User } from "../../auth/types/user.type";
 
 export function useProfileEdit() {
   const [user, setUser] = useState<User | null>(null);

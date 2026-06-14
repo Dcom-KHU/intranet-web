@@ -2,7 +2,7 @@ import { useState } from "react";
 import Container from "../components/ui/Container";
 import Input from "../components/ui/Input";
 import basicProfile from "../assets/basic_profile.png";
-import { useProfileEdit } from "../features/profile-edit/useProfileEdit";
+import { useProfileEdit } from "../features/profile-edit/hooks/useProfileEdit";
 import Loading from "../components/Loading";
 
 export default function Profile() {

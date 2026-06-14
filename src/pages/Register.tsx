@@ -1,7 +1,7 @@
 import { type FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { register } from "../features/auth";
-import type { User } from "../data/user.type";
+import { register } from "../features/auth/utils/auth.utils";
+import type { User } from "../features/auth/types/user.type";
 import Input from "../components/ui/Input";
 import InputLabel from "../components/ui/InputLabel";
 import { Button } from "../components/ui/Button";

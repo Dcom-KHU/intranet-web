@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 
 import Navbar from "../components/nav-bar/Navbar";
 import Footer from "../components/Footer";
-import useAuth from "../features/useAuth";
+import useAuth from "../features/auth/hooks/useAuth";
 
 export default function AppLayout() {
   const { isLoggedIn } = useAuth();

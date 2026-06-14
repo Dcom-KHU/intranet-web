@@ -1,5 +1,5 @@
-import { usersApi } from "./manage-users.api";
-import type { User } from "../../data/user.type";
+import { usersApi } from "../api/manage-users.api";
+import type { User } from "../../auth/types/user.type";
 
 export const userService = {
   getAllUsers: async (): Promise<User[]> => {

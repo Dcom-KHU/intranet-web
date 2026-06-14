@@ -1,6 +1,6 @@
-import type { User } from "../data/user.type";
-import { mockUsers } from "../data/user-data.mock";
-import type { AuthUser } from "../data/authuser.type";
+import type { User } from "../types/user.type";
+import { mockUsers } from "../../../mocks/user-data.mock";
+import type { AuthUser } from "../types/authuser.type";
 
 const USER_STORAGE_KEY = "user";
 const TOKEN_STORAGE_KEY = "token";

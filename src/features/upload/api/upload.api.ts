@@ -1,4 +1,4 @@
-import type { UploadPostsRequest, UploadPostsResponse } from "./upload.type";
+import type { UploadPostsRequest, UploadPostsResponse } from "../types/upload.type";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
 

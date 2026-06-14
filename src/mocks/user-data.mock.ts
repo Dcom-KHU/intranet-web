@@ -1,5 +1,5 @@
 // user-data.mock.ts
-import type { User } from "./user.type";
+import type { User } from "../features/auth/types/user.type";
 
 export const mockUsers: User[] = [
   {

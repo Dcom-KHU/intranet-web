@@ -1,4 +1,4 @@
-import { exam_mock, exam_archives_mock } from "./exam-archive.mock";
+import { exam_mock, exam_archives_mock } from "../../../mocks/exam-archive.mock";
 
 export const getExamArchives = async () => {
   return Promise.resolve(exam_archives_mock);
