@@ -85,7 +85,8 @@ const ExamArchive = () => {
 
         <Button
           variant="third"
-          className="flex w-[140px] items-center justify-center gap-2 text-sm"
+          className="flex w-[160px] items-center justify-center gap-2 text-sm"
+          onClick={() => navigate("/exam-archive/upload")}
         >
           <HiUpload />
           UPLOAD
