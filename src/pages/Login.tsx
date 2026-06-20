@@ -61,7 +61,7 @@ const Login = () => {
             </form>
         </div>
 
-        <div className="p-2 pr-12 pl-12 rounded-xl mt-10 bg-[#EEEEEE] text-gray-400 flex flex-row items-center gap-2">
+        <div className="p-2 pr-12 pl-12 rounded-xl mt-10 bg-[#EEEEEE] text-gray-400 text-sm flex flex-row items-center gap-2">
             <img src={Infoicon} alt="warning" className="w-3 h-3"/>
             관리자 승인 후 인트라넷 이용이 가능합니다
         </div>
