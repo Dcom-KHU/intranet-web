@@ -33,13 +33,35 @@ const Home = () => {
                     
                     <Container title="최근 등록 족보" icon={IoPencilOutline} onViewAllClick={() => navigate("/exam-archive")}>
                         {data?.slice(0, 5).map(item => (
-                            <div 
-                              key={item.id} 
-                              className="flex py-1 text-sm hover:font-bold cursor-pointer items-center justify-between"
-                              onClick={() => navigate(`/exam-archive/${item.id}`)}
+                            <div
+                                key={item.id}
+                                className="flex py-1 text-sm hover:font-bold cursor-pointer items-center justify-between overflow-hidden"
+                                onClick={() => navigate(`/exam-archive/${item.id}`)}
                             >
-                                <p>{item.subject} | {item.professor} - {item.author.userID}</p>
-                                <p className="text-gray-400 text-xs">{item.date}</p>
+                                <p className="min-w-0 truncate">
+                                    <span className="sm:hidden">
+                                    {item.subject.length > 6
+                                        ? `${item.subject.slice(0, 6)}...`
+                                        : item.subject}
+                                    </span>
+
+                                    <span className="hidden sm:inline">
+                                    {item.subject}
+                                    </span>
+
+                                    {" | "}
+                                    {item.professor} - {item.author.userID}
+                                </p>
+
+                                <p className="text-gray-400 text-xs flex-shrink-0 ml-2">
+                                    <span className="sm:hidden">
+                                        {item.date.slice(5)}
+                                    </span>
+
+                                    <span className="hidden sm:inline">
+                                        {item.date}
+                                    </span>
+                                </p>
                             </div>
                         ))}
                     </Container>
