@@ -28,11 +28,12 @@ const ExamArchiveDetail = () => {
       </button>
 
       <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-[#4988C4]">족보</h1>
+        <h1 className="text-2xl font-bold text-[#4988C4] whitespace-nowrap">족보</h1>
 
         <Button
           variant="third"
-          className="flex w-[120px] items-center justify-center gap-2 text-sm"
+          className="flex w-40 items-center justify-center gap-2"
+          onClick={() => navigate("/exam-archive/upload")}
         >
           <HiUpload />
           UPLOAD
