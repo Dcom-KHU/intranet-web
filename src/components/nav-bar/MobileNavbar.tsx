@@ -2,10 +2,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import dcomLogo from "../../assets/dcom-logo-white.png";
 import sidebar from "../../assets/icon/sidebar.png"
 import { navMenu } from "./navMenu";
+import { useLocation } from "react-router-dom";
 
 interface MobileNavbarProps {
   isOpen: boolean;
-  currentPath: string;
   isAdmin: boolean;
   onOpen: () => void;
   onClose: () => void;
@@ -14,13 +14,17 @@ interface MobileNavbarProps {
 
 export default function MobileNavbar({
   isOpen,
-  currentPath,
   isAdmin,
   onOpen,
   onClose,
   onNavigate,
 }: MobileNavbarProps) {
-  const isActive = (path: string) => currentPath === path;
+  const location = useLocation();
+
+  const isActive = (path: string) =>
+    location.pathname === path ||
+    location.pathname.startsWith(path + "/");  
+    
   const handleNavigate = (path: string) => {
     onNavigate(path);
     onClose();

@@ -30,14 +30,12 @@ export default function Navbar() {
       )}
 
       <DesktopNavbar
-        currentPath={location.pathname}
         isAdmin={isAdmin}
         onNavigate={handleNavigate}
       />
 
       <MobileNavbar
         isOpen={isOpen}
-        currentPath={location.pathname}
         isAdmin={isAdmin}
         onOpen={() => setIsOpen(true)}
         onClose={() => setIsOpen(false)}

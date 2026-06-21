@@ -1,18 +1,21 @@
 import dcomLogo from "../../assets/dcom-logo-black.png";
 import { navMenu } from "./navMenu";
+import { useLocation } from "react-router-dom";
 
 interface DesktopNavbarProps {
-  currentPath: string;
   isAdmin: boolean;
   onNavigate: (path: string) => void;
 }
 
 export default function DesktopNavbar({
-  currentPath,
   isAdmin,
   onNavigate,
 }: DesktopNavbarProps) {
-  const isActive = (path: string) => currentPath === path;
+  const location = useLocation();
+
+  const isActive = (path: string) =>
+    location.pathname === path ||
+    location.pathname.startsWith(path + "/");
 
   return (
     <nav className="fixed left-0 right-0 top-0 pr-10 z-50 hidden h-20 border-b border-gray-200 bg-white/95 shadow-sm backdrop-blur-sm md:block">
