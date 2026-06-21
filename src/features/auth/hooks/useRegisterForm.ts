@@ -12,6 +12,10 @@ import {
 } from "../utils/auth.utils";
 
 const phoneRegex = /^010-\d{4}-\d{4}$/;
+export type RegisterModalType =
+  | "emailCodeSent"
+  | "registerFailed"
+  | "registerComplete";
 
 export default function useRegisterForm() {
   const [name, setName] = useState("");
@@ -26,7 +30,8 @@ export default function useRegisterForm() {
 
   const [isIdChecked, setIsIdChecked] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
-  const [isRegisterComplete, setIsRegisterComplete] = useState(false);
+  const [registerModalType, setRegisterModalType] =
+    useState<RegisterModalType | null>(null);
 
   const navigate = useNavigate();
 
@@ -120,7 +125,7 @@ export default function useRegisterForm() {
 
     sendEmailCode(email);
     clearFieldError("emailCode");
-    alert("인증 코드가 발송되었습니다. (콘솔 확인)");
+    setRegisterModalType("emailCodeSent");
   };
 
   const handleVerifyEmailCode = () => {
@@ -174,15 +179,19 @@ export default function useRegisterForm() {
     const success = register(userInput);
 
     if (!success) {
-      alert("회원가입에 실패했습니다. 입력값을 다시 확인해주세요.");
+      setRegisterModalType("registerFailed");
       return;
     }
 
-    setIsRegisterComplete(true);
+    setRegisterModalType("registerComplete");
   };
 
   const handleGoLogin = () => {
     navigate("/");
+  };
+
+  const closeRegisterModal = () => {
+    setRegisterModalType(null);
   };
 
   return {
@@ -199,7 +208,8 @@ export default function useRegisterForm() {
     isPasswordValid: !!password && validatePassword(password),
     isConfirmPasswordValid: !!confirmPassword && password === confirmPassword,
     isEmailVerified,
-    isRegisterComplete,
+    isRegisterComplete: registerModalType === "registerComplete",
+    registerModalType,
     handleNameChange,
     handleStudentNumberChange,
     handleUserIDChange,
@@ -212,6 +222,7 @@ export default function useRegisterForm() {
     handleVerifyEmailCode,
     handleRegister,
     handleGoLogin,
+    closeRegisterModal,
     setEmailCode,
   };
 }

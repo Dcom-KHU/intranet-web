@@ -2,6 +2,7 @@ import Input from "../components/ui/Input";
 import InputLabel from "../components/ui/InputLabel";
 import { Button } from "../components/ui/Button";
 import Modal from "../components/ui/Modal";
+import dcomLogo from "../assets/dcom-logo-black.png";
 import useRegisterForm from "../features/auth/hooks/useRegisterForm";
 
 const ErrorMessage = ({ message }: { message?: string }) =>
@@ -28,7 +29,7 @@ const Register = () => {
     isPasswordValid,
     isConfirmPasswordValid,
     isEmailVerified,
-    isRegisterComplete,
+    registerModalType,
     handleNameChange,
     handleStudentNumberChange,
     handleUserIDChange,
@@ -41,13 +42,64 @@ const Register = () => {
     handleVerifyEmailCode,
     handleRegister,
     handleGoLogin,
+    closeRegisterModal,
     setEmailCode,
   } = useRegisterForm();
+
+  const registerModalContent =
+    registerModalType === "emailCodeSent"
+      ? {
+          badge: "인증 코드 발송",
+          title: "인증 코드가 발송되었습니다.",
+          description: (
+            <>
+              입력한 이메일로 인증 코드를 보냈습니다.
+              <br />
+              현재는 mock 인증이라 콘솔에서 코드를 확인해주세요.
+            </>
+          ),
+          actionLabel: "확인",
+          onAction: closeRegisterModal,
+          labelledById: "email-code-sent-title",
+        }
+      : registerModalType === "registerFailed"
+        ? {
+            badge: "가입 실패",
+            title: "회원가입에 실패했습니다.",
+            description: (
+              <>
+                입력값을 다시 확인해주세요.
+                <br />
+                이미 사용 중인 아이디일 수 있습니다.
+              </>
+            ),
+            actionLabel: "확인",
+            onAction: closeRegisterModal,
+            labelledById: "register-failed-title",
+          }
+        : registerModalType === "registerComplete"
+          ? {
+              badge: "승인 대기",
+              title: "가입 신청이 완료되었습니다.",
+              description: (
+                <>
+                  관리자가 회원 정보를 검토 중입니다.
+                  <br />
+                  승인이 완료되면 이메일로 안내해 드리며,
+                  <br />그 이후 로그인하여 인트라넷을 이용하실 수 있습니다.
+                </>
+              ),
+              actionLabel: "로그인 화면으로 돌아가기",
+              onAction: handleGoLogin,
+              labelledById: "signup-complete-title",
+            }
+          : null;
 
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="w-full max-w-md rounded bg-white p-8">
-        <h2 className="mb-8 text-center text-2xl font-bold">Register</h2>
+        {/* <h2 className="mb-8 text-center text-xl font-bold">회원가입</h2> */}
+        <img src={dcomLogo} alt="dcom-logo" className="mx-auto mb-3 h-16 w-auto "/>
 
         <form onSubmit={handleRegister}>
           <div className="mb-6 flex flex-row gap-3">
@@ -181,25 +233,21 @@ const Register = () => {
             <ErrorMessage message={errors.phoneNumber} />
           </div>
 
-          <Button type="submit">Register</Button>
+          <Button type="submit">회원가입</Button>
         </form>
       </div>
-      <Modal
-        isOpen={isRegisterComplete}
-        badge="승인 대기"
-        title="가입 신청이 완료되었습니다."
-        description={
-          <>
-            관리자가 회원 정보를 검토 중입니다.
-            <br />
-            승인이 완료되면 이메일로 안내해 드리며,
-            <br />그 이후 로그인하여 인트라넷을 이용하실 수 있습니다.
-          </>
-        }
-        actionLabel="로그인 화면으로 돌아가기"
-        onAction={handleGoLogin}
-        labelledById="signup-complete-title"
-      />
+
+      {registerModalContent && (
+        <Modal
+          isOpen
+          badge={registerModalContent.badge}
+          title={registerModalContent.title}
+          description={registerModalContent.description}
+          actionLabel={registerModalContent.actionLabel}
+          onAction={registerModalContent.onAction}
+          labelledById={registerModalContent.labelledById}
+        />
+      )}
     </div>
   );
 };
