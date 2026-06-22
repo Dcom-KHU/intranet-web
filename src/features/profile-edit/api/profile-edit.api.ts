@@ -1,6 +1,6 @@
 // profile-edit/profile-edit.api.ts
 
-import type { AuthUser } from "../../auth/types/authuser.type";
+import type { AuthUser } from "../../auth/types/auth-user.type";
 import type { User } from "../../auth/types/user.type";
 import { mockUsers } from "../../../mocks/user-data.mock";
 import { getCurrentUser } from "../../auth/utils/auth.utils";

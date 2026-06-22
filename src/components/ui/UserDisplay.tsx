@@ -1,4 +1,4 @@
-// user-display.ts
+// UserDisplay.tsx
 
 type Props = {
   user: {

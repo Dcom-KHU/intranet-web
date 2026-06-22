@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import type { AuthUser } from "../features/auth/types/authuser.type";
+import type { AuthUser } from "../features/auth/types/auth-user.type";
 import UserDisplayName from "./ui/UserDisplay";
 import { logout } from "../features/auth/utils/auth.utils";
 import { useNavigate } from "react-router-dom";

@@ -1,7 +1,7 @@
 // useAuth.ts
 
 import { useEffect, useState } from "react";
-import type { AuthUser } from "../types/authuser.type";
+import type { AuthUser } from "../types/auth-user.type";
 import {
   getCurrentUser,
   isLoggedIn as checkIsLoggedIn,

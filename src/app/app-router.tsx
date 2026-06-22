@@ -6,15 +6,15 @@ import AppLayout from "./app-layout";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Home from "../pages/Home";
-import ExamArchive from "../pages/Exam-Archive";
-import ExamArchiveDetail from "../pages/Exam-Archive-Detail";
-import ExamArchiveUpload from "../pages/Exam-Archive-Upload";
-import InfoSharing from "../pages/Info-Sharing";
+import ExamArchive from "../pages/ExamArchive";
+import ExamArchiveDetail from "../pages/ExamArchiveDetail";
+import ExamArchiveUpload from "../pages/ExamArchiveUpload";
+import InfoSharing from "../pages/InfoSharing";
 import Manage from "../pages/Manage";
 import Profile from "../pages/Profile";
 import Notice from "../pages/Notice";
 import Gallery from "../pages/Gallery";
-import GalleryDetail from "../pages/Gallery-Detail";
+import GalleryDetail from "../pages/GalleryDetail";
 
 import ProtectedRoute from "../components/ProtectedRoute";
 

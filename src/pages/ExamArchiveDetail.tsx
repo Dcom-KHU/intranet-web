@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import backImg from "../assets/icon/back.png";
-import { useExamArchive } from "../features/exam-archive/hooks/useExamArchives-detail";
+import { useExamArchive } from "../features/exam-archive/hooks/useExamArchiveDetail";
 import Loading from "../components/Loading";
 import { HiUpload } from "react-icons/hi";
 import { GoTrash } from "react-icons/go";
