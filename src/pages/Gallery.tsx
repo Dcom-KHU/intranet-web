@@ -2,9 +2,17 @@ import { HiUpload } from "react-icons/hi";
 import Card from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
 import { galleryPosts } from "../mocks/gallery.mock";
+import useAuth from "../features/auth/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 
 const Gallery = () => {
+  const navigate = useNavigate();
+  const { currentUser } = useAuth();
+  
+  const isAdmin =
+    currentUser?.role === "ADMIN";
+
   const handleUploadClick = () => {
     window.alert("활동 사진 업로드 페이지는 아직 연결되지 않았습니다.");
   };
@@ -20,20 +28,22 @@ const Gallery = () => {
         </p>
       </section>
 
-      <section className="mb-4 flex justify-end">
-        <Button
-          type="button"
-          variant="third"
-          className="flex w-40 items-center justify-center gap-2 text-xs"
-          onClick={handleUploadClick}
-        >
-          <HiUpload />
-          UPLOAD
-        </Button>
-      </section>
+      {isAdmin && 
+        <section className="mb-4 flex justify-end">
+          <Button
+            type="button"
+            variant="third"
+            className="flex w-40 items-center justify-center gap-2 text-xs"
+            onClick={handleUploadClick}
+          >
+            <HiUpload />
+            UPLOAD
+          </Button>
+        </section>
+      }
 
       <section>
-        <div className="grid gap-4 gird-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {galleryPosts.map((post) => (
             <Card
               key={post.id}
@@ -41,9 +51,7 @@ const Gallery = () => {
               title={post.title}
               date={post.date}
               imageCount={post.imageCount}
-              onClick={() => {
-                window.alert("활동 사진 상세 페이지는 아직 연결되지 않았습니다.");
-              }}
+              onClick={() => navigate(`/gallery/${post.id}`)}
             />
           ))}
         </div>

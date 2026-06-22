@@ -12,10 +12,11 @@ import ExamArchiveUpload from "../pages/Exam-Archive-Upload";
 import InfoSharing from "../pages/Info-Sharing";
 import Manage from "../pages/Manage";
 import Profile from "../pages/Profile";
-
-import ProtectedRoute from "../components/ProtectedRoute";
 import Notice from "../pages/Notice";
 import Gallery from "../pages/Gallery";
+import GalleryDetail from "../pages/Gallery-Detail";
+
+import ProtectedRoute from "../components/ProtectedRoute";
 
 
 export default function AppRouter() {
@@ -84,6 +85,11 @@ const protectedRoutes: AppRoute[] = [
   {
     path: "/gallery",
     element: <Gallery />,
+    protected: true,
+  },
+  {
+    path: "/gallery/:id",
+    element: <GalleryDetail />,
     protected: true,
   },
   {
