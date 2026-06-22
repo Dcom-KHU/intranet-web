@@ -1,17 +1,15 @@
+import { useNavigate } from "react-router-dom";
 import { HiUpload } from "react-icons/hi";
+
 import Card from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
-import { galleryPosts } from "../mocks/gallery.mock";
 import useAuth from "../features/auth/hooks/useAuth";
-import { useNavigate } from "react-router-dom";
-
+import { galleryPosts } from "../mocks/gallery.mock";
 
 const Gallery = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
-  
-  const isAdmin =
-    currentUser?.role === "ADMIN";
+  const isAdmin = currentUser?.role === "ADMIN";
 
   const handleUploadClick = () => {
     window.alert("활동 사진 업로드 페이지는 아직 연결되지 않았습니다.");
@@ -28,7 +26,7 @@ const Gallery = () => {
         </p>
       </section>
 
-      {isAdmin && 
+      {isAdmin && (
         <section className="mb-4 flex justify-end">
           <Button
             type="button"
@@ -40,10 +38,10 @@ const Gallery = () => {
             UPLOAD
           </Button>
         </section>
-      }
+      )}
 
       <section>
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {galleryPosts.map((post) => (
             <Card
               key={post.id}
