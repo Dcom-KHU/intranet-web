@@ -13,3 +13,11 @@ export interface GalleryPostDetail {
     date: string;
     images: string[];
 }
+
+export type GalleryComment = {
+    id: number;
+    galleryId: number;
+    authorName: string;
+    content: string;
+    createdAt: string;
+};
