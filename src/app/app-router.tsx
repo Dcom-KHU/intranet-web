@@ -6,16 +6,16 @@ import AppLayout from "./app-layout";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Home from "../pages/Home";
-import ExamArchive from "../pages/Exam-Archive/ExamArchive";
-import ExamArchiveDetail from "../pages/Exam-Archive/ExamArchiveDetail";
-import ExamArchiveUpload from "../pages/Exam-Archive/ExamArchiveUpload";
+import ExamArchive from "../pages/exam-archive/ExamArchive";
+import ExamArchiveDetail from "../pages/exam-archive/ExamArchiveDetail";
+import ExamArchiveUpload from "../pages/exam-archive/ExamArchiveUpload";
 import InfoSharing from "../pages/InfoSharing";
 import Manage from "../pages/Manage";
 import Profile from "../pages/Profile";
 import Notice from "../pages/Notice";
-import Gallery from "../pages/Gallery/Gallery";
-import GalleryDetail from "../pages/Gallery/GalleryDetail";
-import GalleryUpload from "../pages/Gallery/GalleryUpload";
+import Gallery from "../pages/gallery/Gallery";
+import GalleryDetail from "../pages/gallery/GalleryDetail";
+import GalleryUpload from "../pages/gallery/GalleryUpload";
 
 import ProtectedRoute from "../components/ProtectedRoute";
 
