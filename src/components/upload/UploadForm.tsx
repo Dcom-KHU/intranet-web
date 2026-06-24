@@ -5,6 +5,7 @@ import Underline from "@tiptap/extension-underline";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { IoAdd, IoAttach, IoClose } from "react-icons/io5";
+
 import { uploadPosts } from "../../features/upload/api/upload.api";
 import type {
   UploadMode,
@@ -55,6 +56,8 @@ export default function UploadForm({
   ]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const isGallery = mode === "gallery";
+
   const updateEntry = (id: number, patch: Partial<UploadPostDraft>) => {
     setEntries((currentEntries) =>
       currentEntries.map((entry) =>
@@ -86,6 +89,12 @@ export default function UploadForm({
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (isGallery && entries.some((entry) => entry.files.length === 0)) {
+      window.alert("활동 사진 게시글마다 사진을 최소 1개 이상 첨부해주세요.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -96,7 +105,9 @@ export default function UploadForm({
       window.alert(`${entries.length}개의 글을 업로드했습니다.`);
     } catch (error) {
       console.error("업로드 실패:", error);
-      window.alert("아직 서버 API가 연결되지 않았습니다. 콘솔에서 전송 형태를 확인하세요.");
+      window.alert(
+        "아직 서버 API가 연결되지 않았습니다. 콘솔에서 전송 형태를 확인해주세요.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -124,21 +135,25 @@ export default function UploadForm({
         </div>
 
         <div className="mt-5 flex items-center gap-4">
-          <button
-            type="button"
-            aria-label="업로드 항목 추가"
-            className="mx-auto flex h-9 w-full max-w-[500px] items-center justify-center rounded-full bg-gray-200 text-[#0F2854] transition-colors hover:bg-gray-300"
-            onClick={addEntry}
-          >
-            <IoAdd size={14} />
-          </button>
+          {!isGallery && (
+            <button
+              type="button"
+              aria-label="업로드 항목 추가"
+              className="mx-auto flex h-9 w-full max-w-[500px] items-center justify-center rounded-full bg-gray-200 text-[#0F2854] transition-colors hover:bg-gray-300"
+              onClick={addEntry}
+            >
+              <IoAdd size={14} />
+            </button>
+          )}
 
           <Button
             type="submit"
             variant="primary"
             fullWidth={false}
             disabled={isSubmitting}
-            className="h-9 min-w-[74px] rounded-full bg-[#4B7FF3] px-5 py-0 text-xs hover:bg-[#3767D7] disabled:cursor-not-allowed disabled:opacity-60"
+            className={`h-9 min-w-[74px] rounded-full bg-[#4B7FF3] px-5 py-0 text-xs hover:bg-[#3767D7] disabled:cursor-not-allowed disabled:opacity-60 ${
+              isGallery ? "ml-auto" : ""
+            }`}
           >
             {isSubmitting ? "전송 중" : "업로드"}
           </Button>
@@ -165,7 +180,9 @@ function UploadEntryCard({
 }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isExam = mode === "exam";
-  const placeholder = isExam ? "자료 설명을 입력하세요" : "사진 설명을 입력하세요";
+  const placeholder = isExam
+    ? "자료 설명을 입력하세요"
+    : "사진 설명을 입력하세요";
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -328,20 +345,26 @@ function UploadEntryCard({
         </ul>
       )}
 
+      {!isExam && entry.files.length === 0 && (
+        <p className="mb-4 text-xs text-red-400">
+          사진을 최소 1개 이상 첨부해주세요.
+        </p>
+      )}
+
       <div className="flex flex-wrap items-center gap-1 rounded-full bg-[#F4F7FB] px-2 py-1 text-[11px] text-gray-500 sm:w-fit">
         <ToolbarButton
           label="되돌리기"
           onClick={() => editor?.chain().focus().undo().run()}
           disabled={!editor?.can().undo()}
         >
-          ↶
+          Undo
         </ToolbarButton>
         <ToolbarButton
           label="다시 실행"
           onClick={() => editor?.chain().focus().redo().run()}
           disabled={!editor?.can().redo()}
         >
-          ↷
+          Redo
         </ToolbarButton>
         <select
           aria-label="글꼴"
@@ -385,7 +408,7 @@ function UploadEntryCard({
           isActive={editor?.isActive("bulletList")}
           onClick={() => editor?.chain().focus().toggleBulletList().run()}
         >
-          •
+          List
         </ToolbarButton>
         <ToolbarButton
           label="번호 목록"
@@ -399,10 +422,11 @@ function UploadEntryCard({
           isActive={editor?.isActive("link")}
           onClick={setLink}
         >
-          🔗
+          Link
         </ToolbarButton>
         <button
           type="button"
+          aria-label={isExam ? "파일 첨부" : "사진 첨부"}
           className="rounded-full px-2 py-1 hover:bg-white"
           onClick={() => fileInputRef.current?.click()}
         >
@@ -414,6 +438,7 @@ function UploadEntryCard({
         ref={fileInputRef}
         type="file"
         multiple
+        accept={isExam ? undefined : "image/*"}
         className="hidden"
         onChange={(event) => {
           onChange({ files: Array.from(event.target.files ?? []) });

@@ -15,6 +15,7 @@ import Profile from "../pages/Profile";
 import Notice from "../pages/Notice";
 import Gallery from "../pages/Gallery";
 import GalleryDetail from "../pages/GalleryDetail";
+import GalleryUpload from "../pages/GalleryUpload";
 
 import ProtectedRoute from "../components/ProtectedRoute";
 
@@ -86,6 +87,12 @@ const protectedRoutes: AppRoute[] = [
     path: "/gallery",
     element: <Gallery />,
     protected: true,
+  },
+  {
+    path: "/gallery/upload",
+    element: <GalleryUpload />,
+    protected: true,
+    adminOnly: true,
   },
   {
     path: "/gallery/:id",

@@ -11,10 +11,6 @@ const Gallery = () => {
   const { currentUser } = useAuth();
   const isAdmin = currentUser?.role === "ADMIN";
 
-  const handleUploadClick = () => {
-    window.alert("활동 사진 업로드 페이지는 아직 연결되지 않았습니다.");
-  };
-
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-20">
       <section className="mb-10">
@@ -32,7 +28,7 @@ const Gallery = () => {
             type="button"
             variant="third"
             className="flex w-40 items-center justify-center gap-2 text-xs"
-            onClick={handleUploadClick}
+            onClick={() => navigate("/gallery/upload")}
           >
             <HiUpload />
             UPLOAD
