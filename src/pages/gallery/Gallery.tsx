@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { HiUpload } from "react-icons/hi";
 
@@ -6,10 +7,27 @@ import { Button } from "../../components/ui/Button";
 import useAuth from "../../features/auth/hooks/useAuth";
 import { galleryPosts } from "../../mocks/gallery.mock";
 
+const ITEMS_PER_PAGE = 8;
+
 const Gallery = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
   const isAdmin = currentUser?.role === "ADMIN";
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(galleryPosts.length / ITEMS_PER_PAGE);
+
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedPosts = galleryPosts.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
+
+  const goToPage = (page: number) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
 
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-20">
@@ -38,7 +56,7 @@ const Gallery = () => {
 
       <section>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {galleryPosts.map((post) => (
+          {paginatedPosts.map((post) => (
             <Card
               key={post.id}
               imageUrl={post.imageUrl}
@@ -57,27 +75,39 @@ const Gallery = () => {
       >
         <button
           type="button"
-          className="flex size-5 items-center justify-center rounded border border-gray-200 text-gray-300"
+          onClick={() => goToPage(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="flex size-5 items-center justify-center rounded border border-gray-200 text-gray-500 disabled:opacity-30"
           aria-label="이전 페이지"
         >
           &lt;
         </button>
-        {[1, 2, 3].map((page) => (
-          <button
-            key={page}
-            type="button"
-            className={`flex size-5 items-center justify-center rounded border ${
-              page === 1
-                ? "border-[#4988C4] bg-[#4988C4] text-white"
-                : "border-gray-200 text-gray-300"
-            }`}
-          >
-            {page}
-          </button>
-        ))}
+
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+          const isActive = page === currentPage;
+
+          return (
+            <button
+              key={page}
+              type="button"
+              onClick={() => goToPage(page)}
+              aria-current={isActive ? "page" : undefined}
+              className={`flex size-5 items-center justify-center rounded border transition ${
+                isActive
+                  ? "border-[#4988C4] bg-[#4988C4] text-white"
+                  : "border-gray-200 text-gray-500 hover:border-gray-400"
+              }`}
+            >
+              {page}
+            </button>
+          );
+        })}
+
         <button
           type="button"
-          className="flex size-5 items-center justify-center rounded border border-gray-200 text-gray-300"
+          onClick={() => goToPage(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="flex size-5 items-center justify-center rounded border border-gray-200 text-gray-500 disabled:opacity-30"
           aria-label="다음 페이지"
         >
           &gt;
