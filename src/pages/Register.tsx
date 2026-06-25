@@ -233,7 +233,8 @@ const Register = () => {
             <ErrorMessage message={errors.phoneNumber} />
           </div>
 
-          <Button type="submit" className="w-full text-sm">회원가입</Button>
+          <p className="mb-2 text-xs text-center text-gray-400">*위 정보들을 정확하게 입력해주세요. 승인 거절의 원인이 될 수 있습니다.</p>
+          <Button type="submit" className="w-full text-sm mb-10">회원가입</Button>
         </form>
       </div>
 

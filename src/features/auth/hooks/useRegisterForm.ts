@@ -54,9 +54,20 @@ export default function useRegisterForm() {
   };
 
   const handleStudentNumberChange = (value: string) => {
-    setStudentNumber(value);
-    if (!value.trim()) setFieldError("studentNumber", "학번을 입력해주세요.");
-    else clearFieldError("studentNumber");
+    const onlyNumbers = value.replace(/\D/g, "");
+    setStudentNumber(onlyNumbers);
+
+    if (!onlyNumbers.trim()) {
+      setFieldError("studentNumber", "학번을 입력해주세요.");
+      return;
+    }
+
+    if (onlyNumbers.length !== 10) {
+      setFieldError("studentNumber", "전체 학번은 10자리 숫자여야 합니다.");
+      return;
+    }
+
+    clearFieldError("studentNumber");
   };
 
   const handleUserIDChange = (value: string) => {
