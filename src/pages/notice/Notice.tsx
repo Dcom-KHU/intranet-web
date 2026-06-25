@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { HiUpload } from "react-icons/hi";
+import { MdAttachFile } from "react-icons/md";
 
 import { Button } from "../../components/ui/Button";
 import DataTable, { type DataTableColumn } from "../../components/ui/DataTable";
@@ -63,6 +64,10 @@ const Notice = () => {
           <span className="truncate font-medium text-gray-800">
             {notice.title}
           </span>
+
+          {notice.hasAttachment && (
+            <MdAttachFile className="text-gray-400" />
+          )}
         </div>
       ),
     },

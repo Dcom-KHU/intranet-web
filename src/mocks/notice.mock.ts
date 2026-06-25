@@ -11,36 +11,42 @@ export const notice_mock: NoticeType[] = [
     title: "2026 D.COM 여름 프로젝트 팀 모집 안내",
     author: ADMIN,
     date: "2026.06.20",
+    hasAttachment: true,
   },
   {
     id: 2,
     title: "정기 세미나 발표자 신청 안내",
     author: ADMIN,
     date: "2026.06.14",
+    hasAttachment: false,
   },
   {
     id: 3,
     title: "동아리방 이용 수칙 변경 안내",
     author: ADMIN,
     date: "2026.06.05",
+    hasAttachment: false,
   },
   {
     id: 4,
     title: "신입 부원 Git 기초 워크숍 일정",
     author: ADMIN,
     date: "2026.05.29",
+    hasAttachment: true,
   },
   {
     id: 5,
     title: "기말고사 기간 활동 일정 조정 안내",
     author: ADMIN,
     date: "2026.05.18",
+    hasAttachment: true,
   },
   {
     id: 6,
     title: "홈페이지 개선 의견 수렴",
     author: ADMIN,
     date: "2026.05.03",
+    hasAttachment: false,
   },
 ];
 
