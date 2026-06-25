@@ -14,7 +14,7 @@ import Manage from "../pages/manage/Manage";
 import ManagePendingUsers from "../pages/manage/ManagePendingUsers";
 import ManageUsers from "../pages/manage/ManageUsers";
 import Profile from "../pages/Profile";
-import Notice from "../pages/Notice";
+import Notice from "../pages/notice/Notice";
 import Gallery from "../pages/gallery/Gallery";
 import GalleryDetail from "../pages/gallery/GalleryDetail";
 import GalleryUpload from "../pages/gallery/GalleryUpload";
