@@ -10,8 +10,17 @@ const Manage = () => {
   if (loading) return <Loading />;
 
   return (
-    <div className="px-4 py-8 sm:px-6 lg:px-20">      
-      <div className="flex flex-col lg:flex-row gap-6 bg-[#F8F9FC] p-10 rounded-2xl border border-[#E0E0E0]">
+    <div className="px-4 py-8 sm:px-6 lg:px-20">   
+
+      <section className="mb-10">
+        <h1 className="text-xl font-bold text-[#4988C4]">D.COM 관리자</h1>
+        <p className="mt-2 text-sm text-gray-500">
+          D.COM 회원과 게시글 관리 대시보드 
+        </p>
+      </section>
+
+
+      <div className="flex flex-col lg:flex-row gap-6 bg-[#F8F9FC] p-10 rounded-2xl">
         {/* 왼쪽 */}
         <div className="flex-1 flex flex-col gap-4 justify-between">
 
