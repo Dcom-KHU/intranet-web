@@ -1,19 +1,48 @@
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import { HiUpload } from "react-icons/hi";
+
+import { Button } from "../../components/ui/Button";
 import DataTable, { type DataTableColumn } from "../../components/ui/DataTable";
+import SearchBar from "../../components/ui/SearchBar";
+import useAuth from "../../features/auth/hooks/useAuth";
 import { useNotices } from "../../features/notice/hooks/useNotices";
 import type { NoticeType } from "../../features/notice/types/notice.type";
 
 const NOTICE_TEXT = {
-  number: "번호",
-  title: "제목",
-  author: "작성자",
-  date: "작성일",
-  empty: "등록된 공지사항이 없습니다.",
+  pageTitle: "\uACF5\uC9C0\uC0AC\uD56D",
+  description:
+    "D.COM \uB0B4\uC758 \uACF5\uC9C0\uC0AC\uD56D\uC744 \uD655\uC778\uD574\uBCF4\uC138\uC694.",
+  number: "\uBC88\uD638",
+  title: "\uC81C\uBAA9",
+  author: "\uC791\uC131\uC790",
+  date: "\uC791\uC131\uC77C",
+  empty: "\uB4F1\uB85D\uB41C \uACF5\uC9C0\uC0AC\uD56D\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.",
+  searchPlaceholder: "\uAC80\uC0C9\uC5B4\uB97C \uC785\uB825\uD558\uC138\uC694",
 };
 
 const Notice = () => {
   const navigate = useNavigate();
   const { data: notices } = useNotices();
+  const { currentUser } = useAuth();
+  const isAdmin = currentUser?.role === "ADMIN";
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [appliedKeyword, setAppliedKeyword] = useState("");
+
+  const filteredNotices = useMemo(() => {
+    const keyword = appliedKeyword.trim().toLowerCase();
+
+    if (!keyword) {
+      return notices ?? [];
+    }
+
+    return (notices ?? []).filter(
+      (notice) =>
+        notice.title.toLowerCase().includes(keyword) ||
+        notice.author.toLowerCase().includes(keyword),
+    );
+  }, [notices, appliedKeyword]);
 
   const columns: DataTableColumn<NoticeType>[] = [
     {
@@ -56,16 +85,38 @@ const Notice = () => {
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-20">
       <section className="mb-10">
-        <h1 className="text-xl font-bold text-[#4988C4]">공지사항</h1>
+        <h1 className="text-xl font-bold text-[#4988C4]">
+          {NOTICE_TEXT.pageTitle}
+        </h1>
         <p className="mt-2 text-sm text-gray-500">
-          D.COM 내의 공지사항을 확인해보세요.
+          {NOTICE_TEXT.description}
         </p>
+      </section>
+
+      <section className="mb-12 flex items-center justify-between gap-4">
+        <SearchBar
+          value={searchKeyword}
+          onChange={setSearchKeyword}
+          onSearch={() => setAppliedKeyword(searchKeyword)}
+          placeholder={NOTICE_TEXT.searchPlaceholder}
+        />
+
+        {isAdmin && (
+          <Button
+            variant="third"
+            className="flex w-40 items-center justify-center gap-2 text-sm"
+            onClick={() => navigate("/exam-archive/upload")}
+          >
+            <HiUpload />
+            UPLOAD
+          </Button>
+        )}
       </section>
 
       <section>
         <DataTable
           columns={columns}
-          data={notices ?? []}
+          data={filteredNotices}
           rowKey={(notice) => notice.id}
           emptyMessage={NOTICE_TEXT.empty}
           onRowClick={(notice) => navigate(`/notice/${notice.id}`)}

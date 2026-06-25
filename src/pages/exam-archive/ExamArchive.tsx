@@ -2,11 +2,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useExamArchives } from "../../features/exam-archive/hooks/useExamArchives";
 import type { ExamArchiveListType } from "../../features/exam-archive/types/exam-archive.type";
-import Input from "../../components/ui/Input";
-import { IoSearchOutline } from "react-icons/io5";
 import { HiUpload } from "react-icons/hi";
 import { Button } from "../../components/ui/Button";
 import DataTable, { type DataTableColumn } from "../../components/ui/DataTable";
+import SearchBar from "../../components/ui/SearchBar";
 
 const SEARCH_LOADING_TIME = 250;
 
@@ -35,7 +34,7 @@ const ExamArchive = () => {
   const columns: DataTableColumn<ExamArchiveListType>[] = [
     {
       key: "subject",
-      header: "과목명",
+      header: "\uACFC\uBAA9\uBA85",
       width: "w-[50%]",
       render: (item) => (
         <div className="flex min-w-0 items-center gap-2 text-sm">
@@ -46,14 +45,14 @@ const ExamArchive = () => {
     },
     {
       key: "professor",
-      header: "교수명",
+      header: "\uAD50\uC218\uBA85",
       width: "w-[25%]",
       cellClassName: "truncate text-sm text-gray-700",
       render: (item) => item.professor,
     },
     {
       key: "date",
-      header: "최근 수정일",
+      header: "\uCD5C\uADFC \uC218\uC815\uC77C",
       width: "w-[25%]",
       cellClassName: "truncate text-sm text-gray-500",
       render: (item) => item.date,
@@ -83,35 +82,21 @@ const ExamArchive = () => {
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-20">
       <section className="mb-10">
-        <h1 className="text-xl font-bold text-[#4988C4]">족보 아카이브</h1>
+        <h1 className="text-xl font-bold text-[#4988C4]">
+          {"\uC871\uBCF4 \uC544\uCE74\uC774\uBE0C"}
+        </h1>
         <p className="mt-2 text-sm text-gray-500">
-          선배들이 남긴 귀중한 전공 자료를 확인해보세요.
+          {"\uC120\uBC30\uB4E4\uC774 \uB0A8\uAE34 \uADC0\uC911\uD55C \uC804\uACF5 \uC790\uB8CC\uB97C \uD655\uC778\uD574\uBCF4\uC138\uC694."}
         </p>
       </section>
 
       <section className="mb-12 flex items-center justify-between gap-4">
-        <form
-          className="relative w-full max-w-[450px]"
-          onSubmit={(event) => {
-            event.preventDefault();
-            handleSearch();
-          }}
-        >
-          <Input
-            value={searchKeyword}
-            onChange={(event) => setSearchKeyword(event.target.value)}
-            placeholder="과목명 또는 교수명을 입력하세요"
-            className="pr-10 text-xs"
-          />
-
-          <button
-            type="submit"
-            aria-label="검색"
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#4988C4]"
-          >
-            <IoSearchOutline size={18} />
-          </button>
-        </form>
+        <SearchBar
+          value={searchKeyword}
+          onChange={setSearchKeyword}
+          onSearch={handleSearch}
+          placeholder="과목명 또는 교수명을 입력하세요"
+        />
 
         <Button
           variant="third"
@@ -124,15 +109,17 @@ const ExamArchive = () => {
       </section>
 
       <section>
-        <h2 className="mb-4 text-lg font-semibold">최근 업로드된 족보</h2>
+        <h2 className="mb-4 text-lg font-semibold">
+          {"\uCD5C\uADFC \uC5C5\uB85C\uB4DC\uB41C \uC871\uBCF4"}
+        </h2>
 
         <DataTable
           columns={columns}
           data={filteredArchives}
           rowKey={(item) => item.id}
           isLoading={isSearching}
-          loadingMessage="검색 중..."
-          emptyMessage="검색 결과가 없습니다."
+          loadingMessage={"\uAC80\uC0C9 \uC911..."}
+          emptyMessage={"\uAC80\uC0C9 \uACB0\uACFC\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4."}
           onRowClick={(item) => navigate(`/exam-archive/${item.id}`)}
         />
 
