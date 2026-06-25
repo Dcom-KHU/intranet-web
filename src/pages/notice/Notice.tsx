@@ -68,7 +68,7 @@ const Notice = () => {
           data={notices ?? []}
           rowKey={(notice) => notice.id}
           emptyMessage={NOTICE_TEXT.empty}
-          onRowClick={() => navigate('/notice/:id')}
+          onRowClick={(notice) => navigate(`/notice/${notice.id}`)}
         />
       </section>
     </div>

@@ -20,6 +20,7 @@ import GalleryDetail from "../pages/gallery/GalleryDetail";
 import GalleryUpload from "../pages/gallery/GalleryUpload";
 
 import ProtectedRoute from "../components/ProtectedRoute";
+import NoticeDetail from "../pages/notice/NoticeDetail";
 
 
 export default function AppRouter() {
@@ -83,6 +84,11 @@ const protectedRoutes: AppRoute[] = [
   {
     path: "/notice",
     element: <Notice />,
+    protected: true,
+  },
+  {
+    path: "/notice/:id",
+    element: <NoticeDetail />,
     protected: true,
   },
   {
