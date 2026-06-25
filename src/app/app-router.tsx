@@ -10,7 +10,9 @@ import ExamArchive from "../pages/exam-archive/ExamArchive";
 import ExamArchiveDetail from "../pages/exam-archive/ExamArchiveDetail";
 import ExamArchiveUpload from "../pages/exam-archive/ExamArchiveUpload";
 import InfoSharing from "../pages/InfoSharing";
-import Manage from "../pages/Manage";
+import Manage from "../pages/manage/Manage";
+import ManagePendingUsers from "../pages/manage/ManagePendingUsers";
+import ManageUsers from "../pages/manage/ManageUsers";
 import Profile from "../pages/Profile";
 import Notice from "../pages/Notice";
 import Gallery from "../pages/gallery/Gallery";
@@ -102,6 +104,18 @@ const protectedRoutes: AppRoute[] = [
   {
     path: "/manage",
     element: <Manage />,
+    protected: true,
+    adminOnly: true,
+  },
+  {
+    path: "/manage/pending",
+    element: <ManagePendingUsers />,
+    protected: true,
+    adminOnly: true,
+  },
+  {
+    path: "/manage/users",
+    element: <ManageUsers />,
     protected: true,
     adminOnly: true,
   },

@@ -9,4 +9,7 @@ export type User = {
   image: string;
   password: string;
   role: "USER" | "ADMIN";
+  approvalStatus?: "PENDING" | "APPROVED" | "REJECTED";
+  requestedAt?: string;
+  lastLoginAt?: string;
 };
