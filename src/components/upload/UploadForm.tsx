@@ -13,6 +13,35 @@ import type {
 } from "../../features/upload/types/upload.type";
 import { Button } from "../ui/Button";
 
+
+const modeConfig = {
+  exam: {
+    requireTitle: false,
+    requireDescription: true,
+    requireImage: false,
+    showExamFields: true,
+    showGalleryFields: false,
+    allowMultiplePosts: true,
+  },
+  gallery: {
+    requireTitle: true,
+    requireDescription: true,
+    requireImage: true,
+    showExamFields: false,
+    showGalleryFields: true,
+    allowMultiplePosts: false,
+  },
+  notice: {
+    requireTitle: true,
+    requireDescription: true,
+    requireImage: false,
+    showExamFields: false,
+    showGalleryFields: false,
+    allowMultiplePosts: false,
+  },
+} as const;
+
+
 type UploadFormProps = {
   mode: UploadMode;
   title: string;
@@ -56,7 +85,7 @@ export default function UploadForm({
   ]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const isGallery = mode === "gallery";
+  const config = modeConfig[mode];
 
   const updateEntry = (id: number, patch: Partial<UploadPostDraft>) => {
     setEntries((currentEntries) =>
@@ -89,28 +118,55 @@ export default function UploadForm({
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+      if (
+        config.requireTitle &&
+        entries.some((entry) => !entry.title.trim())
+      ) {
+        window.alert("제목을 입력해주세요.");
+        return;
+      }
 
-    if (isGallery && entries.some((entry) => entry.files.length === 0)) {
-      window.alert("활동 사진 게시글마다 사진을 최소 1개 이상 첨부해주세요.");
-      return;
-    }
+      if (
+        config.requireDescription &&
+        entries.some((entry) => {
+          const text = entry.descriptionHtml
+            .replace(/<[^>]*>/g, "")
+            .replace(/&nbsp;/g, "")
+            .trim();
 
-    setIsSubmitting(true);
+          return !text;
+        })
+      ) {
+        window.alert("설명을 입력해주세요.");
+        return;
+      }
 
-    try {
-      await uploadPosts({
-        mode,
-        posts: entries.map(({ id: _id, ...entry }) => entry),
-      });
-      window.alert(`${entries.length}개의 글을 업로드했습니다.`);
-    } catch (error) {
-      console.error("업로드 실패:", error);
-      window.alert(
-        "아직 서버 API가 연결되지 않았습니다. 콘솔에서 전송 형태를 확인해주세요.",
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
+      if (
+        config.requireImage &&
+        entries.some((entry) => entry.files.length === 0)
+      ) {
+        window.alert("사진을 최소 1개 이상 첨부해주세요.");
+        return;
+      }
+
+      setIsSubmitting(true);
+
+      try {
+        await uploadPosts({
+          mode,
+          posts: entries.map(({ id: _id, ...entry }) => entry),
+        });
+
+        window.alert(`${entries.length}개의 글을 업로드했습니다.`);
+      } catch (error) {
+        console.error("업로드 실패:", error);
+
+        window.alert(
+          "아직 서버 API가 연결되지 않았습니다. 콘솔에서 전송 형태를 확인해주세요.",
+        );
+      } finally {
+        setIsSubmitting(false);
+      }
   };
 
   return (
@@ -135,7 +191,7 @@ export default function UploadForm({
         </div>
 
         <div className="mt-5 flex items-center gap-4">
-          {!isGallery && (
+          {config.allowMultiplePosts && (
             <button
               type="button"
               aria-label="업로드 항목 추가"
@@ -152,7 +208,7 @@ export default function UploadForm({
             fullWidth={false}
             disabled={isSubmitting}
             className={`h-9 min-w-[74px] rounded-full bg-[#4B7FF3] px-5 py-0 text-xs hover:bg-[#3767D7] disabled:cursor-not-allowed disabled:opacity-60 ${
-              isGallery ? "ml-auto" : ""
+              !config.allowMultiplePosts ? "ml-auto" : ""
             }`}
           >
             {isSubmitting ? "전송 중" : "업로드"}
@@ -179,10 +235,10 @@ function UploadEntryCard({
   onRemove: () => void;
 }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const isExam = mode === "exam";
-  const placeholder = isExam
+  const config = modeConfig[mode];
+  const placeholder = config.showExamFields
     ? "자료 설명을 입력하세요"
-    : "사진 설명을 입력하세요";
+    : "내용을 입력하세요";
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -250,7 +306,7 @@ function UploadEntryCard({
         <IoClose size={16} />
       </button>
 
-      {isExam ? (
+      {config.showExamFields ? (
         <div className="grid gap-x-7 gap-y-5 sm:grid-cols-2">
           <Field
             label="과목명"
@@ -281,7 +337,7 @@ function UploadEntryCard({
             onChange={(value) => onChange({ examType: value })}
           />
         </div>
-      ) : (
+      ) : config.showGalleryFields ? (
         <div className="grid gap-x-7 gap-y-5 sm:grid-cols-2">
           <div className="sm:col-span-2">
             <Field
@@ -306,6 +362,16 @@ function UploadEntryCard({
             placeholder="위치"
             value={entry.location}
             onChange={(value) => onChange({ location: value })}
+          />
+        </div>
+      ) : (
+        <div>
+          <Field
+            label="제목"
+            name={`posts.${index}.title`}
+            placeholder="제목"
+            value={entry.title}
+            onChange={(value) => onChange({ title: value })}
           />
         </div>
       )}
@@ -345,7 +411,7 @@ function UploadEntryCard({
         </ul>
       )}
 
-      {!isExam && entry.files.length === 0 && (
+      {config.requireImage && entry.files.length === 0 && (
         <p className="mb-4 text-xs text-red-400">
           사진을 최소 1개 이상 첨부해주세요.
         </p>
@@ -426,7 +492,7 @@ function UploadEntryCard({
         </ToolbarButton>
         <button
           type="button"
-          aria-label={isExam ? "파일 첨부" : "사진 첨부"}
+          aria-label={config.showExamFields ? "파일 첨부" : "사진 첨부"}
           className="rounded-full px-2 py-1 hover:bg-white"
           onClick={() => fileInputRef.current?.click()}
         >
@@ -438,7 +504,7 @@ function UploadEntryCard({
         ref={fileInputRef}
         type="file"
         multiple
-        accept={isExam ? undefined : "image/*"}
+        accept={config.showExamFields ? undefined : "image/*"}
         className="hidden"
         onChange={(event) => {
           onChange({ files: Array.from(event.target.files ?? []) });
