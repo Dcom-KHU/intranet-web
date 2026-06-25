@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useExamArchives } from "../../features/exam-archive/hooks/useExamArchives";
+import type { ExamArchiveListType } from "../../features/exam-archive/types/exam-archive.type";
 import Input from "../../components/ui/Input";
 import { IoSearchOutline } from "react-icons/io5";
 import { HiUpload } from "react-icons/hi";
 import { Button } from "../../components/ui/Button";
+import DataTable, { type DataTableColumn } from "../../components/ui/DataTable";
 
 const SEARCH_LOADING_TIME = 250;
 
@@ -29,6 +31,34 @@ const ExamArchive = () => {
         item.professor.toLowerCase().includes(keyword),
     );
   }, [data, appliedKeyword]);
+
+  const columns: DataTableColumn<ExamArchiveListType>[] = [
+    {
+      key: "subject",
+      header: "과목명",
+      width: "w-[50%]",
+      render: (item) => (
+        <div className="flex min-w-0 items-center gap-2 text-sm">
+          <span className="truncate">{item.subject}</span>
+          <span className="shrink-0 text-[#4988C4]">[{item.count}]</span>
+        </div>
+      ),
+    },
+    {
+      key: "professor",
+      header: "교수명",
+      width: "w-[25%]",
+      cellClassName: "truncate text-sm text-gray-700",
+      render: (item) => item.professor,
+    },
+    {
+      key: "date",
+      header: "최근 수정일",
+      width: "w-[25%]",
+      cellClassName: "truncate text-sm text-gray-500",
+      render: (item) => item.date,
+    },
+  ];
 
   const handleSearch = () => {
     if (searchTimerRef.current) {
@@ -96,78 +126,16 @@ const ExamArchive = () => {
       <section>
         <h2 className="mb-4 text-lg font-semibold">최근 업로드된 족보</h2>
 
-        <div className="overflow-hidden">
-          <table className="w-full table-fixed">
-            <colgroup>
-              <col className="w-[50%]" />
-              <col className="w-[25%]" />
-              <col className="w-[25%]" />
-            </colgroup>
+        <DataTable
+          columns={columns}
+          data={filteredArchives}
+          rowKey={(item) => item.id}
+          isLoading={isSearching}
+          loadingMessage="검색 중..."
+          emptyMessage="검색 결과가 없습니다."
+          onRowClick={(item) => navigate(`/exam-archive/${item.id}`)}
+        />
 
-            <thead>
-              <tr className="border-b border-t-2 border-black">
-                <th className="px-5 py-4 text-center text-sm font-medium">
-                  과목명
-                </th>
-                <th className="px-5 py-4 text-center text-sm font-medium">
-                  교수명
-                </th>
-                <th className="px-5 py-4 text-center text-sm font-medium">
-                  최근 수정일
-                </th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {isSearching ? (
-                <tr>
-                  <td colSpan={3} className="px-5 py-16">
-                    <div className="flex flex-col items-center justify-center gap-3 text-sm text-gray-500">
-                      <div className="size-8 animate-spin rounded-full border-4 border-gray-200 border-t-[#4988C4]" />
-                      검색 중...
-                    </div>
-                  </td>
-                </tr>
-              ) : (
-                filteredArchives.map((item) => (
-                  <tr
-                    key={item.id}
-                    className="cursor-pointer border-b text-center hover:bg-gray-50"
-                    onClick={() => navigate(`/exam-archive/${item.id}`)}
-                  >
-                    <td className="px-5 py-5">
-                      <div className="flex min-w-0 items-center gap-2 text-sm">
-                        <span className="truncate">{item.subject}</span>
-                        <span className="shrink-0 text-[#4988C4]">
-                          [{item.count}]
-                        </span>
-                      </div>
-                    </td>
-
-                    <td className="truncate px-5 py-5 text-sm text-gray-700">
-                      {item.professor}
-                    </td>
-
-                    <td className="truncate px-5 py-5 text-sm text-gray-500">
-                      {item.date}
-                    </td>
-                  </tr>
-                ))
-              )}
-
-              {!isSearching && filteredArchives.length === 0 && (
-                <tr>
-                  <td
-                    colSpan={3}
-                    className="px-5 py-12 text-center text-sm text-gray-500"
-                  >
-                    검색 결과가 없습니다.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
       </section>
     </div>
   );
