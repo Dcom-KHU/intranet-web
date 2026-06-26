@@ -60,7 +60,7 @@ export const exam_mock: ExamArchiveType[] = [
     semester: "2024-1",
     author: {
       studentNumber: "20230001",
-      userID: "hasungjun",
+      name: "하성준",
     },
     date: "2026-05-25",
     description: "",
@@ -78,7 +78,7 @@ export const exam_mock: ExamArchiveType[] = [
     semester: "2023",
     author: {
       studentNumber: "20209999",
-      userID: "user",
+      name: "곽민서",
     },
     date: "2026-04-25",
     description:
@@ -92,7 +92,7 @@ export const exam_mock: ExamArchiveType[] = [
     semester: "2022",
     author: {
       studentNumber: "20210012",
-      userID: "bluebird",
+      name: "신정안",
     },
     date: "2025-05-05",
     description: "",
@@ -105,7 +105,7 @@ export const exam_mock: ExamArchiveType[] = [
     semester: "2025-1",
     author: {
       studentNumber: "20220014",
-      userID: "daeun",
+      name: "최진영",
     },
     date: "2026-05-20",
     description: "자료구조 중간고사 기출 및 정답 정리.",
@@ -118,7 +118,7 @@ export const exam_mock: ExamArchiveType[] = [
     semester: "2024-2",
     author: {
       studentNumber: "20210032",
-      userID: "sujilee",
+      name: "최진영",
     },
     date: "2026-05-15",
     description: "자료구조 기말고사 기출문제.",
@@ -131,7 +131,7 @@ export const exam_mock: ExamArchiveType[] = [
     semester: "퀴즈 및 과제",
     author: {
       studentNumber: "20220027",
-      userID: "yujin",
+      name: "최진영",
     },
     date: "2026-05-10",
     description: "자료구조 수업 중 진행된 퀴즈와 과제 모음입니다.",
@@ -144,7 +144,7 @@ export const exam_mock: ExamArchiveType[] = [
     semester: "2025-1",
     author: {
       studentNumber: "20230018",
-      userID: "minji",
+      name: "이수민",
     },
     date: "2026-05-12",
     description: "ERD, 정규화 중심의 중간고사 기출.",
@@ -157,7 +157,7 @@ export const exam_mock: ExamArchiveType[] = [
     semester: "2025-1",
     author: {
       studentNumber: "20220045",
-      userID: "seoyun",
+      name: "이수민",
     },
     date: "2026-05-08",
     description: "트랜잭션, 인덱스 관련 문제 포함.",
@@ -170,7 +170,7 @@ export const exam_mock: ExamArchiveType[] = [
     semester: "2025-1",
     author: {
       studentNumber: "20210009",
-      userID: "ayoon",
+      name: "곽민서",
     },
     date: "2026-05-03",
     description: "SQL, 정규화, 인덱스 중심 문제.",
@@ -183,7 +183,7 @@ export const exam_mock: ExamArchiveType[] = [
     semester: "2024-2",
     author: {
       studentNumber: "20200021",
-      userID: "jimin",
+      name: "곽민서",
     },
     date: "2026-04-28",
     description: "SQL, 트랜잭션, 락 관련 문제 포함.",
@@ -196,7 +196,7 @@ export const exam_mock: ExamArchiveType[] = [
     semester: "2025-1",
     author: {
       studentNumber: "20230007",
-      userID: "harin",
+      name: "표지훈",
     },
     date: "2026-04-20",
     description: "네트워크 보안 및 응용 계층 중심 문제.",
@@ -209,7 +209,7 @@ export const exam_mock: ExamArchiveType[] = [
     semester: "중간고사 모음",
     author: {
       studentNumber: "20220003",
-      userID: "yerin",
+      name: "표지훈",
     },
     date: "2026-04-18",
     description: "최근 3년간 중간고사 기출 모음.",
@@ -222,7 +222,7 @@ export const exam_mock: ExamArchiveType[] = [
     semester: "2024-2",
     author: {
       studentNumber: "20210041",
-      userID: "hyunwoo",
+      name: "표지훈",
     },
     date: "2026-04-04",
     description: "플립플롭, FSM 중심의 기말고사 자료.",

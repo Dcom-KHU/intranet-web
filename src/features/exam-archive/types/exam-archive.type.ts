@@ -1,6 +1,6 @@
 export interface ExamArchiveAuthorType {
     studentNumber: string;
-    userID: string;
+    name: string;
 }
 
 export interface ExamArchiveType {
