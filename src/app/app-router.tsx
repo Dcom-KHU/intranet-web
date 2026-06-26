@@ -22,6 +22,7 @@ import GalleryUpload from "../pages/gallery/GalleryUpload";
 import ProtectedRoute from "../components/ProtectedRoute";
 import NoticeDetail from "../pages/notice/NoticeDetail";
 import NoticeUpload from "../pages/notice/NoticeUpload";
+import ForgetPassword from "../pages/ForgetPassword";
 
 
 export default function AppRouter() {
@@ -54,6 +55,10 @@ const publicRoutes: AppRoute[] = [
     path: "/register",
     element: <Register />,
   },
+  {
+    path: "/forgot-password",
+    element: <ForgetPassword />,
+  }
 ];
 
 const protectedRoutes: AppRoute[] = [

@@ -5,6 +5,57 @@ import type { AuthUser } from "../types/auth-user.type";
 const USER_STORAGE_KEY = "user";
 const TOKEN_STORAGE_KEY = "token";
 const EMAIL_CODE_KEY = "email_code";
+const PASSWORD_RESET_KEY = "password_reset";
+const PASSWORD_RESET_REQUIRED_KEY = "password_reset_required";
+
+export const PASSWORD_RESET_RESEND_COOLDOWN_MS = 60 * 1000;
+export const PASSWORD_RESET_TTL_MS = 10 * 60 * 1000;
+
+type PasswordResetRequest = {
+  email: string;
+  userID: string;
+  temporaryPassword: string;
+  sentAt: number;
+  expiresAt: number;
+};
+
+export type PasswordResetStatus = Pick<
+  PasswordResetRequest,
+  "email" | "sentAt" | "expiresAt"
+>;
+
+export type PasswordResetRequestResult =
+  | { status: "sent"; reset: PasswordResetStatus }
+  | { status: "userNotFound" }
+  | { status: "resendTooSoon"; reset: PasswordResetStatus };
+
+const getPasswordResetRequest = (): PasswordResetRequest | null => {
+  const saved = localStorage.getItem(PASSWORD_RESET_KEY);
+
+  if (!saved) return null;
+
+  try {
+    const reset = JSON.parse(saved) as PasswordResetRequest;
+
+    if (Date.now() > reset.expiresAt) {
+      localStorage.removeItem(PASSWORD_RESET_KEY);
+      return null;
+    }
+
+    return reset;
+  } catch {
+    localStorage.removeItem(PASSWORD_RESET_KEY);
+    return null;
+  }
+};
+
+const toPasswordResetStatus = (
+  reset: PasswordResetRequest
+): PasswordResetStatus => ({
+  email: reset.email,
+  sentAt: reset.sentAt,
+  expiresAt: reset.expiresAt,
+});
 
 // -----------------------------
 //   Validation Utils (EXPORT)
@@ -114,6 +165,50 @@ export const verifyEmailCode = (
   return isValid;
 };
 
+export const requestTemporaryPassword = (
+  email: string
+): PasswordResetRequestResult => {
+  const users: User[] = [
+    ...mockUsers,
+    ...JSON.parse(localStorage.getItem("users") || "[]"),
+  ];
+  const user = users.find((candidate) => candidate.email === email);
+
+  if (!user) return { status: "userNotFound" };
+
+  const existingRequest = getPasswordResetRequest();
+  const now = Date.now();
+
+  if (
+    existingRequest?.email === email &&
+    now - existingRequest.sentAt < PASSWORD_RESET_RESEND_COOLDOWN_MS
+  ) {
+    return {
+      status: "resendTooSoon",
+      reset: toPasswordResetStatus(existingRequest),
+    };
+  }
+
+  const temporaryPassword = `Temp${Math.floor(
+    100000 + Math.random() * 900000
+  )}`;
+  const reset: PasswordResetRequest = {
+    email,
+    userID: user.userID,
+    temporaryPassword,
+    sentAt: now,
+    expiresAt: now + PASSWORD_RESET_TTL_MS,
+  };
+
+  localStorage.setItem(PASSWORD_RESET_KEY, JSON.stringify(reset));
+  console.log("Temporary password (mock):", temporaryPassword);
+
+  return { status: "sent", reset: toPasswordResetStatus(reset) };
+};
+
+export const isPasswordResetRequired = () =>
+  !!localStorage.getItem(PASSWORD_RESET_REQUIRED_KEY);
+
 // -----------------------------
 //   회원가입
 // -----------------------------
@@ -158,13 +253,14 @@ export const login = (
 
   const users = [...mockUsers, ...localUsers];
 
-  const user = users.find(
-    (u) =>
-      u.userID === userID &&
-      u.password === pw
-  );
+  const user = users.find((u) => u.userID === userID);
+  const resetRequest = getPasswordResetRequest();
+  const isTemporaryPassword =
+    !!resetRequest &&
+    resetRequest.userID === userID &&
+    resetRequest.temporaryPassword === pw;
 
-  if (!user) return false;
+  if (!user || (user.password !== pw && !isTemporaryPassword)) return false;
 
   localStorage.setItem(
     TOKEN_STORAGE_KEY,
@@ -172,6 +268,12 @@ export const login = (
   );
 
   saveUser(excludePassword(user));
+
+  if (isTemporaryPassword) {
+    localStorage.setItem(PASSWORD_RESET_REQUIRED_KEY, userID);
+  } else {
+    localStorage.removeItem(PASSWORD_RESET_REQUIRED_KEY);
+  }
 
   return true;
 };
