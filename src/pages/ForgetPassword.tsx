@@ -57,6 +57,7 @@ export default function ForgetPassword() {
 
     const result = requestTemporaryPassword(email);
 
+    // 이미 가입된 이메일인지 확인
     if (result.status === "userNotFound") {
       setError("가입된 이메일을 찾을 수 없습니다.");
       return;
@@ -117,7 +118,7 @@ export default function ForgetPassword() {
             {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
           </div>
 
-          <Button type="submit">임시 비밀번호 전송</Button>
+          <Button variant="secondary" type="submit" className="w-full">임시 비밀번호 전송</Button>
         </form>
 
         {resetStatus && (

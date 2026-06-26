@@ -185,6 +185,7 @@ export default function useRegisterForm() {
       phoneNumber,
       image: "",
       role: "USER",
+      approvalStatus: "PENDING",
     };
 
     const success = register(userInput);

@@ -29,6 +29,13 @@ export type PasswordResetRequestResult =
   | { status: "userNotFound" }
   | { status: "resendTooSoon"; reset: PasswordResetStatus };
 
+export type LoginResult =
+  | { success: true }
+  | {
+      success: false;
+      reason: "invalidCredentials" | "pendingApproval" | "rejected";
+    };
+
 const getPasswordResetRequest = (): PasswordResetRequest | null => {
   const saved = localStorage.getItem(PASSWORD_RESET_KEY);
 
@@ -246,7 +253,7 @@ export const register = (user: User) => {
 export const login = (
   userID: string,
   pw: string
-) => {
+): LoginResult => {
   const localUsers: User[] = JSON.parse(
     localStorage.getItem("users") || "[]"
   );
@@ -260,7 +267,17 @@ export const login = (
     resetRequest.userID === userID &&
     resetRequest.temporaryPassword === pw;
 
-  if (!user || (user.password !== pw && !isTemporaryPassword)) return false;
+  if (!user || (user.password !== pw && !isTemporaryPassword)) {
+    return { success: false, reason: "invalidCredentials" };
+  }
+
+  if (user.approvalStatus === "PENDING") {
+    return { success: false, reason: "pendingApproval" };
+  }
+
+  if (user.approvalStatus === "REJECTED") {
+    return { success: false, reason: "rejected" };
+  }
 
   localStorage.setItem(
     TOKEN_STORAGE_KEY,
@@ -275,7 +292,7 @@ export const login = (
     localStorage.removeItem(PASSWORD_RESET_REQUIRED_KEY);
   }
 
-  return true;
+  return { success: true };
 };
 
 // -----------------------------
