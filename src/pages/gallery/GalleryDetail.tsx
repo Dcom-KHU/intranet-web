@@ -14,31 +14,33 @@ import Loading from "../../components/Loading";
 import { Button } from "../../components/ui/Button";
 import useAuth from "../../features/auth/hooks/useAuth";
 import { useGalleryDetail } from "../../features/gallery/hooks/useGalleryDetail";
-import { galleryComments } from "../../mocks/gallery-comments.mock";
-import { type GalleryComment } from "../../features/gallery/types/gallery-post.type";
+import { useComments } from "../../features/comment/hooks/useComments";
 import { AnimatePresence, motion } from "framer-motion";
+import UserDisplayName from "../../components/ui/UserDisplay";
 
 const GalleryDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const galleryId = Number(id);
+  const postId = Number(id);
   const { currentUser } = useAuth();
-  const { data, loading } = useGalleryDetail(galleryId);
+  const { data: gallery, loading } = useGalleryDetail(postId);
+  const { data: comments } = useComments(postId);
+
   const [activeIndex, setActiveIndex] = useState(0);
-  const [comments, setComments] = useState<GalleryComment[]>([]);
+  // 새 댓글 작성용 
+  const [comment, setComment] = useState(comments);
   const [commentText, setCommentText] = useState("");
   const [isCommenting, setIsCommenting] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // comments가 변경 시 다시 렌더링
+  useEffect(() => {
+    setComment(comments);
+  }, [comments]);
+
   const isAdmin = currentUser?.role === "ADMIN";
   const prevRef = useRef<HTMLButtonElement | null>(null);
   const nextRef = useRef<HTMLButtonElement | null>(null);
-
-  useEffect(() => {
-    setComments(
-      galleryComments.filter((comment) => comment.galleryId === galleryId),
-    );
-  }, [galleryId]);
 
   const handleCommentSubmit = async (
     event?: FormEvent<HTMLFormElement>
@@ -57,12 +59,15 @@ const GalleryDetail = () => {
       // 서버 전송 시늉
       await new Promise((resolve) => setTimeout(resolve, 1200));
 
-      setComments((currentComments) => [
+      setComment((currentComments) => [
         ...currentComments,
         {
           id: Date.now(),
-          galleryId,
-          authorName: currentUser?.name ?? "익명",
+          postId,
+          author: {
+            studentNumber: currentUser?.studentNumber ?? "",
+            name: currentUser?.name ?? "익명",
+          },
           content,
           createdAt: "방금 전",
         },
@@ -76,7 +81,7 @@ const GalleryDetail = () => {
   };
 
   const handleDeleteComment = (commentId: number) => {
-    setComments((currentComments) =>
+    setComment((currentComments) =>
       currentComments.filter((comment) => comment.id !== commentId),
     );
   };
@@ -92,7 +97,7 @@ const GalleryDetail = () => {
 
   if (loading) return <Loading />;
 
-  if (!data) {
+  if (!gallery) {
     return (
       <div className="px-4 py-8 sm:px-6 lg:px-20">
         <button
@@ -121,9 +126,9 @@ const GalleryDetail = () => {
 
       <Card
         variant="detail"
-        title={data.title}
-        date={data.date}
-        description={data.description}
+        title={gallery.title}
+        date={gallery.date}
+        description={gallery.description}
       >
         <div className="relative">
           <button
@@ -164,11 +169,11 @@ const GalleryDetail = () => {
             spaceBetween={20}
             onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
           >
-            {data.images.map((image, index) => (
+            {gallery.images.map((image, index) => (
               <SwiperSlide key={`${image}-${index}`}>
                 <img
                   src={image}
-                  alt={`${data.title} ${index + 1}`}
+                  alt={`${gallery.title} ${index + 1}`}
                   className="h-[260px] w-full object-cover sm:h-[340px] lg:h-[420px]"
                 />
               </SwiperSlide>
@@ -176,7 +181,7 @@ const GalleryDetail = () => {
           </Swiper>
 
           <span className="absolute bottom-4 right-4 rounded-full bg-black/40 px-3 py-1 text-xs text-white">
-            {activeIndex + 1} / {data.images.length}
+            {activeIndex + 1} / {gallery.images.length}
           </span>
         </div>
       </Card>
@@ -186,7 +191,7 @@ const GalleryDetail = () => {
           <div className="flex items-center gap-2">
             <h2 className="text-lg font-bold text-[#4988C4] whitespace-nowrap">댓글</h2>
             <span className="flex size-5 items-center justify-center rounded-full bg-[#4988C4] text-xs text-white">
-              {comments.length}
+              {comment.length}
             </span>
           </div>
           {isCommenting?
@@ -252,21 +257,27 @@ const GalleryDetail = () => {
                 layout
                 className="rounded-xl border border-gray-200 bg-white px-4 py-3"
               >
-                <div className="mb-2 flex items-center justify-between gap-3">
+                <div className="mb-2 flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-[#0F2854]">
-                      {comment.authorName}
-                    </p>
-                    <p className="text-xs text-gray-400">{comment.createdAt}</p>
+                    <UserDisplayName user={comment.author} />
                   </div>
 
-                  {isAdmin && (
-                    <HiOutlineTrash 
-                      size={18} 
-                      className="text-black/25 cursor-pointer"
-                      onClick={() => handleDeleteComment(comment.id)}
-                    />
-                  )}
+                  <div className="flex items-center gap-2 shrink-0">
+                    <p className="text-xs text-gray-400">
+                      {comment.createdAt}
+                    </p>
+
+                    {isAdmin && (
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteComment(comment.id)}
+                        className="text-black/25 hover:text-red-400 transition-colors"
+                        aria-label="댓글 삭제"
+                      >
+                        <HiOutlineTrash size={16} />
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 <p className="whitespace-pre-line text-sm leading-6 text-gray-700">
