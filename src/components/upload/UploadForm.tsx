@@ -14,7 +14,17 @@ import type {
 import { Button } from "../ui/Button";
 
 
-const modeConfig = {
+const baseNoticeConfig = {
+  requireTitle: true,
+  requireDescription: true,
+  requireImage: false,
+  showExamFields: false,
+  showGalleryFields: false,
+  allowMultiplePosts: false,
+} as const;
+
+
+const modeConfig: Record<UploadMode, any> = {
   exam: {
     requireTitle: false,
     requireDescription: true,
@@ -31,14 +41,8 @@ const modeConfig = {
     showGalleryFields: true,
     allowMultiplePosts: false,
   },
-  notice: {
-    requireTitle: true,
-    requireDescription: true,
-    requireImage: false,
-    showExamFields: false,
-    showGalleryFields: false,
-    allowMultiplePosts: false,
-  },
+  notice: baseNoticeConfig,
+  info: baseNoticeConfig,
 } as const;
 
 

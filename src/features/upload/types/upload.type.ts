@@ -1,4 +1,4 @@
-export type UploadMode = "exam" | "gallery" | "notice";
+export type UploadMode = "exam" | "gallery" | "notice" | "info";
 
 export type UploadPostDraft = {
   subject: string;

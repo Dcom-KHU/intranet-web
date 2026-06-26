@@ -4,25 +4,28 @@ import { Routes, Route } from "react-router-dom";
 import AppLayout from "./app-layout";
 
 import Login from "../pages/auth/Login";
+import ForgetPassword from "../pages/auth/ForgetPassword";
 import Register from "../pages/auth/Register";
 import Home from "../pages/Home";
 import ExamArchive from "../pages/exam-archive/ExamArchive";
 import ExamArchiveDetail from "../pages/exam-archive/ExamArchiveDetail";
 import ExamArchiveUpload from "../pages/exam-archive/ExamArchiveUpload";
-import InfoSharing from "../pages/InfoSharing";
+import InfoSharing from "../pages/info-sharing/InfoSharing";
+import InfoSharingDetail from "../pages/info-sharing/InfoSharingDetail";
 import Manage from "../pages/manage/Manage";
 import ManagePendingUsers from "../pages/manage/ManagePendingUsers";
 import ManageUsers from "../pages/manage/ManageUsers";
 import Profile from "../pages/Profile";
 import Notice from "../pages/notice/Notice";
+import NoticeDetail from "../pages/notice/NoticeDetail";
+import NoticeUpload from "../pages/notice/NoticeUpload";
 import Gallery from "../pages/gallery/Gallery";
 import GalleryDetail from "../pages/gallery/GalleryDetail";
 import GalleryUpload from "../pages/gallery/GalleryUpload";
 
 import ProtectedRoute from "../components/ProtectedRoute";
-import NoticeDetail from "../pages/notice/NoticeDetail";
-import NoticeUpload from "../pages/notice/NoticeUpload";
-import ForgetPassword from "../pages/auth/ForgetPassword";
+import InfoSharingUpload from "../pages/info-sharing/InfoSharingUpload";
+
 
 
 export default function AppRouter() {
@@ -83,8 +86,18 @@ const protectedRoutes: AppRoute[] = [
     protected: true,
   },
   {
-    path: "/info-sharing",
+    path: "/info",
     element: <InfoSharing />,
+    protected: true,
+  },
+  {
+    path: "/info/:id",
+    element: <InfoSharingDetail />,
+    protected: true,
+  },
+  {
+    path: "/info/upload",
+    element: <InfoSharingUpload />,
     protected: true,
   },
   {
