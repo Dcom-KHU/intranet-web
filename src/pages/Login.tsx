@@ -11,6 +11,7 @@ import Input from "../components/ui/Input";
 import InputLabel from "../components/ui/InputLabel";
 import { Button } from "../components/ui/Button";
 import dcomLogo from "../assets/dcom-logo-black.png";
+import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 
 const loginMessages: Record<
   Exclude<LoginResult, { success: true }>["reason"],
@@ -24,6 +25,7 @@ const loginMessages: Record<
 const Login = () => {
   const [userID, setUserID] = useState("");
   const [password, setPassword] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [loginMessage, setLoginMessage] = useState("");
   const navigate = useNavigate();
 
@@ -47,7 +49,7 @@ const Login = () => {
       <div className="w-full max-w-md bg-white p-8">
         <img src={dcomLogo} alt="dcom-logo" className="mx-auto mb-6 block w-20" />
         <form onSubmit={handleLogin}>
-          <div className="mb-6">
+          <div className="mb-5">
             <InputLabel>User ID</InputLabel>
             <Input
               type="text"
@@ -60,18 +62,43 @@ const Login = () => {
               }}
             />
           </div>
-          <div className="mb-3">
+          <div className="mb-10">
             <InputLabel>비밀번호</InputLabel>
-            <Input
-              type="password"
-              id="password"
-              placeholder="비밀번호를 입력하세요"
-              value={password}
-              onChange={(event) => {
-                setPassword(event.target.value);
-                clearLoginMessage();
-              }}
-            />
+            <div className="relative">
+              <Input
+                type={isPasswordVisible ? "text" : "password"}
+                id="password"
+                placeholder="비밀번호를 입력하세요"
+                value={password}
+                className="pr-10"
+                onChange={(event) => {
+                  setPassword(event.target.value);
+                  clearLoginMessage();
+                }}
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-gray-400 hover:text-gray-600"
+                aria-label="누르는 동안 비밀번호 보기"
+                onPointerDown={() => setIsPasswordVisible(true)}
+                onPointerUp={() => setIsPasswordVisible(false)}
+                onPointerLeave={() => setIsPasswordVisible(false)}
+                onPointerCancel={() => setIsPasswordVisible(false)}
+                onBlur={() => setIsPasswordVisible(false)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    setIsPasswordVisible(true);
+                  }
+                }}
+                onKeyUp={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    setIsPasswordVisible(false);
+                  }
+                }}
+              >
+                {isPasswordVisible ? <IoEyeOffOutline /> : <IoEyeOutline />}
+              </button>
+            </div>
           </div>
 
           {loginMessage && (
