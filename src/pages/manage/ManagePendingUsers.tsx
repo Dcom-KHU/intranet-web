@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { FiChevronLeft } from "react-icons/fi";
+import { type User } from "../../features/auth/types/user.type";
 
 import Loading from "../../components/Loading";
 import { Button } from "../../components/ui/Button";
 import { useUsers } from "../../features/manage/hooks/useUsers";
-import type { User } from "../../features/auth/types/user.type";
+import PageBackButton from "../../components/ui/PageBackButton";
+
 
 const ManagePendingUsers = () => {
   const navigate = useNavigate();
@@ -29,13 +30,9 @@ const ManagePendingUsers = () => {
 
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-20">
-      <button
-        type="button"
-        className="flex items-center gap-1 mb-4 text-sm text-gray-400 transition-colors hover:text-[#4988C4]"
-        onClick={() => navigate("/manage")}
-      >
-        <FiChevronLeft /> 관리자 페이지로 돌아가기
-      </button>
+      <PageBackButton
+        onClick={() => navigate('/manage')}
+      />
 
       <section className="mb-8">
         <h1 className="text-xl font-bold text-[#4988C4]">

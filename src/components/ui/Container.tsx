@@ -5,7 +5,7 @@ type ContainerProps = {
     title: string;
     icon?: IconType;
     children: React.ReactNode;
-    variant?: "primary" | "secondary";
+    variant?: "primary" | "manage";
     onViewAllClick?: () => void;
     showViewAll?: boolean; 
 };
@@ -34,7 +34,7 @@ const Container = ({
             text-[#0F2854]
             whitespace-nowrap
         `,
-        secondary: `
+        manage: `
             border
             border-[#B5D4F4]
             p-6
@@ -48,9 +48,7 @@ const Container = ({
         `,
     };
     return (
-        <div
-            className={variants[variant]}
-        >
+        <div className={variants[variant]}>
             <h2 className="text-lg mb-4 flex items-center">
                 {Icon && <Icon className="w-4 mr-2 inline-block" />}
                 <p className="font-bold">{title}</p>
