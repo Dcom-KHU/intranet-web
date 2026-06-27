@@ -59,7 +59,7 @@ const Manage = () => {
           <div className="grid grid-cols-2 gap-4">
             <Container
               title="회원 승인 대기"
-              variant="secondary"
+              variant="manage"
               icon={IoCheckmarkOutline}
               showViewAll={false}
             >
@@ -68,7 +68,7 @@ const Manage = () => {
 
             <Container
               title="전체 D.COM 회원"
-              variant="secondary"
+              variant="manage"
               icon={IoPeopleOutline}
               showViewAll={false}
             >
@@ -79,7 +79,7 @@ const Manage = () => {
           <div className="flex flex-1 flex-col [&>div]:flex [&>div]:min-h-[360px] [&>div]:flex-1 [&>div]:flex-col">
             <Container
               title="승인 대기 목록"
-              variant="secondary"
+              variant="manage"
               onViewAllClick={() => navigate("/manage/pending")}
             >
               <div className="flex flex-1 flex-col">
@@ -127,7 +127,11 @@ const Manage = () => {
         </div>
 
         <div className="flex flex-1 flex-col gap-4">
-          <Container title="게시글 관리" variant="secondary" showViewAll={false}>
+          <Container 
+            title="게시글 관리" 
+            variant="manage" 
+            showViewAll={false}
+          >
             <div className="grid grid-cols-2 gap-4">
               <PostManageCard
                 icon={<IoNotificationsOutline className="h-6 w-6 text-gray-400" />}
@@ -158,7 +162,7 @@ const Manage = () => {
 
           <Container
             title="회원 관리"
-            variant="secondary"
+            variant="manage"
             onViewAllClick={() => navigate("/manage/users")}
           >
             <table className="w-full table-fixed">
