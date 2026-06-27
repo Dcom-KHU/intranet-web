@@ -1,5 +1,4 @@
 import { useRef, useState, type FormEvent } from "react";
-import { FiChevronLeft } from "react-icons/fi";
 import { IoAdd } from "react-icons/io5";
 
 import { Button } from "../../../components/ui/Button";
@@ -17,6 +16,7 @@ import {
 } from "../utils/uploadEntry";
 import UploadEntryCard from "./UploadEntryCard";
 import PageBackButton from "../../../components/ui/PageBackButton";
+
 
 export default function UploadForm({
   mode,
