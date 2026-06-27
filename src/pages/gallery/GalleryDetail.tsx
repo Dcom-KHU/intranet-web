@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
+import { HiChevronLeft, HiChevronRight, HiOutlinePencil } from "react-icons/hi";
 import { FiChevronLeft } from "react-icons/fi";
 import { Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -10,7 +10,9 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 import Card from "../../components/ui/Card";
+import { Button } from "../../components/ui/Button";
 import Loading from "../../components/Loading";
+import useAuth from "../../features/auth/hooks/useAuth";
 import CommentSection from "../../features/comment/components/CommentSection";
 import { useGalleryDetail } from "../../features/gallery/hooks/useGalleryDetail";
 
@@ -19,6 +21,7 @@ const GalleryDetail = () => {
   const { id } = useParams();
   const postId = Number(id);
   const { data: gallery, loading } = useGalleryDetail(postId);
+  const { currentUser } = useAuth();
   const [activeIndex, setActiveIndex] = useState(0);
 
   if (loading) return <Loading />;
@@ -48,7 +51,19 @@ const GalleryDetail = () => {
         &lt; 갤러리로 돌아가기
       </button>
 
-      <h1 className="mb-6 text-xl font-bold text-[#4988C4]">활동 사진</h1>
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-xl font-bold text-[#4988C4]">활동 사진</h1>
+        {currentUser?.role === "ADMIN" && (
+          <Button
+            type="button"
+            variant="third"
+            className="flex w-20 items-center justify-center gap-1"
+            onClick={() => navigate(`/gallery/${postId}/edit`)}
+          >
+            <HiOutlinePencil size={15} /> 수정
+          </Button>
+        )}
+      </div>
 
       <Card
         variant="detail"

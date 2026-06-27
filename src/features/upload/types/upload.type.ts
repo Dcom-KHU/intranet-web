@@ -10,6 +10,7 @@ export type UploadPostDraft = {
   location: string;
   descriptionHtml: string;
   files: File[];
+  existingFiles: string[];
 };
 
 export type UploadPostsRequest = {

@@ -2,12 +2,16 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useNoticeDetail } from "../../features/notice/hooks/useNoticeDetail";
 import { FiChevronLeft } from "react-icons/fi";
 import { GoTrash } from "react-icons/go";
+import { HiOutlinePencil } from "react-icons/hi";
 import Loading from "../../components/Loading";
+import useAuth from "../../features/auth/hooks/useAuth";
 
 const NoticeDetail = () => {
   const { id } = useParams();
   const { data: notice } = useNoticeDetail(Number(id));
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
+  const isAdmin = currentUser?.role === "ADMIN";
 
   if (!notice) return <Loading /> 
   
@@ -62,13 +66,25 @@ const NoticeDetail = () => {
                         </ul>
                         ) : null}
         
-                      <button
-                        type="button"
-                        aria-label="삭제"
-                        className="absolute bottom-6 right-6 text-gray-400 hover:text-gray-600"
-                      >
-                        <GoTrash size={16} />
-                      </button>
+                      {isAdmin && (
+                        <div className="absolute bottom-6 right-6 flex items-center gap-3">
+                          <button
+                            type="button"
+                            aria-label="공지사항 수정"
+                            className="text-gray-400 hover:text-[#4988C4]"
+                            onClick={() => navigate(`/notice/${notice.id}/edit`)}
+                          >
+                            <HiOutlinePencil size={16} />
+                          </button>
+                          <button
+                            type="button"
+                            aria-label="삭제"
+                            className="text-gray-400 hover:text-red-400"
+                          >
+                            <GoTrash size={16} />
+                          </button>
+                        </div>
+                      )}
                     </article>
                   
                 </div>

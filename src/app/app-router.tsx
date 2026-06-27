@@ -10,8 +10,10 @@ import Home from "../pages/Home";
 import ExamArchive from "../pages/exam-archive/ExamArchive";
 import ExamArchiveDetail from "../pages/exam-archive/ExamArchiveDetail";
 import ExamArchiveUpload from "../pages/exam-archive/ExamArchiveUpload";
+import ExamArchiveEdit from "../pages/exam-archive/ExamArchiveEdit";
 import InfoSharing from "../pages/info-sharing/InfoSharing";
 import InfoSharingDetail from "../pages/info-sharing/InfoSharingDetail";
+import InfoSharingEdit from "../pages/info-sharing/InfoSharingEdit";
 import Manage from "../pages/manage/Manage";
 import ManagePendingUsers from "../pages/manage/ManagePendingUsers";
 import ManageUsers from "../pages/manage/ManageUsers";
@@ -19,9 +21,11 @@ import Profile from "../pages/Profile";
 import Notice from "../pages/notice/Notice";
 import NoticeDetail from "../pages/notice/NoticeDetail";
 import NoticeUpload from "../pages/notice/NoticeUpload";
+import NoticeEdit from "../pages/notice/NoticeEdit";
 import Gallery from "../pages/gallery/Gallery";
 import GalleryDetail from "../pages/gallery/GalleryDetail";
 import GalleryUpload from "../pages/gallery/GalleryUpload";
+import GalleryEdit from "../pages/gallery/GalleryEdit";
 
 import ProtectedRoute from "../components/ProtectedRoute";
 import InfoSharingUpload from "../pages/info-sharing/InfoSharingUpload";
@@ -86,6 +90,11 @@ const protectedRoutes: AppRoute[] = [
     protected: true,
   },
   {
+    path: "/exam-archive/:archiveId/edit/:postId",
+    element: <ExamArchiveEdit />,
+    protected: true,
+  },
+  {
     path: "/info",
     element: <InfoSharing />,
     protected: true,
@@ -93,6 +102,11 @@ const protectedRoutes: AppRoute[] = [
   {
     path: "/info/:id",
     element: <InfoSharingDetail />,
+    protected: true,
+  },
+  {
+    path: "/info/:id/edit",
+    element: <InfoSharingEdit />,
     protected: true,
   },
   {
@@ -114,6 +128,13 @@ const protectedRoutes: AppRoute[] = [
     path: "/notice/upload",
     element: <NoticeUpload />,
     protected: true,
+    adminOnly: true,
+  },
+  {
+    path: "/notice/:id/edit",
+    element: <NoticeEdit />,
+    protected: true,
+    adminOnly: true,
   },
   {
     path: "/gallery",
@@ -130,6 +151,12 @@ const protectedRoutes: AppRoute[] = [
     path: "/gallery/:id",
     element: <GalleryDetail />,
     protected: true,
+  },
+  {
+    path: "/gallery/:id/edit",
+    element: <GalleryEdit />,
+    protected: true,
+    adminOnly: true,
   },
   {
     path: "/manage",

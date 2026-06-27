@@ -2,7 +2,9 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { FiChevronLeft } from "react-icons/fi";
 import { GoTrash } from "react-icons/go";
+import { HiOutlinePencil } from "react-icons/hi";
 
+import useAuth from "../../features/auth/hooks/useAuth";
 import { useInfoDetail } from "../../features/info-sharing/hooks/useInfoDetail";
 import Loading from "../../components/Loading";
 import CommentSection from "../../features/comment/components/CommentSection";
@@ -12,7 +14,9 @@ import UserDisplayName from "../../components/ui/UserDisplay";
 const InfoSharingDetail = () => {
     const navigate = useNavigate();
     const { id } = useParams();
-    const { data: info } = useInfoDetail(Number(id));
+    const postId = Number(id);
+    const { data: info } = useInfoDetail(postId);
+    const { currentUser } = useAuth();
 
 
     if (!info) {
@@ -71,19 +75,31 @@ const InfoSharingDetail = () => {
                         </ul>
                         ) : null}
         
-                        <button
-                            type="button"
-                            aria-label="삭제"
-                            className="absolute bottom-6 right-6 text-gray-400 hover:text-gray-600"
-                        >
-                            <GoTrash size={16} />
-                        </button>
+                        {currentUser?.studentNumber === info.author.studentNumber && (
+                            <div className="absolute bottom-6 right-6 flex items-center gap-3">
+                                <button
+                                    type="button"
+                                    aria-label="게시글 수정"
+                                    className="text-gray-400 hover:text-[#4988C4]"
+                                    onClick={() => navigate(`/info/${postId}/edit`)}
+                                >
+                                    <HiOutlinePencil size={16} />
+                                </button>
+                                <button
+                                    type="button"
+                                    aria-label="삭제"
+                                    className="text-gray-400 hover:text-red-400"
+                                >
+                                    <GoTrash size={16} />
+                                </button>
+                            </div>
+                        )}
                     </article>
                     
                 </div>
             </section>
 
-            <CommentSection postId={Number(id)} target="info-sharing" />
+            <CommentSection postId={postId} target="info-sharing" />
         </div>
     );
 }

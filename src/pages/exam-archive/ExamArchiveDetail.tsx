@@ -4,13 +4,17 @@ import Loading from "../../components/Loading";
 import { HiUpload } from "react-icons/hi";
 import { FiChevronLeft } from "react-icons/fi";
 import { GoTrash } from "react-icons/go";
+import { HiOutlinePencil } from "react-icons/hi";
 import { Button } from "../../components/ui/Button";
 import UserDisplayName from "../../components/ui/UserDisplay";
+import useAuth from "../../features/auth/hooks/useAuth";
 
 const ExamArchiveDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { data } = useExamArchive(Number(id));
+  const archiveId = Number(id);
+  const { data } = useExamArchive(archiveId);
+  const { currentUser } = useAuth();
 
   if (!data) {
     return <Loading />;
@@ -85,13 +89,27 @@ const ExamArchiveDetail = () => {
                 </ul>
               )}
 
-              <button
-                type="button"
-                aria-label="삭제"
-                className="absolute bottom-6 right-6 text-gray-400 hover:text-gray-600"
-              >
-                <GoTrash size={16} />
-              </button>
+              {currentUser?.studentNumber === post.author.studentNumber && (
+                <div className="absolute bottom-6 right-6 flex items-center gap-3">
+                  <button
+                    type="button"
+                    aria-label="족보 수정"
+                    className="text-gray-400 hover:text-[#4988C4]"
+                    onClick={() =>
+                      navigate(`/exam-archive/${archiveId}/edit/${post.id}`)
+                    }
+                  >
+                    <HiOutlinePencil size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="삭제"
+                    className="text-gray-400 hover:text-red-400"
+                  >
+                    <GoTrash size={16} />
+                  </button>
+                </div>
+              )}
             </article>
           ))}
         </div>

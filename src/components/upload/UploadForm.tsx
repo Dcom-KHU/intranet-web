@@ -23,8 +23,16 @@ const baseNoticeConfig = {
   allowMultiplePosts: false,
 } as const;
 
+type ModeConfig = {
+  requireTitle: boolean;
+  requireDescription: boolean;
+  requireImage: boolean;
+  showExamFields: boolean;
+  showGalleryFields: boolean;
+  allowMultiplePosts: boolean;
+};
 
-const modeConfig: Record<UploadMode, any> = {
+const modeConfig: Record<UploadMode, ModeConfig> = {
   exam: {
     requireTitle: false,
     requireDescription: true,
@@ -51,6 +59,9 @@ type UploadFormProps = {
   title: string;
   initialSubject?: string;
   initialProfessor?: string;
+  initialPost?: Partial<UploadPostDraft>;
+  submitLabel?: string;
+  onSubmit?: (post: UploadPostDraft) => Promise<void>;
 };
 
 type UploadEntry = UploadPostDraft & {
@@ -64,6 +75,7 @@ const createEntry = (
   id: number,
   initialSubject = "",
   initialProfessor = "",
+  initialPost?: Partial<UploadPostDraft>,
 ): UploadEntry => ({
   id,
   subject: initialSubject,
@@ -75,6 +87,8 @@ const createEntry = (
   location: "",
   descriptionHtml: "",
   files: [],
+  existingFiles: [],
+  ...initialPost,
 });
 
 export default function UploadForm({
@@ -82,10 +96,13 @@ export default function UploadForm({
   title,
   initialSubject = "",
   initialProfessor = "",
+  initialPost,
+  submitLabel = "업로드",
+  onSubmit,
 }: UploadFormProps) {
   const nextIdRef = useRef(2);
   const [entries, setEntries] = useState<UploadEntry[]>([
-    createEntry(1, initialSubject, initialProfessor),
+    createEntry(1, initialSubject, initialProfessor, initialPost),
   ]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -147,7 +164,10 @@ export default function UploadForm({
 
       if (
         config.requireImage &&
-        entries.some((entry) => entry.files.length === 0)
+        entries.some(
+          (entry) =>
+            entry.files.length === 0 && entry.existingFiles.length === 0,
+        )
       ) {
         window.alert("사진을 최소 1개 이상 첨부해주세요.");
         return;
@@ -156,17 +176,30 @@ export default function UploadForm({
       setIsSubmitting(true);
 
       try {
-        await uploadPosts({
-          mode,
-          posts: entries.map(({ id: _id, ...entry }) => entry),
+        const posts = entries.map((entry) => {
+          const { id, ...post } = entry;
+          void id;
+          return post;
         });
 
-        window.alert(`${entries.length}개의 글을 업로드했습니다.`);
+        if (onSubmit) {
+          await onSubmit(posts[0]);
+        } else {
+          await uploadPosts({ mode, posts });
+        }
+
+        window.alert(
+          onSubmit
+            ? "게시글을 수정했습니다."
+            : `${entries.length}개의 글을 업로드했습니다.`,
+        );
       } catch (error) {
         console.error("업로드 실패:", error);
 
         window.alert(
-          "아직 서버 API가 연결되지 않았습니다. 콘솔에서 전송 형태를 확인해주세요.",
+          onSubmit
+            ? "게시글 수정에 실패했습니다."
+            : "아직 서버 API가 연결되지 않았습니다. 콘솔에서 전송 형태를 확인해주세요.",
         );
       } finally {
         setIsSubmitting(false);
@@ -215,7 +248,7 @@ export default function UploadForm({
               !config.allowMultiplePosts ? "ml-auto" : ""
             }`}
           >
-            {isSubmitting ? "전송 중" : "업로드"}
+            {isSubmitting ? "전송 중" : submitLabel}
           </Button>
         </div>
       </form>
@@ -277,6 +310,14 @@ function UploadEntryCard({
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+  };
+
+  const removeExistingFile = (fileToRemove: string) => {
+    onChange({
+      existingFiles: entry.existingFiles.filter(
+        (file) => file !== fileToRemove,
+      ),
+    });
   };
 
   const setLink = () => {
@@ -415,7 +456,29 @@ function UploadEntryCard({
         </ul>
       )}
 
-      {config.requireImage && entry.files.length === 0 && (
+      {entry.existingFiles.length > 0 && (
+        <ul className="mb-4 space-y-2">
+          {entry.existingFiles.map((file) => (
+            <li key={file} className="flex w-fit items-center gap-1 text-xs">
+              <span className="text-[#4988C4] underline underline-offset-2">
+                {file.split("/").pop() ?? file}
+              </span>
+              <button
+                type="button"
+                aria-label={`${file} 삭제`}
+                className="flex size-4 items-center justify-center rounded-full text-gray-300 transition-colors hover:bg-gray-100 hover:text-gray-500"
+                onClick={() => removeExistingFile(file)}
+              >
+                <IoClose size={12} />
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {config.requireImage &&
+        entry.files.length === 0 &&
+        entry.existingFiles.length === 0 && (
         <p className="mb-4 text-xs text-red-400">
           사진을 최소 1개 이상 첨부해주세요.
         </p>
