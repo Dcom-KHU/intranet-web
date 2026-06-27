@@ -18,7 +18,7 @@ export default function DesktopNavbar({
     location.pathname.startsWith(path + "/");
 
   return (
-    <nav className="fixed left-0 right-0 top-0 pr-10 z-50 hidden h-20 border-b border-gray-200 bg-white/95 shadow-sm backdrop-blur-sm md:block">
+    <nav className="fixed left-0 right-0 top-0 z-20 hidden h-20 border-b border-gray-200 bg-white/95 pr-10 shadow-sm backdrop-blur-sm md:block">
       <div className="flex h-full items-center justify-between px-10">
         <h2 className="cursor-pointer" onClick={() => onNavigate("/home")}>
           <img

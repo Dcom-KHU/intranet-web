@@ -3,6 +3,7 @@ import dcomLogo from "../../assets/dcom-logo-white.png";
 import sidebar from "../../assets/icon/sidebar.png"
 import { navMenu } from "./navMenu";
 import { useLocation } from "react-router-dom";
+import type { ReactNode } from "react";
 
 interface MobileNavbarProps {
   isOpen: boolean;
@@ -10,6 +11,7 @@ interface MobileNavbarProps {
   onOpen: () => void;
   onClose: () => void;
   onNavigate: (path: string) => void;
+  profileMenu?: ReactNode;
 }
 
 export default function MobileNavbar({
@@ -18,6 +20,7 @@ export default function MobileNavbar({
   onOpen,
   onClose,
   onNavigate,
+  profileMenu,
 }: MobileNavbarProps) {
   const location = useLocation();
 
@@ -32,7 +35,7 @@ export default function MobileNavbar({
 
   return (
     <>
-        <nav className="fixed left-0 top-0 z-40 w-full h-[80px] bg-white/95">
+        <nav className="fixed left-0 top-0 z-20 h-[80px] w-full bg-white/95 md:hidden">
           {!isOpen && (
           <motion.button
             whileTap={{ scale: 0.9 }}
@@ -43,13 +46,16 @@ export default function MobileNavbar({
             <img src={sidebar} alt="sidbar-icon" className="w-8 "/>
           </motion.button>
           )}
+          {profileMenu && (
+            <div className="absolute right-8 top-5">{profileMenu}</div>
+          )}
         </nav>
 
       <AnimatePresence>
         {isOpen && (
           <>
             <motion.div
-              className="fixed inset-0 z-[90] bg-black/50 md:hidden"
+              className="fixed inset-0 z-20 bg-black/50 md:hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -57,7 +63,7 @@ export default function MobileNavbar({
             />
 
             <motion.nav
-              className="fixed left-0 top-0 z-[100] h-full w-64 bg-black p-5 text-white shadow-lg md:hidden"
+              className="fixed left-0 top-0 z-20 h-full w-64 bg-black p-5 text-white shadow-lg md:hidden"
               initial={{ x: -300 }}
               animate={{ x: 0 }}
               exit={{ x: -300 }}

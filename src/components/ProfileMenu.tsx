@@ -45,7 +45,7 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
 
 
       {isOpen && (
-        <div className="absolute right-0 mt-3 w-56 rounded-lg border border-gray-200 bg-white p-4 text-gray-900 shadow-xl z-60">
+        <div className="absolute right-0 z-20 mt-3 w-56 rounded-lg border border-gray-200 bg-white p-4 text-gray-900 shadow-xl">
           <p className="text-sm font-semibold text-gray-500">My Profile</p>
 
           <div className="mt-4 space-y-3">
