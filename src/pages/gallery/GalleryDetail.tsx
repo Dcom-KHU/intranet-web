@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { HiChevronLeft, HiChevronRight, HiOutlinePencil } from "react-icons/hi";
-import { FiChevronLeft } from "react-icons/fi";
 import { Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -15,6 +14,8 @@ import Loading from "../../components/Loading";
 import useAuth from "../../features/auth/hooks/useAuth";
 import CommentSection from "../../features/comment/components/CommentSection";
 import { useGalleryDetail } from "../../features/gallery/hooks/useGalleryDetail";
+import PageBackButton from "../../components/ui/PageBackButton";
+
 
 const GalleryDetail = () => {
   const navigate = useNavigate();
@@ -28,14 +29,10 @@ const GalleryDetail = () => {
 
   if (!gallery) {
     return (
-      <div className="px-4 py-8 sm:px-6 lg:px-20">
-        <button
-          type="button"
-          className="mb-4 flex items-center gap-1 text-sm text-gray-400 transition-colors hover:text-[#4988C4]"
-          onClick={() => navigate("/gallery")}
-        >
-          <FiChevronLeft /> 갤러리로 돌아가기
-        </button>
+      <div>
+        <PageBackButton 
+          onClick={() => navigate('/gallery')}
+        />
         <p className="text-sm text-gray-500">활동 사진을 찾을 수 없습니다.</p>
       </div>
     );
@@ -43,13 +40,9 @@ const GalleryDetail = () => {
 
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-20">
-      <button
-        type="button"
-        className="mb-4 text-sm text-gray-400 transition-colors hover:text-[#4988C4]"
-        onClick={() => navigate("/gallery")}
-      >
-        &lt; 갤러리로 돌아가기
-      </button>
+      <PageBackButton 
+        onClick={() => navigate('/gallery')}
+      />
 
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-xl font-bold text-[#4988C4]">활동 사진</h1>

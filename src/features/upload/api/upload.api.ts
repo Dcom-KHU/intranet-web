@@ -7,7 +7,11 @@ export const uploadPosts = async ({
   posts,
 }: UploadPostsRequest): Promise<UploadPostsResponse> => {
   const formData = new FormData();
-  const metadata = posts.map(({ files: _files, ...post }) => post);
+  const metadata = posts.map((post) => {
+    const { files, ...postMetadata } = post;
+    void files;
+    return postMetadata;
+  });
 
   formData.append("mode", mode);
   formData.append(

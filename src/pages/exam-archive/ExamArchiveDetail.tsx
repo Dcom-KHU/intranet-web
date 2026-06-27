@@ -1,13 +1,16 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useExamArchive } from "../../features/exam-archive/hooks/useExamArchiveDetail";
-import Loading from "../../components/Loading";
+import useAuth from "../../features/auth/hooks/useAuth";
+
 import { HiUpload } from "react-icons/hi";
-import { FiChevronLeft } from "react-icons/fi";
 import { GoTrash } from "react-icons/go";
 import { HiOutlinePencil } from "react-icons/hi";
+
 import { Button } from "../../components/ui/Button";
+import Loading from "../../components/Loading";
 import UserDisplayName from "../../components/ui/UserDisplay";
-import useAuth from "../../features/auth/hooks/useAuth";
+import PageBackButton from "../../components/ui/PageBackButton";
+
 
 const ExamArchiveDetail = () => {
   const navigate = useNavigate();
@@ -22,13 +25,9 @@ const ExamArchiveDetail = () => {
 
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-20">
-      <button
-        type="button"
-        onClick={() => navigate("/exam-archive")}
-        className="flex items-center gap-1 mb-4 text-sm text-gray-400 transition-colors hover:text-[#4988C4]"
-      >
-        <FiChevronLeft /> 족보 아카이브로 돌아가기
-      </button>
+      <PageBackButton 
+        onClick={() => navigate('/exam-archive')}
+      />
 
       <div className="mb-8 flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold text-[#4988C4] whitespace-nowrap">족보</h1>

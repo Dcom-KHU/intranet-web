@@ -1,0 +1,16 @@
+features/upload/
+├── api/
+│   └── upload.api.ts
+├── components/
+│   ├── UploadForm.tsx              # 메인 폼 (orchestrator) — entries 상태 관리, 제출 로직, 모달 제어
+│   ├── UploadEntryCard.tsx         # 카드 단위 UI — 에디터 초기화, 파일 핸들링, 필드 배치
+│   ├── UploadToolbar.tsx           # 에디터 툴바 — ToolbarButton 포함, 에디터 관련 액션
+│   └── fields/
+│       ├── Field.tsx               # 텍스트 입력 원자 컴포넌트
+│       └── SelectField.tsx         # 셀렉트 원자 컴포넌트
+├── constants/
+│   └── uploadConfig.ts             # modeConfig, semesterOptions, examTypeOptions
+├── types/
+│   └── upload.type.ts
+└── utils/
+    └── uploadEntry.ts              # createEntry, getEntriesSignature

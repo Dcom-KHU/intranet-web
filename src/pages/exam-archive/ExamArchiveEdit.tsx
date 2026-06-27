@@ -1,6 +1,6 @@
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 
-import UploadForm from "../../components/upload/UploadForm";
+import UploadForm from "../../features/upload/components/UploadForm";
 import Loading from "../../components/Loading";
 import useAuth from "../../features/auth/hooks/useAuth";
 import { updateExamPost } from "../../features/exam-archive/api/exam-archive.api";

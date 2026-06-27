@@ -1,6 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
 
-import { FiChevronLeft } from "react-icons/fi";
 import { GoTrash } from "react-icons/go";
 import { HiOutlinePencil } from "react-icons/hi";
 
@@ -9,6 +8,7 @@ import { useInfoDetail } from "../../features/info-sharing/hooks/useInfoDetail";
 import Loading from "../../components/Loading";
 import CommentSection from "../../features/comment/components/CommentSection";
 import UserDisplayName from "../../components/ui/UserDisplay";
+import PageBackButton from "../../components/ui/PageBackButton";
 
 
 const InfoSharingDetail = () => {
@@ -26,18 +26,14 @@ const InfoSharingDetail = () => {
     
     return(
         <div className="px-4 py-8 sm:px-6 lg:px-20">
-            <button
-                type="button"
-                className="flex items-center gap-1 mb-4 text-sm text-gray-400 transition-colors hover:text-[#4988C4]"
-                onClick={() => navigate("/info")}
-            >
-                <FiChevronLeft /> 목록으로 돌아가기
-            </button>
+            <PageBackButton 
+                onClick={() => navigate('/info')}
+            />
 
             <section className="overflow-hidden mt-7 rounded-2xl border border-gray-200">
                 <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-7 py-4">
                     <h2 className="text-sm font-semibold text-[#0F2854]">
-                    {info.title}
+                        {info.title}
                     </h2>
                 </div>
         
