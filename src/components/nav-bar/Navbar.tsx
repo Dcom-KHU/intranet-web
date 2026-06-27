@@ -25,13 +25,10 @@ export default function Navbar() {
       <DesktopNavbar
         isAdmin={isAdmin}
         onNavigate={handleNavigate}
+        profileMenu={
+          currentUser ? <ProfileMenu user={currentUser} /> : null
+        }
       />
-
-      {currentUser && (
-        <div className="fixed right-8 top-5 z-20 hidden md:block">
-          <ProfileMenu user={currentUser} />
-        </div>
-      )}
 
       <MobileNavbar
         isOpen={isOpen}
