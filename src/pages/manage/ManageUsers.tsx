@@ -1,12 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useUsers } from "../../features/manage/hooks/useUsers";
+
+import { type User } from "../../features/auth/types/user.type";
 
 import { FiChevronLeft } from "react-icons/fi";
 
 import Loading from "../../components/Loading";
 import { Button } from "../../components/ui/Button";
-import { useUsers } from "../../features/manage/hooks/useUsers";
-import type { User } from "../../features/auth/types/user.type";
+import SearchBar from "../../components/ui/SearchBar";
+
 
 type SortType = "lastLogin" | "name" | "studentNumber";
 
@@ -21,6 +24,8 @@ const ManageUsers = () => {
   const { users, loading } = useUsers();
   const [managedUsers, setManagedUsers] = useState<User[]>([]);
   const [sortType, setSortType] = useState<SortType>("lastLogin");
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [, setAppliedKeyword] = useState("");
 
   useEffect(() => {
     setManagedUsers(
@@ -66,6 +71,15 @@ const ManageUsers = () => {
           전체 회원을 조회하고 정렬하거나 삭제할 수 있습니다.
         </p>
       </section>
+
+
+      <SearchBar
+        value={searchKeyword}
+        onChange={setSearchKeyword}
+        onSearch={() => setAppliedKeyword(searchKeyword)}
+        placeholder="검색어를 입력하세요"
+        className="mb-5"
+      />
 
       <section className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-gray-500">
