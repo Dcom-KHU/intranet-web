@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Container from "../components/ui/Container";
 import Input from "../components/ui/Input";
-import basicProfile from "../assets/basic_profile.png";
 import { useProfileEdit } from "../features/profile-edit/hooks/useProfileEdit";
 import Loading from "../components/Loading";
 
@@ -30,13 +29,7 @@ export default function MyPage() {
 
             <p className="text-sm text-gray-600 mb-4">현재 로그인된 사용자: <strong>{user.userID}</strong></p>
 
-            <div className="flex items-center justify-center">
-                <img
-                src={user.image !== "" ? user.image : basicProfile}
-                alt="profile"
-                className="w-20 h-20 mb-4 rounded-full"
-                />            
-            </div>
+            
 
             <div className="flex flex-col gap-5">
 

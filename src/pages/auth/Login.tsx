@@ -1,6 +1,8 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { MdInfoOutline } from "react-icons/md";
+
 import {
   isPasswordResetRequired,
   login,
@@ -9,9 +11,7 @@ import {
 import Input from "../../components/ui/Input";
 import InputLabel from "../../components/ui/InputLabel";
 import { Button } from "../../components/ui/Button";
-import Infoicon from "../../assets/icon/info.png";
 import dcomLogo from "../../assets/dcom-logo-black.png";
-
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 
 
@@ -130,7 +130,7 @@ const Login = () => {
       </div>
 
       <div className="mt-5 flex items-center gap-2 rounded-xl bg-[#EEEEEE] px-12 py-2 text-sm text-gray-400">
-        <img src={Infoicon} alt="warning" className="h-3 w-3" />
+        <MdInfoOutline size={3} />
         관리자 승인 후 로그인이 가능합니다.
       </div>
     </div>
