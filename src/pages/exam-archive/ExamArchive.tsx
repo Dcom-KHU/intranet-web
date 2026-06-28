@@ -110,7 +110,13 @@ const ExamArchive = () => {
 
       <section>
         <h2 className="mb-4 text-lg font-semibold">
-          최근 업로드된 족보
+          { appliedKeyword.trim() 
+            ? <div className="flex justify-between items-end">
+                <span>"{appliedKeyword}" 검색 결과</span>
+                <span className="text-sm text-gray-400 font-normal"><span className="text-base text-[#4988C4] font-semibold">{filteredArchives.length}</span> 개의 게시물</span>
+            </div> 
+            : "최근 업로드된 족보"
+          }
         </h2>
 
         <DataTable
