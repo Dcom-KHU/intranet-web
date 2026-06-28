@@ -80,8 +80,6 @@ export function updateUser(
 
       saveCurrentUser(updatedUser);
 
-      console.log("수정된 유저:", updatedUser);
-
       resolve(updatedUser);
     }, 1000);
   });
