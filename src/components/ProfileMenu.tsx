@@ -47,7 +47,7 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
           
           {/* header */}
           <div className="px-4 py-5">
-            <p className="text-xs text-gray-500">My Profile</p>
+            <p className="text-xs text-gray-500">User ID</p>
             <p className="text-sm font-semibold text-gray-800">
               {user.userID}
             </p>
@@ -56,7 +56,7 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
           {/* body */}
           <div className="px-4 space-y-3 mb-4 text-sm">
             <div>
-              <p className="text-xs text-gray-500">Student Number</p>
+              <p className="text-xs text-gray-500">학번</p>
               <p className="font-medium text-gray-800">
                 {user.studentNumber || "Not provided"}
               </p>
@@ -68,7 +68,7 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
             <button
               className="w-full rounded-md bg-gray-100 py-2 text-sm hover:bg-gray-200"
               onClick={() => {
-                navigate("/profile");
+                navigate("/my-page");
                 setIsOpen(false);
               }}
             >

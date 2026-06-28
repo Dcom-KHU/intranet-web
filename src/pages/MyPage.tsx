@@ -5,7 +5,7 @@ import basicProfile from "../assets/basic_profile.png";
 import { useProfileEdit } from "../features/profile-edit/hooks/useProfileEdit";
 import Loading from "../components/Loading";
 
-export default function Profile() {
+export default function MyPage() {
     const [passwordConfirm, setpasswordConfirm] = useState("");
     
     const { user, setUser, loading, saving, saveUser, isDirty } = useProfileEdit();
@@ -15,7 +15,17 @@ export default function Profile() {
     if (!user) return null;
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="px-4 py-8 sm:px-6 lg:px-20">
+      <section className="mb-10">
+        <h1 className="text-xl font-bold text-[#4988C4]">마이 페이지</h1>
+        <p className="mt-2 text-sm text-gray-500">
+          내 정보와 활동 내역 관리
+        </p>
+      </section>
+
+      <div className="flex flex-col gap-6 rounded-2xl bg-[#F8F9FC] p-10 lg:flex-row lg:items-stretch">
+        <div className="flex flex-1 flex-col gap-4">
+          <div className="grid grid-cols-2 gap-4">
         <Container title="회원정보 수정" >
 
             <p className="text-sm text-gray-600 mb-4">현재 로그인된 사용자: <strong>{user.userID}</strong></p>
@@ -168,6 +178,9 @@ export default function Profile() {
 
             </div>
         </Container>
+    </div>
+    </div>
+    </div>
     </div>
   );
 }
