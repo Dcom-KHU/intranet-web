@@ -8,10 +8,11 @@ import {
   validateEmail,
   validateId,
   validatePassword,
+  validatePasswordMatch,
+  validatePhoneNumber,
   verifyEmailCode,
 } from "../utils/auth.utils";
 
-const phoneRegex = /^010-\d{4}-\d{4}$/;
 export type RegisterModalType =
   | "emailCodeSent"
   | "registerFailed"
@@ -85,7 +86,7 @@ export default function useRegisterForm() {
     else clearFieldError("password");
 
     if (confirmPassword) {
-      if (value !== confirmPassword) setFieldError("confirmPassword", "비밀번호가 일치하지 않습니다.");
+      if (!validatePasswordMatch(value, confirmPassword)) setFieldError("confirmPassword", "비밀번호가 일치하지 않습니다.");
       else clearFieldError("confirmPassword");
     }
   };
@@ -93,7 +94,7 @@ export default function useRegisterForm() {
   const handleConfirmPasswordChange = (value: string) => {
     setConfirmPassword(value);
     if (!value) setFieldError("confirmPassword", "비밀번호 확인을 입력해주세요.");
-    else if (password !== value) setFieldError("confirmPassword", "비밀번호가 일치하지 않습니다.");
+    else if (!validatePasswordMatch(password, value)) setFieldError("confirmPassword", "비밀번호가 일치하지 않습니다.");
     else clearFieldError("confirmPassword");
   };
 
@@ -108,7 +109,7 @@ export default function useRegisterForm() {
   const handlePhoneNumberChange = (value: string) => {
     setPhoneNumber(value);
     if (!value) setFieldError("phoneNumber", "전화번호를 입력해주세요.");
-    else if (!phoneRegex.test(value)) setFieldError("phoneNumber", "010-XXXX-XXXX 형식으로 입력해주세요.");
+    else if (!validatePhoneNumber(value)) setFieldError("phoneNumber", "010-XXXX-XXXX 형식으로 입력해주세요.");
     else clearFieldError("phoneNumber");
   };
 
@@ -165,10 +166,10 @@ export default function useRegisterForm() {
     if (!validateId(userID)) newErrors.userID = "아이디는 4자 이상 20자 이하여야 합니다.";
     if (!isIdChecked) newErrors.userID = "아이디 중복 확인을 해주세요.";
     if (!validatePassword(password)) newErrors.password = "영문 + 숫자 조합 8자 이상이어야 합니다.";
-    if (password !== confirmPassword) newErrors.confirmPassword = "비밀번호가 일치하지 않습니다.";
+    if (!validatePasswordMatch(password, confirmPassword)) newErrors.confirmPassword = "비밀번호가 일치하지 않습니다.";
     if (!validateEmail(email)) newErrors.email = "올바른 이메일 형식이 아닙니다.";
     if (!isEmailVerified) newErrors.emailCode = "이메일 인증을 완료해주세요.";
-    if (!phoneNumber.trim()) newErrors.phoneNumber = "전화번호를 입력해주세요.";
+    if (!validatePhoneNumber(phoneNumber)) newErrors.phoneNumber = "010-XXXX-XXXX 형식으로 입력해주세요.";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -218,7 +219,8 @@ export default function useRegisterForm() {
     errors,
     isUserIDValid: isIdChecked && !errors.userID,
     isPasswordValid: !!password && validatePassword(password),
-    isConfirmPasswordValid: !!confirmPassword && password === confirmPassword,
+    isConfirmPasswordValid:
+      !!confirmPassword && validatePasswordMatch(password, confirmPassword),
     isEmailVerified,
     isRegisterComplete: registerModalType === "registerComplete",
     registerModalType,

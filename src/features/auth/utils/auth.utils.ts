@@ -97,6 +97,10 @@ export const validateEmail = (email: string) => {
   return emailRegex.test(email);
 };
 
+export const validatePhoneNumber = (phoneNumber: string) => {
+  return /^010-\d{4}-\d{4}$/.test(phoneNumber);
+};
+
 // -----------------------------
 //   ID 중복 체크 (EXPORT)
 // -----------------------------
@@ -120,7 +124,8 @@ export const isDuplicateUserId = (
 const excludePassword = (
   user: User
 ): AuthUser => {
-  const { password, ...safeUser } = user;
+  const safeUser = { ...user };
+  Reflect.deleteProperty(safeUser, "password");
   return safeUser;
 };
 
@@ -216,6 +221,28 @@ export const requestTemporaryPassword = (
 export const isPasswordResetRequired = () =>
   !!localStorage.getItem(PASSWORD_RESET_REQUIRED_KEY);
 
+export const verifyCurrentPassword = (userID: string, password: string) => {
+  const localUsers: User[] = JSON.parse(
+    localStorage.getItem("users") || "[]"
+  );
+  const user = [...mockUsers, ...localUsers].find(
+    (candidate) => candidate.userID === userID
+  );
+  const resetRequest = getPasswordResetRequest();
+
+  return (
+    user?.password === password ||
+    (!!resetRequest &&
+      resetRequest.userID === userID &&
+      resetRequest.temporaryPassword === password)
+  );
+};
+
+export const completePasswordReset = () => {
+  localStorage.removeItem(PASSWORD_RESET_KEY);
+  localStorage.removeItem(PASSWORD_RESET_REQUIRED_KEY);
+};
+
 // -----------------------------
 //   회원가입
 // -----------------------------
@@ -232,7 +259,7 @@ export const register = (user: User) => {
   if (
     !validateId(user.userID) ||
     !validatePassword(user.password) ||
-    !validateEmail((user as any).email)
+    !validateEmail(user.email)
   ) {
     return false;
   }

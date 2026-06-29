@@ -46,7 +46,7 @@ export default function MobileNavbar({
             onClick={onOpen}
             aria-label="Open navigation menu"
           >
-            <MdMenu size={8} />
+            <MdMenu size={20} />
           </motion.button>
           )}
           {profileMenu && (

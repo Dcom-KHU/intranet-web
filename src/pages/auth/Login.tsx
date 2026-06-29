@@ -37,7 +37,11 @@ const Login = () => {
     const result = login(userID, password);
 
     if (result.success) {
-      navigate(isPasswordResetRequired() ? "/profile" : "/home");
+      navigate(
+        isPasswordResetRequired()
+          ? "/my-page?section=password"
+          : "/home"
+      );
       return;
     }
 
