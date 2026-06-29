@@ -1,4 +1,5 @@
 // useAuth.ts
+// 로그인 및 로그아웃 담당 
 
 import { useEffect, useState } from "react";
 import type { AuthUser } from "../types/auth-user.type";

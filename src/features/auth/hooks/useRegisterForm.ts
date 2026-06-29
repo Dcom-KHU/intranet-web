@@ -1,17 +1,29 @@
-import { type FormEvent, useState } from "react";
+import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import type { User } from "../types/user.type";
+
 import {
-  isDuplicateUserId,
   register,
-  sendEmailCode,
   validateEmail,
   validateId,
   validatePassword,
   validatePasswordMatch,
-  validatePhoneNumber,
-  verifyEmailCode,
 } from "../utils/auth.utils";
+import useEmailVerification from "./useEmailVerification";
+import usePasswordValidation from "./usePasswordValidation";
+import usePhoneValidation from "./usePhoneValidation";
+import useUserIdValidation from "./useUserIDValidation";
+
+type RegisterField =
+  | "name"
+  | "studentNumber"
+  | "userID"
+  | "password"
+  | "confirmPassword"
+  | "email"
+  | "emailCode"
+  | "phoneNumber";
+
+type TouchedFields = Partial<Record<RegisterField, boolean>>;
 
 export type RegisterModalType =
   | "emailCodeSent"
@@ -19,210 +31,184 @@ export type RegisterModalType =
   | "registerComplete";
 
 export default function useRegisterForm() {
+  const navigate = useNavigate();
+  const emailVerification = useEmailVerification();
+  const passwordValidation = usePasswordValidation();
+  const phoneValidation = usePhoneValidation();
+  const userIdValidation = useUserIdValidation();
+
   const [name, setName] = useState("");
   const [studentNumber, setStudentNumber] = useState("");
-  const [userID, setUserID] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [emailCode, setEmailCode] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const [isIdChecked, setIsIdChecked] = useState(false);
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [touched, setTouched] = useState<TouchedFields>({});
+  const [submitAttempted, setSubmitAttempted] = useState(false);
   const [registerModalType, setRegisterModalType] =
     useState<RegisterModalType | null>(null);
 
-  const navigate = useNavigate();
+  const showError = (field: RegisterField) =>
+    Boolean(touched[field] || submitAttempted);
 
-  const setFieldError = (field: string, message: string) => {
-    setErrors((prev) => ({ ...prev, [field]: message }));
+  const errors: Partial<Record<RegisterField, string>> = {
+    name:
+      showError("name") && !name.trim() ? "이름을 입력해주세요." : undefined,
+    studentNumber:
+      showError("studentNumber") && studentNumber.length !== 10
+        ? "전체 학번은 10자리 숫자여야 합니다."
+        : undefined,
+    userID:
+      showError("userID")
+        ? userIdValidation.error ||
+          (!userIdValidation.checked ? "아이디 중복 확인을 해주세요." : undefined)
+        : undefined,
+    password: showError("password")
+      ? passwordValidation.passwordError
+      : undefined,
+    confirmPassword: showError("confirmPassword")
+      ? passwordValidation.confirmPasswordError
+      : undefined,
+    email:
+      showError("email") && !email
+        ? "이메일을 입력해주세요."
+        : showError("email") && !validateEmail(email)
+          ? "올바른 이메일 형식이 아닙니다."
+          : undefined,
+    emailCode: showError("emailCode")
+      ? emailVerification.error ||
+        (!emailVerification.code
+          ? "인증 코드를 입력해주세요."
+          : !emailVerification.isVerified
+            ? "이메일 인증을 완료해주세요."
+            : undefined)
+      : undefined,
+    phoneNumber: showError("phoneNumber")
+      ? phoneValidation.phoneError
+      : undefined,
   };
 
-  const clearFieldError = (field: string) => {
-    setErrors((prev) => {
-      const next = { ...prev };
-      delete next[field];
-      return next;
-    });
+  const touch = (field: RegisterField) => {
+    setTouched((previous) => ({ ...previous, [field]: true }));
   };
 
   const handleNameChange = (value: string) => {
     setName(value);
-    if (!value.trim()) setFieldError("name", "이름을 입력해주세요.");
-    else clearFieldError("name");
+    touch("name");
   };
 
   const handleStudentNumberChange = (value: string) => {
-    const onlyNumbers = value.replace(/\D/g, "");
-    setStudentNumber(onlyNumbers);
-
-    if (!onlyNumbers.trim()) {
-      setFieldError("studentNumber", "학번을 입력해주세요.");
-      return;
-    }
-
-    if (onlyNumbers.length !== 10) {
-      setFieldError("studentNumber", "전체 학번은 10자리 숫자여야 합니다.");
-      return;
-    }
-
-    clearFieldError("studentNumber");
+    setStudentNumber(value.replace(/\D/g, ""));
+    touch("studentNumber");
   };
 
   const handleUserIDChange = (value: string) => {
-    setUserID(value);
-    setIsIdChecked(false);
-    if (!value) setFieldError("userID", "아이디를 입력해주세요.");
-    else if (!validateId(value)) setFieldError("userID", "아이디는 4자 이상 20자 이하여야 합니다.");
-    else clearFieldError("userID");
+    userIdValidation.setUserID(value);
+    touch("userID");
   };
 
   const handlePasswordChange = (value: string) => {
-    setPassword(value);
-    if (!value) setFieldError("password", "비밀번호를 입력해주세요.");
-    else if (!validatePassword(value)) setFieldError("password", "영문 + 숫자 조합 8자 이상이어야 합니다.");
-    else clearFieldError("password");
-
-    if (confirmPassword) {
-      if (!validatePasswordMatch(value, confirmPassword)) setFieldError("confirmPassword", "비밀번호가 일치하지 않습니다.");
-      else clearFieldError("confirmPassword");
-    }
+    passwordValidation.setPassword(value);
+    touch("password");
+    if (passwordValidation.confirmPassword) touch("confirmPassword");
   };
 
   const handleConfirmPasswordChange = (value: string) => {
-    setConfirmPassword(value);
-    if (!value) setFieldError("confirmPassword", "비밀번호 확인을 입력해주세요.");
-    else if (!validatePasswordMatch(password, value)) setFieldError("confirmPassword", "비밀번호가 일치하지 않습니다.");
-    else clearFieldError("confirmPassword");
+    passwordValidation.setConfirmPassword(value);
+    touch("confirmPassword");
   };
 
   const handleEmailChange = (value: string) => {
     setEmail(value);
-    setIsEmailVerified(false);
-    if (!value) setFieldError("email", "이메일을 입력해주세요.");
-    else if (!validateEmail(value)) setFieldError("email", "올바른 이메일 형식이 아닙니다.");
-    else clearFieldError("email");
+    emailVerification.reset();
+    touch("email");
   };
 
   const handlePhoneNumberChange = (value: string) => {
-    setPhoneNumber(value);
-    if (!value) setFieldError("phoneNumber", "전화번호를 입력해주세요.");
-    else if (!validatePhoneNumber(value)) setFieldError("phoneNumber", "010-XXXX-XXXX 형식으로 입력해주세요.");
-    else clearFieldError("phoneNumber");
+    phoneValidation.setPhone(value);
+    touch("phoneNumber");
   };
 
   const handleCheckDuplicateId = () => {
-    if (!validateId(userID)) {
-      setFieldError("userID", "아이디는 4자 이상 20자 이하여야 합니다.");
-      return;
-    }
-
-    if (isDuplicateUserId(userID)) {
-      setFieldError("userID", "이미 사용 중인 아이디입니다.");
-      setIsIdChecked(false);
-      return;
-    }
-
-    clearFieldError("userID");
-    setIsIdChecked(true);
+    touch("userID");
+    userIdValidation.checkDuplicate();
   };
 
   const handleSendEmailCode = () => {
-    if (!validateEmail(email)) {
-      setFieldError("email", "올바른 이메일 형식이 아닙니다.");
-      return;
-    }
+    touch("email");
+    if (!emailVerification.sendCode(email)) return;
 
-    sendEmailCode(email);
-    clearFieldError("emailCode");
     setRegisterModalType("emailCodeSent");
   };
 
   const handleVerifyEmailCode = () => {
-    if (!emailCode) {
-      setFieldError("emailCode", "인증 코드를 입력해주세요.");
-      return;
-    }
-
-    if (verifyEmailCode(email, emailCode)) {
-      setIsEmailVerified(true);
-      clearFieldError("emailCode");
-      return;
-    }
-
-    setFieldError("emailCode", "인증 코드가 올바르지 않습니다.");
-    setIsEmailVerified(false);
+    touch("emailCode");
+    emailVerification.verifyCode(email);
   };
 
-  const handleRegister = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const setEmailCode = (value: string) => {
+    emailVerification.setCode(value);
+    touch("emailCode");
+  };
 
-    const newErrors: Record<string, string> = {};
+  const handleRegister = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSubmitAttempted(true);
 
-    if (!name.trim()) newErrors.name = "이름을 입력해주세요.";
-    if (!studentNumber.trim()) newErrors.studentNumber = "학번을 입력해주세요.";
-    if (!validateId(userID)) newErrors.userID = "아이디는 4자 이상 20자 이하여야 합니다.";
-    if (!isIdChecked) newErrors.userID = "아이디 중복 확인을 해주세요.";
-    if (!validatePassword(password)) newErrors.password = "영문 + 숫자 조합 8자 이상이어야 합니다.";
-    if (!validatePasswordMatch(password, confirmPassword)) newErrors.confirmPassword = "비밀번호가 일치하지 않습니다.";
-    if (!validateEmail(email)) newErrors.email = "올바른 이메일 형식이 아닙니다.";
-    if (!isEmailVerified) newErrors.emailCode = "이메일 인증을 완료해주세요.";
-    if (!validatePhoneNumber(phoneNumber)) newErrors.phoneNumber = "010-XXXX-XXXX 형식으로 입력해주세요.";
+    const isValid =
+      Boolean(name.trim()) &&
+      studentNumber.length === 10 &&
+      validateId(userIdValidation.userID) &&
+      userIdValidation.checked &&
+      validatePassword(passwordValidation.password) &&
+      validatePasswordMatch(
+        passwordValidation.password,
+        passwordValidation.confirmPassword
+      ) &&
+      validateEmail(email) &&
+      emailVerification.isVerified &&
+      phoneValidation.isValid;
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
+    if (!isValid) return;
 
-    const userInput: User = {
+    const success = register({
       id: Date.now(),
-      userID,
-      password,
+      userID: userIdValidation.userID,
+      password: passwordValidation.password,
       studentNumber,
       email,
-      name,
-      phoneNumber,
+      name: name.trim(),
+      phoneNumber: phoneValidation.phone,
       image: "",
       role: "USER",
       approvalStatus: "PENDING",
-    };
+    });
 
-    const success = register(userInput);
-
-    if (!success) {
-      setRegisterModalType("registerFailed");
-      return;
-    }
-
-    setRegisterModalType("registerComplete");
+    setRegisterModalType(success ? "registerComplete" : "registerFailed");
   };
 
-  const handleGoLogin = () => {
-    navigate("/");
-  };
-
-  const closeRegisterModal = () => {
-    setRegisterModalType(null);
-  };
+  const handleGoLogin = () => navigate("/");
+  const closeRegisterModal = () => setRegisterModalType(null);
 
   return {
     name,
     studentNumber,
-    userID,
-    password,
-    confirmPassword,
+    userID: userIdValidation.userID,
+    password: passwordValidation.password,
+    confirmPassword: passwordValidation.confirmPassword,
     email,
-    emailCode,
-    phoneNumber,
+    emailCode: emailVerification.code,
+    phoneNumber: phoneValidation.phone,
     errors,
-    isUserIDValid: isIdChecked && !errors.userID,
-    isPasswordValid: !!password && validatePassword(password),
+    isUserIDValid:
+      userIdValidation.checked && !userIdValidation.error,
+    isPasswordValid:
+      Boolean(passwordValidation.password) &&
+      validatePassword(passwordValidation.password),
     isConfirmPasswordValid:
-      !!confirmPassword && validatePasswordMatch(password, confirmPassword),
-    isEmailVerified,
-    isRegisterComplete: registerModalType === "registerComplete",
+      Boolean(passwordValidation.confirmPassword) &&
+      validatePasswordMatch(
+        passwordValidation.password,
+        passwordValidation.confirmPassword
+      ),
+    isEmailVerified: emailVerification.isVerified,
     registerModalType,
     handleNameChange,
     handleStudentNumberChange,
