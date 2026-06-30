@@ -1,15 +1,20 @@
 import { useSearchParams } from "react-router-dom";
 
 import Loading from "../../components/Loading";
+import MyCommentsPanel from "../../features/my-page/components/MyCommentsPanel";
 import MyPageSidebar from "../../features/my-page/components/MyPageSidebar";
+import MyPostsPanel from "../../features/my-page/components/MyPostsPanel";
 import PasswordPanel from "../../features/my-page/components/PasswordPanel";
 import ProfilePanel from "../../features/my-page/components/ProfilePanel";
 import { useProfileEdit } from "../../features/my-page/hooks/useProfileEdit";
 import type { ActiveMenu } from "../../features/my-page/types/types";
 
 
+const isActiveMenu = (section: string | null): section is ActiveMenu =>
+  section === "password" || section === "posts" || section === "comments";
+
 const getActiveMenu = (section: string | null): ActiveMenu =>
-  section === "password" ? "password" : "profile";
+  isActiveMenu(section) ? section : "profile";
 
 export default function MyPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -19,8 +24,8 @@ export default function MyPage() {
   const handleMenuSelect = (menu: ActiveMenu) => {
     const nextSearchParams = new URLSearchParams(searchParams);
 
-    if (menu === "password") nextSearchParams.set("section", "password");
-    else nextSearchParams.delete("section");
+    if (menu === "profile") nextSearchParams.delete("section");
+    else nextSearchParams.set("section", menu);
 
     setSearchParams(nextSearchParams);
   };
@@ -42,10 +47,20 @@ export default function MyPage() {
         />
 
         <main className="min-h-[440px] rounded-2xl border border-[#B5D4F4] bg-white p-5 sm:p-7">
-          {selectedMenu === "profile" ? (
+          {selectedMenu === "profile" && (
             <ProfilePanel user={user} saveUser={saveUser} saving={saving} />
-          ) : (
+          )}
+          {selectedMenu === "password" && (
             <PasswordPanel user={user} saveUser={saveUser} saving={saving} />
+          )}
+          {selectedMenu === "posts" && (
+            <MyPostsPanel
+              studentNumber={user.studentNumber}
+              isAdmin={user.role === "ADMIN"}
+            />
+          )}
+          {selectedMenu === "comments" && (
+            <MyCommentsPanel studentNumber={user.studentNumber} />
           )}
         </main>
       </div>

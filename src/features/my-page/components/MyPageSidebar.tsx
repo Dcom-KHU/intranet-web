@@ -11,26 +11,31 @@ import {
 import type { ActiveMenu } from "../types/types";
 
 type MenuItem = {
-  id: ActiveMenu | "posts" | "comments";
+  id: ActiveMenu;
   label: string;
   icon: ReactNode;
-  enabled: boolean;
 };
 
 const menuItems: MenuItem[] = [
-  { id: "profile", label: "개인 정보", icon: <FiUser />, enabled: true },
+  { 
+    id: "profile", 
+    label: "개인 정보", 
+    icon: <FiUser /> 
+  },
   {
     id: "password",
     label: "비밀번호 변경",
     icon: <HiOutlineLockClosed />,
-    enabled: true,
   },
-  { id: "posts", label: "내가 쓴 글", icon: <LuFileText />, enabled: false },
+  { 
+    id: "posts", 
+    label: "내가 쓴 글", 
+    icon: <LuFileText /> 
+  },
   {
     id: "comments",
-    label: "댓글 단 글",
+    label: "내가 단 댓글",
     icon: <LuMessageCircle />,
-    enabled: false,
   },
 ];
 
@@ -47,20 +52,17 @@ export default function MyPageSidebar({
     <aside className="flex min-h-0 flex-col rounded-2xl border border-[#B5D4F4] bg-white p-4">
       <nav className="space-y-1" aria-label="마이페이지 메뉴">
         {menuItems.map((item) => {
-          const selected = item.enabled && selectedMenu === item.id;
+          const selected = selectedMenu === item.id;
 
           return (
             <button
               key={item.id}
               type="button"
-              disabled={!item.enabled}
-              onClick={() => {
-                if (item.enabled) onMenuSelect(item.id as ActiveMenu);
-              }}
+              onClick={() => onMenuSelect(item.id)}
               className={`flex h-11 w-full items-center justify-between rounded-lg px-3 text-sm transition-colors ${
                 selected
                   ? "border border-[#9DC8FF] bg-[#EAF3FF] text-[#438DE3]"
-                  : "text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-55"
+                  : "text-gray-700 hover:bg-gray-50"
               }`}
             >
               <span className="flex items-center gap-3">

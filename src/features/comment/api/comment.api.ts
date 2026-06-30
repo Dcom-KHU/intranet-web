@@ -5,6 +5,7 @@ import type { Comment } from "../types/comment.type";
 export type CommentTarget = "gallery" | "info-sharing";
 
 type CommentApi = {
+  getAll: () => Promise<Comment[]>;
   getByPostId: (postId: number) => Promise<Comment[]>;
   create: (
     postId: number,
@@ -25,6 +26,8 @@ const createMockCommentApi = (initialComments: Comment[]): CommentApi => {
     Math.max(0, ...initialComments.map((comment) => comment.id)) + 1;
 
   return {
+    getAll: async () => [...comments],
+
     getByPostId: async (postId) =>
       comments.filter((comment) => comment.postId === postId),
 
@@ -91,3 +94,22 @@ export const deleteComment = (
   commentId: number,
   target: CommentTarget,
 ) => getCommentApi(target).delete(commentId);
+
+export type CommentWithTarget = Comment & { target: CommentTarget };
+
+export const getCommentsByAuthor = async (
+  studentNumber: string,
+): Promise<CommentWithTarget[]> => {
+  const targets: CommentTarget[] = ["gallery", "info-sharing"];
+  const commentsByTarget = await Promise.all(
+    targets.map(async (target) => {
+      const comments = await getCommentApi(target).getAll();
+
+      return comments
+        .filter((comment) => comment.author.studentNumber === studentNumber)
+        .map((comment) => ({ ...comment, target }));
+    }),
+  );
+
+  return commentsByTarget.flat();
+};
