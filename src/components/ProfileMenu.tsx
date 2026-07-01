@@ -47,7 +47,7 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
           
           {/* header */}
           <div className="px-4 py-5">
-            <p className="text-xs text-gray-500">User ID</p>
+            <p className="text-xs text-gray-500">ID</p>
             <p className="text-sm font-semibold text-gray-800">
               {user.userID}
             </p>
@@ -72,14 +72,14 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
                 setIsOpen(false);
               }}
             >
-              My Profile
+              마이페이지
             </button>
 
             <button
-              className="w-full rounded-md bg-blue-500 py-2 text-sm text-white hover:bg-blue-600"
+              className="w-full rounded-md bg-[#4988C4] py-2 text-sm text-white hover:bg-[#3D79B2]"
               onClick={logout}
             >
-              Logout
+              로그아웃
             </button>
           </div>
         </div>
