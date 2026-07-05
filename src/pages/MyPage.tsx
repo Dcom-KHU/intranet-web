@@ -1,13 +1,13 @@
 import { useSearchParams } from "react-router-dom";
 
-import Loading from "../../components/Loading";
-import MyCommentsPanel from "../../features/my-page/components/MyCommentsPanel";
-import MyPageSidebar from "../../features/my-page/components/MyPageSidebar";
-import MyPostsPanel from "../../features/my-page/components/MyPostsPanel";
-import PasswordPanel from "../../features/my-page/components/PasswordPanel";
-import ProfilePanel from "../../features/my-page/components/ProfilePanel";
-import { useProfileEdit } from "../../features/my-page/hooks/useProfileEdit";
-import type { ActiveMenu } from "../../features/my-page/types/types";
+import Loading from "../components/Loading";
+import MyCommentsPanel from "../features/my-page/components/MyCommentsPanel";
+import MyPageSidebar from "../features/my-page/components/MyPageSidebar";
+import MyPostsPanel from "../features/my-page/components/MyPostsPanel";
+import PasswordPanel from "../features/my-page/components/PasswordPanel";
+import ProfilePanel from "../features/my-page/components/ProfilePanel";
+import { useProfileEdit } from "../features/my-page/hooks/useProfileEdit";
+import type { ActiveMenu } from "../features/my-page/types/types";
 
 
 const isActiveMenu = (section: string | null): section is ActiveMenu =>

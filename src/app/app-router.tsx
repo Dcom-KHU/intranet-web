@@ -17,7 +17,7 @@ import InfoSharingEdit from "../pages/info-sharing/InfoSharingEdit";
 import Manage from "../pages/manage/Manage";
 import ManagePendingUsers from "../pages/manage/ManagePendingUsers";
 import ManageUsers from "../pages/manage/ManageUsers";
-import MyPage from "../pages/my-page/MyPage";
+import MyPage from "../pages/MyPage";
 import Notice from "../pages/notice/Notice";
 import NoticeDetail from "../pages/notice/NoticeDetail";
 import NoticeUpload from "../pages/notice/NoticeUpload";
