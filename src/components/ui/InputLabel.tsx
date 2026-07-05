@@ -7,7 +7,7 @@ type LabelProps = LabelHTMLAttributes<HTMLLabelElement> & {
 const InputLabel = ({ children, className = "", ...props }: LabelProps) => {
   return (
     <label
-      className={`mb-2 block text-gray-700 text-xs ${className}`}
+      className={`ml-1 mb-2 block text-gray-700 text-xs ${className}`}
       {...props}
     >
       {children}

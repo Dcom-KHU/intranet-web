@@ -20,7 +20,7 @@ export default function ProfilePanel({
   const form = useProfileForm(user, saveUser);
 
   return (
-    <section>
+    <section className="px-5 pt-5 pb-0">
       <h2 className="mb-8 text-base font-bold text-[#0F2854]">회원 정보</h2>
 
       <div className="space-y-5">
@@ -41,7 +41,7 @@ export default function ProfilePanel({
           </LabeledInput>
         </div>
 
-        <LabeledInput label="ID">
+        <LabeledInput label="아이디">
           <Input value={user.userID} readOnly className="bg-[#F7F8FA]" />
         </LabeledInput>
 
@@ -59,7 +59,7 @@ export default function ProfilePanel({
           onVerifyCode={form.handleVerifyEmailCode}
         />
 
-        <LabeledInput label="Phone" error={form.errors.phoneNumber}>
+        <LabeledInput label="전화번호" error={form.errors.phoneNumber}>
           <Input
             value={form.isEditing ? form.draft.phoneNumber : user.phoneNumber}
             readOnly={!form.isEditing}

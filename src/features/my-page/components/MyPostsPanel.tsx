@@ -50,7 +50,7 @@ export default function MyPostsPanel({
   const currentPosts = data.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   return (
-    <section>
+    <section className="px-5 pt-5 pb-0">
       <div className="mb-8 flex items-end justify-between">
         <h2 className="text-base font-bold text-[#0F2854]">내가 쓴 글</h2>
         {!loading && !error && (

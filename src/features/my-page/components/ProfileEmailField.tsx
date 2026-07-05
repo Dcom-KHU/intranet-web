@@ -33,7 +33,7 @@ export default function ProfileEmailField({
 
   return (
     <div>
-      <InputLabel>E-mail</InputLabel>
+      <InputLabel>이메일</InputLabel>
 
       <div className="flex gap-3">
         <div className="flex-1">
