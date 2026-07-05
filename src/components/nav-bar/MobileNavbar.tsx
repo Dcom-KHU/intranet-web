@@ -1,9 +1,12 @@
-import { AnimatePresence, motion } from "framer-motion";
-import dcomLogo from "../../assets/dcom-logo-white.png";
-import sidebar from "../../assets/icon/sidebar.png"
-import { navMenu } from "./navMenu";
-import { useLocation } from "react-router-dom";
 import type { ReactNode } from "react";
+import { useLocation } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+
+import { MdMenu } from "react-icons/md";
+
+import { navMenu } from "./navMenu";
+import dcomLogo from "../../assets/dcom-logo-white.png";
+
 
 interface MobileNavbarProps {
   isOpen: boolean;
@@ -43,7 +46,7 @@ export default function MobileNavbar({
             onClick={onOpen}
             aria-label="Open navigation menu"
           >
-            <img src={sidebar} alt="sidbar-icon" className="w-8 "/>
+            <MdMenu size={20} />
           </motion.button>
           )}
           {profileMenu && (

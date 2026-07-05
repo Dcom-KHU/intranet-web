@@ -9,6 +9,7 @@ import { HiUpload } from "react-icons/hi";
 import Card from "../../components/ui/Card";
 import { Button } from "../../components/ui/Button";
 import SearchBar from "../../components/ui/SearchBar";
+import Pagination from "../../components/ui/Pagination";
 
 
 const ITEMS_PER_PAGE = 8;
@@ -31,11 +32,6 @@ const Gallery = () => {
     startIndex,
     startIndex + ITEMS_PER_PAGE
   );
-
-  const goToPage = (page: number) => {
-    if (page < 1 || page > totalPages) return;
-    setCurrentPage(page);
-  };
 
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-20">
@@ -84,50 +80,13 @@ const Gallery = () => {
         </div>
       </section>
 
-      <nav
-        aria-label="활동 사진 페이지"
-        className="mt-10 flex items-center justify-center gap-1 text-xs"
-      >
-        <button
-          type="button"
-          onClick={() => goToPage(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="flex size-5 items-center justify-center rounded border border-gray-200 text-gray-500 disabled:opacity-30"
-          aria-label="이전 페이지"
-        >
-          &lt;
-        </button>
-
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
-          const isActive = page === currentPage;
-
-          return (
-            <button
-              key={page}
-              type="button"
-              onClick={() => goToPage(page)}
-              aria-current={isActive ? "page" : undefined}
-              className={`flex size-5 items-center justify-center rounded border transition ${
-                isActive
-                  ? "border-[#4988C4] bg-[#4988C4] text-white"
-                  : "border-gray-200 text-gray-500 hover:border-gray-400"
-              }`}
-            >
-              {page}
-            </button>
-          );
-        })}
-
-        <button
-          type="button"
-          onClick={() => goToPage(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="flex size-5 items-center justify-center rounded border border-gray-200 text-gray-500 disabled:opacity-30"
-          aria-label="다음 페이지"
-        >
-          &gt;
-        </button>
-      </nav>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+        ariaLabel="활동 사진 페이지"
+        className="mt-10"
+      />
     </div>
   );
 };

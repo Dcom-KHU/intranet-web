@@ -151,6 +151,16 @@ export const GalleryComments: Comment[] = [
     content: "전체적으로 매우 만족스러운 행사였습니다.",
     createdAt: "2026.04.28",
   },
+  {
+    id: 16,
+    postId: 1,
+    author: {
+      studentNumber: "20209999",
+      name: "최민준",
+    },
+    content: "행사 사진과 내용 모두 잘 봤습니다!",
+    createdAt: "2026.06.28",
+  },
 ];
 
 export const InfoComments: Comment[] = [
@@ -303,5 +313,15 @@ export const InfoComments: Comment[] = [
     },
     content: "다음에도 유익한 정보 기대하겠습니다.",
     createdAt: "2026.02.22",
+  },
+  {
+    id: 16,
+    postId: 1,
+    author: {
+      studentNumber: "20239999",
+      name: "관리자",
+    },
+    content: "면접 준비에 바로 활용할 수 있겠네요. 감사합니다.",
+    createdAt: "2026.06.29",
   },
 ];
