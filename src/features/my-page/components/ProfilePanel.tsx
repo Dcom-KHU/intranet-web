@@ -20,7 +20,7 @@ export default function ProfilePanel({
   const form = useProfileForm(user, saveUser);
 
   return (
-    <section className="px-5 pt-5 pb-0">
+    <section className="px-10 pt-10 pb-5">
       <h2 className="mb-8 text-base font-bold text-[#0F2854]">회원 정보</h2>
 
       <div className="space-y-5">

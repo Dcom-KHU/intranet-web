@@ -34,11 +34,15 @@ export default function MyPage() {
   if (!user) return null;
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-10">
-      <header className="mb-8">
-        <h1 className="text-xl font-bold text-[#4988C4]">My Page</h1>
-        <p className="mt-2 text-xs text-gray-500">내 정보와 활동 내역 관리</p>
-      </header>
+    <div className="px-4 py-8 sm:px-6 lg:px-20">
+      <section className="mb-10">
+        <h1 className="text-xl font-bold text-[#4988C4]">
+          마이페이지
+        </h1>
+        <p className="mt-2 text-sm text-gray-500">
+          내 정보와 활동 내역 관리
+        </p>
+      </section>
 
       <div className="grid gap-5 rounded-2xl bg-[#F7F9FC] p-10 sm:grid-cols-[220px_minmax(0,1fr)]">
         <MyPageSidebar

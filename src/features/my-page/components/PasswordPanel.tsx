@@ -101,7 +101,7 @@ export default function PasswordPanel({
   };
 
   return (
-    <section className="px-5 pt-5 pb-0">
+    <section className="px-10 pt-10 pb-5">
       <h2 className="mb-2 text-base font-bold text-[#0F2854]">비밀번호 변경</h2>
       <p className="mb-8 text-xs text-gray-500">
         영문과 숫자를 포함한 8자 이상의 비밀번호를 사용해주세요.
