@@ -1,5 +1,7 @@
+import { api } from "@/api/client";
+import { type UploadPostDraft } from "../../upload/types/upload.type";
 import { exam_mock, exam_archives_mock } from "../../../mocks/exam-archive.mock";
-import type { UploadPostDraft } from "../../upload/types/upload.type";
+
 
 const htmlToText = (html: string) =>
   html
@@ -9,8 +11,20 @@ const htmlToText = (html: string) =>
     .replace(/&nbsp;/g, " ")
     .trim();
 
-export const getExamArchives = async () => {
-  return Promise.resolve(exam_archives_mock);
+// 족보 목록 조회
+export const getExamArchives = async (page = 0, size = 10) => {
+  try {
+    const res = await api.get("/api/archives", {
+      params: { page, size },
+    });
+
+    console.log("족보목록조회:", res.data);
+
+    return res.data;
+  } catch (error) {
+    console.error("족보목록조회 실패:", error);
+    return null;
+  }
 };
 
 export const getExam = async () => {
