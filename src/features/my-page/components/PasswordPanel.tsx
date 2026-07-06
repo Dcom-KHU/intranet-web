@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
@@ -8,7 +8,7 @@ import {
   validatePasswordMatch,
   verifyCurrentPassword,
 } from "../../auth/utils/auth.utils";
-import type { SaveUser } from "../types/types";
+import type { DirtyChangeHandler, SaveUser } from "../types/types";
 import LabeledInput from "./LabeledInput";
 
 type PasswordField = "currentPassword" | "newPassword" | "confirmPassword";
@@ -18,18 +18,32 @@ interface PasswordPanelProps {
   user: User;
   saveUser: SaveUser;
   saving: boolean;
+  onDirtyChange: DirtyChangeHandler;
 }
 
 export default function PasswordPanel({
   user,
   saveUser,
   saving,
+  onDirtyChange,
 }: PasswordPanelProps) {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState<PasswordErrors>({});
   const [message, setMessage] = useState("");
+  const isDirty = newPassword.length > 0;
+
+  useEffect(() => {
+    onDirtyChange(isDirty);
+  }, [isDirty, onDirtyChange]);
+
+  useEffect(
+    () => () => {
+      onDirtyChange(false);
+    },
+    [onDirtyChange],
+  );
 
   const handleCurrentPasswordChange = (value: string) => {
     setCurrentPassword(value);

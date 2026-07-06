@@ -1,8 +1,10 @@
+import { useEffect } from "react";
+
 import { Button } from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
 import type { User } from "../../auth/types/user.type";
 import useProfileForm from "../hooks/useProfileForm";
-import type { SaveUser } from "../types/types";
+import type { DirtyChangeHandler, SaveUser } from "../types/types";
 import LabeledInput from "./LabeledInput";
 import ProfileEmailField from "./ProfileEmailField";
 
@@ -10,14 +12,27 @@ interface ProfilePanelProps {
   user: User;
   saveUser: SaveUser;
   saving: boolean;
+  onDirtyChange: DirtyChangeHandler;
 }
 
 export default function ProfilePanel({
   user,
   saveUser,
   saving,
+  onDirtyChange,
 }: ProfilePanelProps) {
   const form = useProfileForm(user, saveUser);
+
+  useEffect(() => {
+    onDirtyChange(form.isDirty);
+  }, [form.isDirty, onDirtyChange]);
+
+  useEffect(
+    () => () => {
+      onDirtyChange(false);
+    },
+    [onDirtyChange],
+  );
 
   return (
     <section className="px-10 pt-10 pb-5">

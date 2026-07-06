@@ -1,6 +1,11 @@
 // src/app/router.tsx
 
-import { Routes, Route } from "react-router-dom";
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+} from "react-router-dom";
 import AppLayout from "./app-layout";
 
 import Login from "../pages/auth/Login";
@@ -33,17 +38,7 @@ import InfoSharingUpload from "../pages/info-sharing/InfoSharingUpload";
 
 
 export default function AppRouter() {
-  return (
-    <Routes>
-      {/* Public Routes */}
-      {publicRoutes.map(renderRoute)}
-
-      {/* Layout Routes */}
-      <Route element={<AppLayout />}>
-        {protectedRoutes.map(renderRoute)}
-      </Route>
-    </Routes>
-  );
+  return <RouterProvider router={router} />;
 }
 
 interface AppRoute {
@@ -202,4 +197,18 @@ function renderRoute(route: AppRoute) {
     />
   );
 }
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <>
+      {/* Public Routes */}
+      {publicRoutes.map(renderRoute)}
+
+      {/* Layout Routes */}
+      <Route element={<AppLayout />}>
+        {protectedRoutes.map(renderRoute)}
+      </Route>
+    </>,
+  ),
+);
 

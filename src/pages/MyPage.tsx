@@ -1,6 +1,8 @@
-import { useSearchParams } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { useBlocker, useSearchParams } from "react-router-dom";
 
 import Loading from "../components/Loading";
+import Modal from "../components/ui/Modal";
 import MyCommentsPanel from "../features/my-page/components/MyCommentsPanel";
 import MyPageSidebar from "../features/my-page/components/MyPageSidebar";
 import MyPostsPanel from "../features/my-page/components/MyPostsPanel";
@@ -20,6 +22,24 @@ export default function MyPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedMenu = getActiveMenu(searchParams.get("section"));
   const { user, loading, saving, saveUser } = useProfileEdit();
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const blocker = useBlocker(hasUnsavedChanges);
+
+  const handleDirtyChange = useCallback((isDirty: boolean) => {
+    setHasUnsavedChanges(isDirty);
+  }, []);
+
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (!hasUnsavedChanges) return;
+
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [hasUnsavedChanges]);
 
   const handleMenuSelect = (menu: ActiveMenu) => {
     const nextSearchParams = new URLSearchParams(searchParams);
@@ -52,10 +72,20 @@ export default function MyPage() {
 
         <main className="min-h-[440px] rounded-2xl border border-[#B5D4F4] bg-white p-5 sm:p-7">
           {selectedMenu === "profile" && (
-            <ProfilePanel user={user} saveUser={saveUser} saving={saving} />
+            <ProfilePanel
+              user={user}
+              saveUser={saveUser}
+              saving={saving}
+              onDirtyChange={handleDirtyChange}
+            />
           )}
           {selectedMenu === "password" && (
-            <PasswordPanel user={user} saveUser={saveUser} saving={saving} />
+            <PasswordPanel
+              user={user}
+              saveUser={saveUser}
+              saving={saving}
+              onDirtyChange={handleDirtyChange}
+            />
           )}
           {selectedMenu === "posts" && (
             <MyPostsPanel
@@ -68,6 +98,34 @@ export default function MyPage() {
           )}
         </main>
       </div>
+
+      <Modal
+        isOpen={blocker.state === "blocked"}
+        badge="저장 필요"
+        title="변경사항이 저장되지 않았습니다."
+        description={
+          selectedMenu === "password" ? (
+            <>
+              입력한 새 비밀번호가 저장되지 않았습니다.
+              <br />이 페이지를 나가시겠습니까?
+            </>
+          ) : (
+            <>
+              수정한 회원 정보가 저장되지 않았습니다.
+              <br />이 페이지를 나가시겠습니까?
+            </>
+          )
+        }
+        actionLabel="나가기"
+        onAction={() => {
+          if (blocker.state === "blocked") blocker.proceed();
+        }}
+        secondaryActionLabel="계속 수정"
+        onSecondaryAction={() => {
+          if (blocker.state === "blocked") blocker.reset();
+        }}
+        labelledById="unsaved-changes-modal-title"
+      />
     </div>
   );
 }
