@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useExamArchive } from "../../features/exam-archive/hooks/useExamArchiveDetail";
+import { useExamArchiveDetail } from "../../features/exam-archive/hooks/useExamArchiveDetail";
 import useAuth from "../../features/auth/hooks/useAuth";
 
 import { HiUpload } from "react-icons/hi";
@@ -16,7 +16,7 @@ const ExamArchiveDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const archiveId = Number(id);
-  const { data } = useExamArchive(archiveId);
+  const { data } = useExamArchiveDetail(archiveId);
   const { currentUser } = useAuth();
 
   if (!data) {

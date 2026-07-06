@@ -1,6 +1,8 @@
 import { api } from "@/api/client";
 import { type UploadPostDraft } from "../../upload/types/upload.type";
 import { exam_mock, exam_archives_mock } from "../../../mocks/exam-archive.mock";
+import type { ExamArchiveDetailDto } from "../dto/exam-archives.dto";
+import { toExamArchiveDetail } from "../mapper/exam-archives.mapper";
 
 
 const htmlToText = (html: string) =>
@@ -28,28 +30,18 @@ export const getExamArchives = async (page = 0, size = 10) => {
   }
 };
 
+// 족보 포스트 조회
 export const getExam = async () => {
   return Promise.resolve(exam_mock);
 };
 
+// 족보 상세 조회
 export const getExamArchiveById = async (id: number) => {
-  const archive = exam_archives_mock.find((item) => item.id === id);
-
-  if (!archive) {
-    return null;
-  }
-
-  const posts = exam_mock.filter(
-    (exam) =>
-      exam.subject === archive.subject && exam.professor === archive.professor,
+  const response = await api.get<{ data: ExamArchiveDetailDto }>(
+    `/api/archives/${id}`,
   );
 
-  return {
-    id: archive.id,
-    subject: archive.subject,
-    professor: archive.professor,
-    posts,
-  };
+  return toExamArchiveDetail(response.data.data);
 };
 
 export const updateExamPost = async (
