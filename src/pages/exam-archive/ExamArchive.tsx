@@ -1,17 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useExamArchives } from "../../features/exam-archive/hooks/useExamArchives";
-import type { ExamArchiveListType } from "../../features/exam-archive/types/exam-archive.type";
+import { type ExamArchiveListType } from "../../features/exam-archive/types/exam-archive.type";
 import { HiUpload } from "react-icons/hi";
 import { Button } from "../../components/ui/Button";
 import DataTable, { type DataTableColumn } from "../../components/ui/DataTable";
 import SearchBar from "../../components/ui/SearchBar";
+import ConvertTime from "@/components/ConvertTime";
 
 const SEARCH_LOADING_TIME = 250;
 
 const ExamArchive = () => {
   const navigate = useNavigate();
-  const { data } = useExamArchives();
+  const { data, pageInfo } = useExamArchives();
   const [searchKeyword, setSearchKeyword] = useState("");
   const [appliedKeyword, setAppliedKeyword] = useState("");
   const [isSearching, setIsSearching] = useState(false);
@@ -55,7 +56,7 @@ const ExamArchive = () => {
       header: "최근 수정일",
       width: "w-[17%]",
       cellClassName: "truncate text-sm text-gray-500",
-      render: (item) => item.date,
+      render: (item) => <ConvertTime date={item.date} />,
     },
   ];
 

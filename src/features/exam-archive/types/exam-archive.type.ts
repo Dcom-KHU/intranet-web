@@ -28,3 +28,11 @@ export interface ExamArchiveListType {
     professor: string;
     date: string;
 }
+
+export interface ExamArchivesResponseType {
+    content: ExamArchiveListType[];
+    page: number;
+    size: number;
+    totalPages: number;
+    totalElements: number;
+} 

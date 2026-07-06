@@ -18,11 +18,12 @@ export const getExamArchives = async (page = 0, size = 10) => {
       params: { page, size },
     });
 
-    console.log("족보목록조회:", res.data);
+    console.log("족보 목록 조회:", res.data.data);
 
-    return res.data;
+    return res.data.data;
+    
   } catch (error) {
-    console.error("족보목록조회 실패:", error);
+    console.error("족보 목록 조회 실패:", error);  
     return null;
   }
 };
