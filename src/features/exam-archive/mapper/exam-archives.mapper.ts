@@ -45,7 +45,11 @@ const toExamArchiveRecord = (
   },
   date: dto.createdAt.slice(0, 10),
   description: dto.content,
-  files: dto.files.map((file) => file.originalFileName),
+  files: (dto.files ?? []).map((file) => ({
+    id: file.fileId,
+    name: file.originalFileName,
+    url: file.fileUrl,
+  })),
 });
 
 export const toExamArchiveDetail = (

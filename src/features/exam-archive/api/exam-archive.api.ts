@@ -44,6 +44,28 @@ export const getExamArchiveById = async (id: number) => {
   return toExamArchiveDetail(response.data.data);
 };
 
+// 족보 첨부파일 다운로드
+export const downloadExamArchiveFile = async (
+  archiveId: number,
+  recordId: number,
+  fileId: number,
+  fileName: string,
+) => {
+  const response = await api.get<Blob>(
+    `/api/archives/${archiveId}/records/${recordId}/files/${fileId}/download`,
+    { responseType: "blob" },
+  );
+  const objectUrl = URL.createObjectURL(response.data);
+  const link = document.createElement("a");
+
+  link.href = objectUrl;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(objectUrl);
+};
+
 export const updateExamPost = async (
   archiveId: number,
   postId: number,

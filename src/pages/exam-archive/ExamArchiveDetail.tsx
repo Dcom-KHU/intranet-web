@@ -10,6 +10,7 @@ import { Button } from "../../components/ui/Button";
 import Loading from "../../components/Loading";
 import UserDisplayName from "../../components/ui/UserDisplay";
 import PageBackButton from "../../components/ui/PageBackButton";
+import { downloadExamArchiveFile } from "../../features/exam-archive/api/exam-archive.api";
 
 
 const ExamArchiveDetail = () => {
@@ -72,21 +73,36 @@ const ExamArchiveDetail = () => {
                 </p>
               )}
 
-              {post.files.length > 0 && (
+              {post.fileAttachments && post.fileAttachments.length > 0 ? (
                 <ul className="space-y-3">
-                  {post.files.map((file) => (
-                    <li key={file}>
-                      <a
-                        href={`/${file}`}
+                  {post.fileAttachments.map((file) => (
+                    <li key={file.id}>
+                      <button
+                        type="button"
                         className="text-sm text-[#4988C4] underline underline-offset-2 hover:text-[#0F2854]"
-                        onClick={(event) => event.preventDefault()}
+                        onClick={() =>
+                          downloadExamArchiveFile(
+                            archiveId,
+                            post.id,
+                            file.id,
+                            file.name,
+                          )
+                        }
                       >
-                        {file}
-                      </a>
+                        {file.name}
+                      </button>
                     </li>
                   ))}
                 </ul>
-              )}
+              ) : post.files && post.files.length > 0 ? (
+                <ul className="space-y-3">
+                  {post.files.map((file) => (
+                    <li key={file} className="text-sm text-[#4988C4]">
+                      {file}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
 
               {currentUser?.studentNumber === post.author.studentNumber && (
                 <div className="absolute bottom-6 right-6 flex items-center gap-3">

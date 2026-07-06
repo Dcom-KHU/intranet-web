@@ -12,7 +12,7 @@ export const useExamArchiveDetail = (id: number) => {
     getExamArchiveById(id).then(setData);
   }, [id]);
 
-  // console.log("useExamArchiveDetail data:", data);
+  console.log("useExamArchiveDetail data:", data);
 
   return { data };
 };

@@ -4,7 +4,7 @@ import UploadForm from "../../features/upload/components/UploadForm";
 import Loading from "../../components/Loading";
 import useAuth from "../../features/auth/hooks/useAuth";
 import { updateExamPost } from "../../features/exam-archive/api/exam-archive.api";
-import { useExamArchive } from "../../features/exam-archive/hooks/useExamArchiveDetail";
+import { useExamArchiveDetail } from "../../features/exam-archive/hooks/useExamArchiveDetail";
 
 const ExamArchiveEdit = () => {
   const navigate = useNavigate();
@@ -12,7 +12,7 @@ const ExamArchiveEdit = () => {
   const archivePostId = Number(archiveId);
   const postId = Number(postIdParam);
   const { currentUser } = useAuth();
-  const { data: archive } = useExamArchive(archivePostId);
+  const { data: archive } = useExamArchiveDetail(archivePostId);
 
   if (!archive) return <Loading />;
 
