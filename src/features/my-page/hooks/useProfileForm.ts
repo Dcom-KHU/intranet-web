@@ -24,6 +24,10 @@ export default function useProfileForm(user: User, saveUser: SaveUser) {
   const emailVerification = useEmailVerification();
 
   const isEmailChanged = draft.email !== user.email;
+  const isDirty =
+    draft.name !== user.name ||
+    draft.email !== user.email ||
+    draft.phoneNumber !== user.phoneNumber;
 
   const clearFieldError = (field: ProfileField) => {
     setErrors((previous) => {
@@ -134,6 +138,7 @@ export default function useProfileForm(user: User, saveUser: SaveUser) {
 
   return {
     isEditing,
+    isDirty,
     draft,
     errors,
     message,

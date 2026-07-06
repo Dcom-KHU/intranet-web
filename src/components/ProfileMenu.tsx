@@ -47,7 +47,7 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
           
           {/* header */}
           <div className="px-4 py-5">
-            <p className="text-xs text-gray-500">ID</p>
+            <p className="text-xs text-gray-500">아이디</p>
             <p className="text-sm font-semibold text-gray-800">
               {user.userID}
             </p>

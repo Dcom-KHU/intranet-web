@@ -55,7 +55,7 @@ export default function MyCommentsPanel({
   const currentComments = data.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   return (
-    <section>
+    <section className="px-10 pt-10 pb-5">
       <div className="mb-8 flex items-end justify-between">
         <h2 className="text-base font-bold text-[#0F2854]">내가 단 댓글</h2>
         {!loading && !error && (

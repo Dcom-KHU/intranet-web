@@ -1,8 +1,10 @@
+import { useEffect } from "react";
+
 import { Button } from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
 import type { User } from "../../auth/types/user.type";
 import useProfileForm from "../hooks/useProfileForm";
-import type { SaveUser } from "../types/types";
+import type { DirtyChangeHandler, SaveUser } from "../types/types";
 import LabeledInput from "./LabeledInput";
 import ProfileEmailField from "./ProfileEmailField";
 
@@ -10,17 +12,30 @@ interface ProfilePanelProps {
   user: User;
   saveUser: SaveUser;
   saving: boolean;
+  onDirtyChange: DirtyChangeHandler;
 }
 
 export default function ProfilePanel({
   user,
   saveUser,
   saving,
+  onDirtyChange,
 }: ProfilePanelProps) {
   const form = useProfileForm(user, saveUser);
 
+  useEffect(() => {
+    onDirtyChange(form.isDirty);
+  }, [form.isDirty, onDirtyChange]);
+
+  useEffect(
+    () => () => {
+      onDirtyChange(false);
+    },
+    [onDirtyChange],
+  );
+
   return (
-    <section>
+    <section className="px-10 pt-10 pb-5">
       <h2 className="mb-8 text-base font-bold text-[#0F2854]">회원 정보</h2>
 
       <div className="space-y-5">
@@ -41,7 +56,7 @@ export default function ProfilePanel({
           </LabeledInput>
         </div>
 
-        <LabeledInput label="ID">
+        <LabeledInput label="아이디">
           <Input value={user.userID} readOnly className="bg-[#F7F8FA]" />
         </LabeledInput>
 
@@ -59,7 +74,7 @@ export default function ProfilePanel({
           onVerifyCode={form.handleVerifyEmailCode}
         />
 
-        <LabeledInput label="Phone" error={form.errors.phoneNumber}>
+        <LabeledInput label="전화번호" error={form.errors.phoneNumber}>
           <Input
             value={form.isEditing ? form.draft.phoneNumber : user.phoneNumber}
             readOnly={!form.isEditing}
