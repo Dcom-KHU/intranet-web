@@ -1,9 +1,11 @@
-import type { User } from "../types/user.type";
+import axios from "axios";
+import { api } from "@/api/client";
+import { type User } from "../types/user.type";
 import { mockUsers } from "../../../mocks/user-data.mock";
-import type { AuthUser } from "../types/auth-user.type";
+import { type AuthUser } from "../types/auth-user.type";
 
 const USER_STORAGE_KEY = "user";
-const TOKEN_STORAGE_KEY = "token";
+const TOKEN_STORAGE_KEY = "access_token";
 const EMAIL_CODE_KEY = "email_code";
 const PASSWORD_RESET_KEY = "password_reset";
 const PASSWORD_RESET_REQUIRED_KEY = "password_reset_required";
@@ -33,7 +35,7 @@ export type LoginResult =
   | { success: true }
   | {
       success: false;
-      reason: "invalidCredentials" | "pendingApproval" | "rejected";
+      reason: "invalidCredentials" | "pendingApproval" | "rejected" | "networkError";
     };
 
 const getPasswordResetRequest = (): PasswordResetRequest | null => {
@@ -118,16 +120,6 @@ export const isDuplicateUserId = (
   );
 };
 
-// -----------------------------
-//   password 제거 helper
-// -----------------------------
-const excludePassword = (
-  user: User
-): AuthUser => {
-  const safeUser = { ...user };
-  Reflect.deleteProperty(safeUser, "password");
-  return safeUser;
-};
 
 // -----------------------------
 //   이메일 인증 (MOCK)
@@ -277,50 +269,52 @@ export const register = (user: User) => {
 // -----------------------------
 //   로그인
 // -----------------------------
-export const login = (
-  userID: string,
-  pw: string
-): LoginResult => {
-  const localUsers: User[] = JSON.parse(
-    localStorage.getItem("users") || "[]"
-  );
+export interface LoginRequest {
+  loginId: string;
+  password: string;
+}
 
-  const users = [...mockUsers, ...localUsers];
+export interface LoginResponse {
+  accessToken: string;
+  user: AuthUser;
+}
 
-  const user = users.find((u) => u.userID === userID);
-  const resetRequest = getPasswordResetRequest();
-  const isTemporaryPassword =
-    !!resetRequest &&
-    resetRequest.userID === userID &&
-    resetRequest.temporaryPassword === pw;
 
-  if (!user || (user.password !== pw && !isTemporaryPassword)) {
-    return { success: false, reason: "invalidCredentials" };
+export const login = async (
+  loginId: string,
+  password: string
+): Promise<LoginResult> => {
+  try {
+    const { data } = await api.post<LoginResponse>("/api/auth/login", {
+      loginId,
+      password,
+    } satisfies LoginRequest);
+
+    localStorage.setItem(TOKEN_STORAGE_KEY, data.accessToken);
+    console.log("로그인 성공", data);
+    saveUser(data.user);
+    window.dispatchEvent(new Event("auth:user-updated"));
+
+    
+    return {
+      success: true,
+    };
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      return {
+        success: false,
+        reason: "invalidCredentials",
+      };
+    }
+
+      return {
+        success: false,
+        reason: "networkError",
+      };
   }
-
-  if (user.approvalStatus === "PENDING") {
-    return { success: false, reason: "pendingApproval" };
-  }
-
-  if (user.approvalStatus === "REJECTED") {
-    return { success: false, reason: "rejected" };
-  }
-
-  localStorage.setItem(
-    TOKEN_STORAGE_KEY,
-    "mock-token"
-  );
-
-  saveUser(excludePassword(user));
-
-  if (isTemporaryPassword) {
-    localStorage.setItem(PASSWORD_RESET_REQUIRED_KEY, userID);
-  } else {
-    localStorage.removeItem(PASSWORD_RESET_REQUIRED_KEY);
-  }
-
-  return { success: true };
 };
+
+
 
 // -----------------------------
 //   로그인 상태
