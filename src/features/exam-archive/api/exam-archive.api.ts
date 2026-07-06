@@ -1,7 +1,10 @@
 import { api } from "@/api/client";
 import { type UploadPostDraft } from "../../upload/types/upload.type";
 import { exam_mock, exam_archives_mock } from "../../../mocks/exam-archive.mock";
-import type { ExamArchiveDetailDto } from "../dto/exam-archives.dto";
+import type {
+  ExamArchiveDetailDto,
+  ExamArchivesPageDto,
+} from "../dto/exam-archives.dto";
 import { toExamArchiveDetail } from "../mapper/exam-archives.mapper";
 
 
@@ -15,19 +18,12 @@ const htmlToText = (html: string) =>
 
 // 족보 목록 조회
 export const getExamArchives = async (page = 0, size = 10) => {
-  try {
-    const res = await api.get("/api/archives", {
-      params: { page, size },
-    });
+  const response = await api.get<{ data: ExamArchivesPageDto }>(
+    "/api/archives",
+    { params: { page, size } },
+  );
 
-    console.log("족보 목록 조회:", res.data.data);
-
-    return res.data.data;
-    
-  } catch (error) {
-    console.error("족보 목록 조회 실패:", error);  
-    return null;
-  }
+  return response.data.data;
 };
 
 // 족보 포스트 조회

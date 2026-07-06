@@ -4,6 +4,7 @@ import { getGalleryPosts } from "../../gallery/api/gallery.api";
 import { getInfos } from "../../info-sharing/api/info-sharing.api";
 import { getNotices } from "../../notice/api/notice.api";
 import type { MyCommentItem, MyPostItem } from "../types/types";
+import { toExamArchive } from "../../exam-archive/mapper/exam-archives.mapper";
 
 const byNewestDate = <T extends { date: string }>(left: T, right: T) =>
   right.date.localeCompare(left.date);
@@ -45,7 +46,7 @@ export const getMyPosts = async (
   const examItems: MyPostItem[] = exams
     .filter((post) => post.author.studentNumber === studentNumber)
     .flatMap((post): MyPostItem[] => {
-      const archive = archives.find(
+      const archive = archives.content.map(toExamArchive).find(
         (item) =>
           item.subject === post.subject && item.professor === post.professor,
       );

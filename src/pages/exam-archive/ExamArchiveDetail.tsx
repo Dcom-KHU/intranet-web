@@ -73,34 +73,35 @@ const ExamArchiveDetail = () => {
                 </p>
               )}
 
-              {post.fileAttachments && post.fileAttachments.length > 0 ? (
+              {post.files && post.files.length > 0 ? (
                 <ul className="space-y-3">
-                  {post.fileAttachments.map((file) => (
-                    <li key={file.id}>
-                      <button
-                        type="button"
-                        className="text-sm text-[#4988C4] underline underline-offset-2 hover:text-[#0F2854]"
-                        onClick={() =>
-                          downloadExamArchiveFile(
-                            archiveId,
-                            post.id,
-                            file.id,
-                            file.name,
-                          )
-                        }
-                      >
-                        {file.name}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              ) : post.files && post.files.length > 0 ? (
-                <ul className="space-y-3">
-                  {post.files.map((file) => (
-                    <li key={file} className="text-sm text-[#4988C4]">
-                      {file}
-                    </li>
-                  ))}
+                  {post.files.map((file) => {
+                    const isApiFile = typeof file !== "string";
+                    const fileName = isApiFile ? file.name : file;
+
+                    return (
+                      <li key={isApiFile ? file.id : fileName}>
+                        {isApiFile ? (
+                          <button
+                            type="button"
+                            className="text-sm text-[#4988C4] underline underline-offset-2 hover:text-[#0F2854]"
+                            onClick={() =>
+                              downloadExamArchiveFile(
+                                archiveId,
+                                post.id,
+                                file.id,
+                                file.name,
+                              )
+                            }
+                          >
+                            {file.name}
+                          </button>
+                        ) : (
+                          <span className="text-sm text-[#4988C4]">{file}</span>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
               ) : null}
 

@@ -35,7 +35,9 @@ const ExamArchiveEdit = () => {
         professor: post.professor,
         semester: post.semester,
         descriptionHtml: post.description,
-        existingFiles: post.files,
+        existingFiles: post.files?.map((file) =>
+          typeof file === "string" ? file : file.name,
+        ),
       }}
       onSubmit={async (draft) => {
         await updateExamPost(archivePostId, postId, draft);

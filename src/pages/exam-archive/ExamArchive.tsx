@@ -12,7 +12,7 @@ const SEARCH_LOADING_TIME = 250;
 
 const ExamArchive = () => {
   const navigate = useNavigate();
-  const { data, pageInfo } = useExamArchives();
+  const { data } = useExamArchives();
   const [searchKeyword, setSearchKeyword] = useState("");
   const [appliedKeyword, setAppliedKeyword] = useState("");
   const [isSearching, setIsSearching] = useState(false);

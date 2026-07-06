@@ -41,7 +41,7 @@ const toExamArchiveRecord = (
   semester: `${dto.examYear}년 ${semesterLabels[dto.semester]} ${examTypeLabels[dto.examType]}`,
   author: {
     studentNumber: dto.author.studentNumber,
-    name: dto.author.nickname,
+    name: dto.author.name,
   },
   date: dto.createdAt.slice(0, 10),
   description: dto.content,

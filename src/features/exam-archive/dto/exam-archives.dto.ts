@@ -7,6 +7,14 @@ export interface ExamArchivesDto {
   lastModifiedAt: string;
 }
 
+export interface ExamArchivesPageDto {
+  content: ExamArchivesDto[];
+  page: number;
+  size: number;
+  totalPages: number;
+  totalElements: number;
+}
+
 export type ExamSemesterDto = "FIRST" | "SECOND" | "SUMMER" | "WINTER";
 export type ExamTypeDto = "MIDTERM" | "FINAL";
 
@@ -25,7 +33,7 @@ export interface ExamArchiveRecordDto {
   createdAt: string;
   updatedAt: string | null;
   author: {
-    nickname: string;
+    name: string;
     studentNumber: string;
   };
   files: ExamArchiveFileDto[];
