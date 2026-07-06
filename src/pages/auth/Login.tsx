@@ -22,6 +22,7 @@ const loginMessages: Record<
   invalidCredentials: "아이디 또는 비밀번호가 올바르지 않습니다.",
   pendingApproval: "가입 승인 대기 중입니다. 관리자 승인 후 로그인할 수 있습니다.",
   rejected: "가입이 승인되지 않은 계정입니다. 관리자에게 문의해주세요.",
+  networkError: "네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
 };
 
 const Login = () => {
@@ -31,10 +32,10 @@ const Login = () => {
   const [loginMessage, setLoginMessage] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (event: FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const result = login(userID, password);
+    const result = await login(userID, password);
 
     if (result.success) {
       navigate(

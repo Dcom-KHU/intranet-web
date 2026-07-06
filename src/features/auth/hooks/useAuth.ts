@@ -36,12 +36,12 @@ export default function useAuth() {
     setCurrentUser(getCurrentUser());
   }
 
-  function login(id: string, pw: string) {
-    const success = authLogin(id, pw);
+  async function login(id: string, pw: string) {
+    const result = await authLogin(id, pw);
 
     syncAuth();
 
-    return success;
+    return result;
   }
 
   function logout() {
