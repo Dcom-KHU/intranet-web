@@ -38,7 +38,7 @@ const toExamArchiveRecord = (
   id: dto.recordId,
   subject: archive.subjectName,
   professor: archive.professorName,
-  semester: `${dto.examYear}년 ${semesterLabels[dto.semester]} ${examTypeLabels[dto.examType]}`,
+  semester: dto.label? `${dto.examYear}년 ${semesterLabels[dto.semester]} ${examTypeLabels[dto.examType]}` : "",
   author: {
     studentNumber: dto.author.studentNumber,
     name: dto.author.name,

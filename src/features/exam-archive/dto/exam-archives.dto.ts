@@ -29,6 +29,7 @@ export interface ExamArchiveRecordDto {
   examYear: number;
   semester: ExamSemesterDto;
   examType: ExamTypeDto;
+  label: string | null;
   content: string;
   createdAt: string;
   updatedAt: string | null;
