@@ -25,6 +25,7 @@ export type UploadFormProps = {
   initialPost?: Partial<UploadPostDraft>;
   submitLabel?: string;
   onSubmit?: (post: UploadPostDraft) => Promise<void>;
+  onCreate?: (posts: UploadPostDraft[]) => Promise<void>;
   onCancel?: () => void;
   cancelLabel?: string;
 };

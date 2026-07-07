@@ -6,6 +6,12 @@ import type {
   ExamArchivesPageDto,
 } from "../dto/exam-archives.dto";
 import { toExamArchiveDetail } from "../mapper/exam-archives.mapper";
+import type {
+  CreateExamArchiveExamType,
+  CreateExamArchiveRecordDto,
+  CreateExamArchiveRequestDto,
+  CreateExamArchiveSemester,
+} from "../dto/create-exam-archive.dto";
 
 
 const htmlToText = (html: string) =>
@@ -15,6 +21,57 @@ const htmlToText = (html: string) =>
     .replace(/<[^>]*>/g, "")
     .replace(/&nbsp;/g, " ")
     .trim();
+
+const toCreateSemester = (semester: string): CreateExamArchiveSemester => {
+  const semesterNumber = semester.split("-")[1];
+
+  return semesterNumber === "2" ? "SECOND" : "FIRST";
+};
+
+const toCreateExamType = (examType: string): CreateExamArchiveExamType => {
+  const examTypeMap: Record<string, CreateExamArchiveExamType> = {
+    중간고사: "MIDTERM",
+    기말고사: "FINAL",
+    퀴즈: "QUIZ",
+    과제: "ASSIGNMENT",
+  };
+
+  return examTypeMap[examType] ?? "MIDTERM";
+};
+
+const toCreateExamArchiveRecord = (
+  post: UploadPostDraft,
+): CreateExamArchiveRecordDto => ({
+  examYear: Number(post.semester.split("-")[0]),
+  semester: toCreateSemester(post.semester),
+  examType: toCreateExamType(post.examType),
+  content: htmlToText(post.descriptionHtml),
+});
+
+const toCreateExamArchiveRequest = (
+  post: UploadPostDraft,
+): CreateExamArchiveRequestDto => ({
+  subjectName: post.subject.trim(),
+  professorName: post.professor.trim(),
+  records: [toCreateExamArchiveRecord(post)],
+});
+
+// 족보 게시글 등록
+export const createExamArchives = async (posts: UploadPostDraft[]) => {
+  await Promise.all(
+    posts.map((post) => {
+      const formData = new FormData();
+
+      formData.append(
+        "request",
+        JSON.stringify(toCreateExamArchiveRequest(post)),
+      );
+      post.files.forEach((file) => formData.append("files", file));
+
+      return api.post("/api/archives", formData);
+    }),
+  );
+};
 
 
 // 족보 목록 조회

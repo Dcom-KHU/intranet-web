@@ -1,5 +1,6 @@
 import { useRef, useState, type FormEvent } from "react";
 import { IoAdd } from "react-icons/io5";
+import axios from "axios";
 
 import { Button } from "../../../components/ui/Button";
 import Modal from "../../../components/ui/Modal";
@@ -26,6 +27,7 @@ export default function UploadForm({
   initialPost,
   submitLabel = "업로드",
   onSubmit,
+  onCreate,
   onCancel,
   cancelLabel,
 }: UploadFormProps) {
@@ -88,6 +90,16 @@ export default function UploadForm({
 
   const validateEntries = () => {
     if (
+      config.showExamFields &&
+      entries.some(
+        (entry) => !entry.subject.trim() || !entry.professor.trim(),
+      )
+    ) {
+      window.alert("과목명과 교수명을 입력해주세요.");
+      return false;
+    }
+
+    if (
       config.requireTitle &&
       entries.some((entry) => !entry.title.trim())
     ) {
@@ -139,6 +151,8 @@ export default function UploadForm({
 
       if (onSubmit) {
         await onSubmit(posts[0]);
+      } else if (onCreate) {
+        await onCreate(posts);
       } else {
         await uploadPosts({ mode, posts });
       }
@@ -149,7 +163,14 @@ export default function UploadForm({
           : `${entries.length}개의 글을 업로드했습니다.`,
       );
     } catch (error) {
-      console.error("업로드 실패:", error);
+      if (axios.isAxiosError(error)) {
+        console.error("업로드 실패 응답:", {
+          status: error.response?.status,
+          data: error.response?.data,
+        });
+      } else {
+        console.error("업로드 실패:", error);
+      }
       window.alert(
         onSubmit
           ? "게시글 수정에 실패했습니다."

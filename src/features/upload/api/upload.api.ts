@@ -1,6 +1,5 @@
 import type { UploadPostsRequest, UploadPostsResponse } from "../types/upload.type";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
+import { api } from "@/api/client";
 
 export const uploadPosts = async ({
   mode,
@@ -27,14 +26,10 @@ export const uploadPosts = async ({
     });
   });
 
-  const response = await fetch(`${API_BASE_URL}/api/uploads/${mode}`, {
-    method: "POST",
-    body: formData,
-  });
+  const response = await api.post<UploadPostsResponse>(
+    `/api/uploads/${mode}`,
+    formData,
+  );
 
-  if (!response.ok) {
-    throw new Error(`업로드 실패: ${response.status}`);
-  }
-
-  return response.json() as Promise<UploadPostsResponse>;
+  return response.data;
 };
