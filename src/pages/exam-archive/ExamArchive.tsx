@@ -1,21 +1,29 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useExamArchives } from "../../features/exam-archive/hooks/useExamArchives";
-import type { ExamArchiveListType } from "../../features/exam-archive/types/exam-archive.type";
+import { type ExamArchiveListType } from "../../features/exam-archive/types/exam-archive.type";
 import { HiUpload } from "react-icons/hi";
 import { Button } from "../../components/ui/Button";
 import DataTable, { type DataTableColumn } from "../../components/ui/DataTable";
 import SearchBar from "../../components/ui/SearchBar";
+import ConvertTime from "@/components/ConvertTime";
+import Pagination from "@/components/ui/Pagination";
 
 const SEARCH_LOADING_TIME = 250;
 
+
 const ExamArchive = () => {
   const navigate = useNavigate();
-  const { data } = useExamArchives();
+  const size = 10;
+  const [page, setPage] = useState(0);
+  
   const [searchKeyword, setSearchKeyword] = useState("");
   const [appliedKeyword, setAppliedKeyword] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const searchTimerRef = useRef<number | null>(null);
+
+  const { data, pageInfo } = useExamArchives(page, size);
+
 
   const filteredArchives = useMemo(() => {
     const keyword = appliedKeyword.trim().toLowerCase();
@@ -55,7 +63,7 @@ const ExamArchive = () => {
       header: "최근 수정일",
       width: "w-[17%]",
       cellClassName: "truncate text-sm text-gray-500",
-      render: (item) => item.date,
+      render: (item) => <ConvertTime date={item.date} />,
     },
   ];
 
@@ -127,6 +135,13 @@ const ExamArchive = () => {
           loadingMessage="검색 중..."
           emptyMessage="검색 결과가 없습니다."
           onRowClick={(item) => navigate(`/exam-archive/${item.id}`)}
+        />
+
+        <Pagination
+          className="mt-6"
+          currentPage={pageInfo.page + 1}
+          totalPages={pageInfo.totalPages}
+          onPageChange={(page) => setPage(page - 1)}
         />
       </section>
     </div>

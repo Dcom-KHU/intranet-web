@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useExamArchive } from "../../features/exam-archive/hooks/useExamArchiveDetail";
+import { useExamArchiveDetail } from "../../features/exam-archive/hooks/useExamArchiveDetail";
 import useAuth from "../../features/auth/hooks/useAuth";
 
 import { HiUpload } from "react-icons/hi";
@@ -10,13 +10,14 @@ import { Button } from "../../components/ui/Button";
 import Loading from "../../components/Loading";
 import UserDisplayName from "../../components/ui/UserDisplay";
 import PageBackButton from "../../components/ui/PageBackButton";
+import { downloadExamArchiveFile } from "../../features/exam-archive/api/exam-archive.api";
 
 
 const ExamArchiveDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const archiveId = Number(id);
-  const { data } = useExamArchive(archiveId);
+  const { data } = useExamArchiveDetail(archiveId);
   const { currentUser } = useAuth();
 
   if (!data) {
@@ -72,21 +73,37 @@ const ExamArchiveDetail = () => {
                 </p>
               )}
 
-              {post.files.length > 0 && (
+              {post.files && post.files.length > 0 ? (
                 <ul className="space-y-3">
-                  {post.files.map((file) => (
-                    <li key={file}>
-                      <a
-                        href={`/${file}`}
-                        className="text-sm text-[#4988C4] underline underline-offset-2 hover:text-[#0F2854]"
-                        onClick={(event) => event.preventDefault()}
-                      >
-                        {file}
-                      </a>
-                    </li>
-                  ))}
+                  {post.files.map((file) => {
+                    const isApiFile = typeof file !== "string";
+                    const fileName = isApiFile ? file.name : file;
+
+                    return (
+                      <li key={isApiFile ? file.id : fileName}>
+                        {isApiFile ? (
+                          <button
+                            type="button"
+                            className="text-sm text-[#4988C4] underline underline-offset-2 hover:text-[#0F2854]"
+                            onClick={() =>
+                              downloadExamArchiveFile(
+                                archiveId,
+                                post.id,
+                                file.id,
+                                file.name,
+                              )
+                            }
+                          >
+                            {file.name}
+                          </button>
+                        ) : (
+                          <span className="text-sm text-[#4988C4]">{file}</span>
+                        )}
+                      </li>
+                    );
+                  })}
                 </ul>
-              )}
+              ) : null}
 
               {currentUser?.studentNumber === post.author.studentNumber && (
                 <div className="absolute bottom-6 right-6 flex items-center gap-3">

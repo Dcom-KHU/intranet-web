@@ -3,6 +3,12 @@ export interface ExamArchiveAuthorType {
     name: string;
 }
 
+export interface ExamArchiveFileType {
+    id: number;
+    name: string;
+    url: string;
+}
+
 export interface ExamArchiveType {
     id: number;
     subject: string;
@@ -11,7 +17,7 @@ export interface ExamArchiveType {
     author: ExamArchiveAuthorType;
     date: string;
     description: string;
-    files: string[];
+    files?: string[] | ExamArchiveFileType[];
 }
 
 export interface ExamArchiveDetailType {
@@ -28,3 +34,11 @@ export interface ExamArchiveListType {
     professor: string;
     date: string;
 }
+
+export interface ExamArchivesResponseType {
+    content: ExamArchiveListType[];
+    page: number;
+    size: number;
+    totalPages: number;
+    totalElements: number;
+} 
