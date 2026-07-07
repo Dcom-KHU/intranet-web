@@ -16,6 +16,7 @@ const htmlToText = (html: string) =>
     .replace(/&nbsp;/g, " ")
     .trim();
 
+
 // 족보 목록 조회
 export const getExamArchives = async (page = 0, size = 10) => {
   const response = await api.get<{ data: ExamArchivesPageDto }>(
@@ -26,10 +27,12 @@ export const getExamArchives = async (page = 0, size = 10) => {
   return response.data.data;
 };
 
+
 // 족보 포스트 조회
 export const getExam = async () => {
   return Promise.resolve(exam_mock);
 };
+
 
 // 족보 상세 조회
 export const getExamArchiveById = async (id: number) => {
@@ -39,6 +42,7 @@ export const getExamArchiveById = async (id: number) => {
 
   return toExamArchiveDetail(response.data.data);
 };
+
 
 // 족보 첨부파일 다운로드
 export const downloadExamArchiveFile = async (
@@ -62,6 +66,8 @@ export const downloadExamArchiveFile = async (
   URL.revokeObjectURL(objectUrl);
 };
 
+
+// 족보 포스트 수정
 export const updateExamPost = async (
   archiveId: number,
   postId: number,

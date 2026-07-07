@@ -3,7 +3,7 @@ import { getExamArchives } from "../api/exam-archive.api";
 import type { ExamArchiveListType } from "../types/exam-archive.type";
 import { toExamArchive } from "../mapper/exam-archives.mapper";
 
-export const useExamArchives = () => {
+export const useExamArchives = (page: number, size: number) => {
     const [data, setData] = useState<ExamArchiveListType[]>([]);
     const [pageInfo, setPageInfo] = useState({
         page: 0,
@@ -13,7 +13,7 @@ export const useExamArchives = () => {
     });
 
     useEffect(() => {
-        getExamArchives().then((res) => {
+        getExamArchives(page, size).then((res) => {
             setData(res.content.map(toExamArchive));
             setPageInfo({
                 page: res.page,
@@ -22,7 +22,9 @@ export const useExamArchives = () => {
                 totalElements: res.totalElements,
             });
         });
-    }, []);
+    }, [page, size]);
+
+    console.log("useExamArchives data, pageInfo:", data, pageInfo);
 
     return { data, pageInfo };
 };
