@@ -126,7 +126,9 @@ export default function UploadForm({
       config.requireImage &&
       entries.some(
         (entry) =>
-          entry.files.length === 0 && entry.existingFiles.length === 0,
+          entry.files.length === 0 &&
+          entry.existingFiles.length === 0 &&
+          entry.existingFileItems.length === 0,
       )
     ) {
       window.alert("사진을 최소 1개 이상 첨부해주세요.");

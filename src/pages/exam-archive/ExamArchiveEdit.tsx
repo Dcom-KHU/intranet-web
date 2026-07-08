@@ -23,6 +23,17 @@ const ExamArchiveEdit = () => {
     return <Navigate to={`/exam-archive/${archivePostId}`} replace />;
   }
 
+  const examTypeLabel = post.examType === "FINAL" ? "기말고사" : "중간고사";
+  const semesterSuffix = {
+    FIRST: "1",
+    SECOND: "2",
+    SUMMER: "SUMMER",
+    WINTER: "WINTER",
+  }[post.semesterCode ?? "FIRST"];
+  const existingFileItems = (post.files ?? []).filter(
+    (file) => typeof file !== "string",
+  );
+
   return (
     <UploadForm
       mode="exam"
@@ -33,11 +44,18 @@ const ExamArchiveEdit = () => {
       initialPost={{
         subject: post.subject,
         professor: post.professor,
-        semester: post.semester,
+        examYear: post.examYear,
+        semester: post.examYear
+          ? `${post.examYear}-${semesterSuffix}`
+          : post.semester,
+        semesterCode: post.semesterCode,
+        examType: examTypeLabel,
+        examTypeCode: post.examType,
+        content: post.description,
         descriptionHtml: post.description,
-        existingFiles: post.files?.map((file) =>
-          typeof file === "string" ? file : file.name,
-        ),
+        existingFiles: [],
+        existingFileItems,
+        deleteFileIds: [],
       }}
       onSubmit={async (draft) => {
         await updateExamPost(archivePostId, postId, draft);
