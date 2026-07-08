@@ -90,6 +90,24 @@ export const getExam = async () => {
   return Promise.resolve(exam_mock);
 };
 
+// 족보 검색
+export const getSearchExamArchives = async ({
+  searchKeyword,
+  page = 0,
+  size = 10,
+}: {
+  searchKeyword: string;
+  page: number;
+  size: number;
+}) => {
+  const response = await api.get<{ data: ExamArchivesPageDto }>(
+    "/api/archives/search",
+    { params: { searchKeyword, page, size } },
+  );
+
+  return response.data.data;
+};
+
 
 // 족보 상세 조회
 export const getExamArchiveById = async (id: number) => {
