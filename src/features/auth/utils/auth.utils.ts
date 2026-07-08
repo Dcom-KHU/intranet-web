@@ -58,14 +58,6 @@ const getPasswordResetRequest = (): PasswordResetRequest | null => {
   }
 };
 
-const toPasswordResetStatus = (
-  reset: PasswordResetRequest
-): PasswordResetStatus => ({
-  email: reset.email,
-  sentAt: reset.sentAt,
-  expiresAt: reset.expiresAt,
-});
-
 // -----------------------------
 //   Validation Utils (EXPORT)
 // -----------------------------
@@ -121,15 +113,11 @@ export const isDuplicateUserId = (
 };
 
 
-// -----------------------------
-//   이메일 인증 (MOCK)
-// -----------------------------
 
-// 인증 코드 발송 (실제 API 대신 localStorage)
+// 인증 코드 확인
+// TODO: 회원가입 이메일 인증 API 연동 시 제거합니다.
 export const sendEmailCode = (email: string) => {
-  const code = String(
-    Math.floor(100000 + Math.random() * 900000)
-  );
+  const code = String(Math.floor(100000 + Math.random() * 900000));
 
   localStorage.setItem(
     EMAIL_CODE_KEY,
@@ -137,15 +125,13 @@ export const sendEmailCode = (email: string) => {
       email,
       code,
       createdAt: Date.now(),
-    })
+    }),
   );
 
-  console.log("📩 인증 코드 (mock):", code);
-
+  console.info("Email verification code (mock):", code);
   return code;
 };
 
-// 인증 코드 확인
 export const verifyEmailCode = (
   email: string,
   inputCode: string
@@ -168,50 +154,6 @@ export const verifyEmailCode = (
 
   return isValid;
 };
-
-export const requestTemporaryPassword = (
-  email: string
-): PasswordResetRequestResult => {
-  const users: User[] = [
-    ...mockUsers,
-    ...JSON.parse(localStorage.getItem("users") || "[]"),
-  ];
-  const user = users.find((candidate) => candidate.email === email);
-
-  if (!user) return { status: "userNotFound" };
-
-  const existingRequest = getPasswordResetRequest();
-  const now = Date.now();
-
-  if (
-    existingRequest?.email === email &&
-    now - existingRequest.sentAt < PASSWORD_RESET_RESEND_COOLDOWN_MS
-  ) {
-    return {
-      status: "resendTooSoon",
-      reset: toPasswordResetStatus(existingRequest),
-    };
-  }
-
-  const temporaryPassword = `Temp${Math.floor(
-    100000 + Math.random() * 900000
-  )}`;
-  const reset: PasswordResetRequest = {
-    email,
-    userID: user.userID,
-    temporaryPassword,
-    sentAt: now,
-    expiresAt: now + PASSWORD_RESET_TTL_MS,
-  };
-
-  localStorage.setItem(PASSWORD_RESET_KEY, JSON.stringify(reset));
-  console.log("Temporary password (mock):", temporaryPassword);
-
-  return { status: "sent", reset: toPasswordResetStatus(reset) };
-};
-
-export const isPasswordResetRequired = () =>
-  !!localStorage.getItem(PASSWORD_RESET_REQUIRED_KEY);
 
 export const verifyCurrentPassword = (userID: string, password: string) => {
   const localUsers: User[] = JSON.parse(

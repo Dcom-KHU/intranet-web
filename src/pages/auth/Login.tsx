@@ -5,8 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { MdInfoOutline } from "react-icons/md";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 
-import { isPasswordResetRequired } from "@/features/auth/utils/auth.utils";
-
 import useLogin from "@/features/auth/hooks/useLogin";
 
 import Input from "../../components/ui/Input";
@@ -39,13 +37,13 @@ const Login = () => {
     event.preventDefault();
 
     try {
-      await login.mutateAsync({
+      const response = await login.mutateAsync({
         loginId: userID,
         password,
       });
 
       navigate(
-        isPasswordResetRequired()
+        response.requirePasswordChange
           ? "/my-page?section=password"
           : "/home"
       );
