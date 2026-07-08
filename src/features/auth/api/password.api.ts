@@ -9,6 +9,15 @@ export interface PasswordResetSendResponse {
   message?: string;
 }
 
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export interface ResetPasswordRequest {
+  newPassword: string;
+}
+
 export const passwordApi = {
   sendTemporaryPassword: async (
     request: PasswordResetSendRequest
@@ -18,6 +27,24 @@ export const passwordApi = {
     const { data } = await api.post<PasswordResetSendResponse>(
       "/api/auth/password/reset/send",
       request
+    );
+
+    return data;
+  },
+
+  changePassword: async (request: ChangePasswordRequest) => {
+    const { data } = await api.patch(
+      "/api/users/me/password",
+      request,
+    );
+
+    return data;
+  },
+
+  resetPassword: async (request: ResetPasswordRequest) => {
+    const { data } = await api.post(
+      "/api/auth/password",
+      request,
     );
 
     return data;

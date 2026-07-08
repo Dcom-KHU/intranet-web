@@ -7,4 +7,5 @@ export default interface UserDto {
   phoneNumber: string;
   role: "USER" | "ADMIN";
   status?: "PENDING" | "APPROVED" | "REJECTED";
+  requirePasswordChange: boolean;
 }

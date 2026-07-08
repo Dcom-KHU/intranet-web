@@ -13,7 +13,8 @@ export default function useAuth() {
     staleTime: 5 * 60 * 1000,
   });
 
-  console.log("useAuth query data:", query.data); 
+  console.log("useAuth current user:", query.data);
+
   return {
     ...query,
     currentUser: query.data ?? null,

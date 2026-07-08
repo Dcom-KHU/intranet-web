@@ -31,12 +31,13 @@ export const authApi = {
   },
 
   me: async () => {
-    const { data } = await api.get<UserDto>(
+    const { data: response } = await api.get<UserDto>(
       "/api/auth/me"
     );
 
-    console.log("Me response data:", data);
-    return data;
+    console.log("Me response data:", response);
+
+    return response;
   },
 
   logout: async (refreshToken: string) => {

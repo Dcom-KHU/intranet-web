@@ -10,6 +10,7 @@ const toUser = (dto: UserDto): Omit<User, "password"> => ({
     phoneNumber: dto.phoneNumber,
     role: dto.role,
     status: dto.status,
+    requirePasswordChange: dto.requirePasswordChange,
 });
 
 export default toUser;

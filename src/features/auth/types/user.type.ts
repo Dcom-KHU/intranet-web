@@ -9,4 +9,5 @@ export type User = {
   password: string;
   role: "USER" | "ADMIN";
   status?: "PENDING" | "APPROVED" | "REJECTED";
+  requirePasswordChange: boolean;
 };
