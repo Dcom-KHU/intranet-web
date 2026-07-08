@@ -1,16 +1,28 @@
 export type UploadMode = "exam" | "gallery" | "notice" | "info";
 
+export type UploadExistingFile = {
+  id: number;
+  name: string;
+  url: string;
+};
+
 export type UploadPostDraft = {
   subject: string;
   professor: string;
+  examYear: number;
   semester: string;
+  semesterCode: "FIRST" | "SECOND" | "SUMMER" | "WINTER";
   examType: string;
+  examTypeCode: "MIDTERM" | "FINAL";
   title: string;
   date: string;
   location: string;
+  content: string;
   descriptionHtml: string;
   files: File[];
   existingFiles: string[];
+  existingFileItems: UploadExistingFile[];
+  deleteFileIds: number[];
 };
 
 export type UploadEntry = UploadPostDraft & {

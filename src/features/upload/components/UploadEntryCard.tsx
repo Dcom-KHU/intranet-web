@@ -80,6 +80,17 @@ export default function UploadEntryCard({
     });
   };
 
+  const removeExistingFileItem = (fileId: number) => {
+    onChange({
+      existingFileItems: entry.existingFileItems.filter(
+        (file) => file.id !== fileId,
+      ),
+      deleteFileIds: entry.deleteFileIds.includes(fileId)
+        ? entry.deleteFileIds
+        : [...entry.deleteFileIds, fileId],
+    });
+  };
+
   const appendFiles = (selectedFiles: File[]) => {
     const existingFileKeys = new Set(
       entry.files.map(
@@ -232,9 +243,30 @@ export default function UploadEntryCard({
         </ul>
       )}
 
+      {entry.existingFileItems.length > 0 && (
+        <ul className="mb-4 space-y-2">
+          {entry.existingFileItems.map((file) => (
+            <li key={file.id} className="flex w-fit items-center gap-1 text-xs">
+              <span className="text-[#4988C4] underline underline-offset-2">
+                {file.name}
+              </span>
+              <button
+                type="button"
+                aria-label={`${file.name} 삭제`}
+                className="flex size-4 items-center justify-center rounded-full text-gray-300 transition-colors hover:bg-gray-100 hover:text-gray-500"
+                onClick={() => removeExistingFileItem(file.id)}
+              >
+                <IoClose size={12} />
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+
       {config.requireImage &&
         entry.files.length === 0 &&
-        entry.existingFiles.length === 0 && (
+        entry.existingFiles.length === 0 &&
+        entry.existingFileItems.length === 0 && (
           <p className="mb-4 text-xs text-red-400">
             사진을 최소 1개 이상 첨부해주세요.
           </p>
