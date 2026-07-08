@@ -1,59 +1,23 @@
-// useAuth.ts
-// 로그인 및 로그아웃 담당 
-
-import { useEffect, useState } from "react";
-import type { AuthUser } from "../types/auth-user.type";
-import {
-  getCurrentUser,
-  isLoggedIn as checkIsLoggedIn,
-  login as authLogin,
-  logout as authLogout,
-} from "../utils/auth.utils";
+import { useQuery } from "@tanstack/react-query";
+import { authApi } from "../api/auth.api";
+import toUser from "../mapper/user.mapper";
+import { ACCESS_TOKEN_KEY, AUTH_QUERY_KEY } from "../constants/auth.constants";
 
 export default function useAuth() {
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    checkIsLoggedIn()
-  );
+  const hasAccessToken = Boolean(localStorage.getItem(ACCESS_TOKEN_KEY));
+  const query = useQuery({
+    queryKey: AUTH_QUERY_KEY,
+    queryFn: authApi.me,
+    enabled: hasAccessToken,
+    select: toUser,
+    staleTime: 5 * 60 * 1000,
+  });
 
-  const [currentUser, setCurrentUser] =
-    useState<AuthUser | null>(
-      getCurrentUser()
-    );
-
-  useEffect(() => {
-    syncAuth();
-    window.addEventListener("auth:user-updated", syncAuth);
-    window.addEventListener("storage", syncAuth);
-
-    return () => {
-      window.removeEventListener("auth:user-updated", syncAuth);
-      window.removeEventListener("storage", syncAuth);
-    };
-  }, []);
-
-  function syncAuth() {
-    setIsLoggedIn(checkIsLoggedIn());
-    setCurrentUser(getCurrentUser());
-  }
-
-  async function login(id: string, pw: string) {
-    const result = await authLogin(id, pw);
-
-    syncAuth();
-
-    return result;
-  }
-
-  function logout() {
-    authLogout();
-  }
-
+  console.log("useAuth query data:", query.data); 
   return {
-    isLoggedIn,
-    currentUser,
-
-    login,
-    logout,
-    syncAuth,
+    ...query,
+    currentUser: query.data ?? null,
+    isLoggedIn: Boolean(query.data),
+    isAuthLoading: hasAccessToken && query.isPending,
   };
 }

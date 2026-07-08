@@ -6,10 +6,7 @@ export type User = {
   name: string;
   studentNumber: string;
   phoneNumber: string;
-  image: string;
   password: string;
   role: "USER" | "ADMIN";
-  approvalStatus?: "PENDING" | "APPROVED" | "REJECTED";
-  requestedAt?: string;
-  lastLoginAt?: string;
+  status?: "PENDING" | "APPROVED" | "REJECTED";
 };

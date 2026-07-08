@@ -285,16 +285,15 @@ export const login = async (
   password: string
 ): Promise<LoginResult> => {
   try {
-    const { data } = await api.post<LoginResponse>("/api/auth/login", {
-      loginId,
-      password,
-    } satisfies LoginRequest);
+    const { data } = await api.post<LoginResponse>(
+      "/api/auth/login", 
+      {
+        loginId,
+        password,
+      } satisfies LoginRequest);
 
     localStorage.setItem(TOKEN_STORAGE_KEY, data.accessToken);
     console.log("로그인 성공", data);
-    saveUser(data.user);
-    window.dispatchEvent(new Event("auth:user-updated"));
-
     
     return {
       success: true,
@@ -316,34 +315,6 @@ export const login = async (
 
 
 
-// -----------------------------
-//   로그인 상태
-// -----------------------------
-export const isLoggedIn = () => {
-  return !!localStorage.getItem(
-    TOKEN_STORAGE_KEY
-  );
-};
-
-// -----------------------------
-//   현재 유저
-// -----------------------------
-export const getCurrentUser =
-  (): AuthUser | null => {
-    const savedUser =
-      localStorage.getItem(USER_STORAGE_KEY);
-
-    if (!savedUser) return null;
-
-    try {
-      return JSON.parse(savedUser);
-    } catch {
-      localStorage.removeItem(
-        USER_STORAGE_KEY
-      );
-      return null;
-    }
-  };
 
 // -----------------------------
 //   로그아웃
@@ -354,12 +325,16 @@ export const logout = () => {
   window.location.href = "/";
 };
 
-// -----------------------------
-//   내부 저장 함수
-// -----------------------------
-const saveUser = (user: AuthUser) => {
-  localStorage.setItem(
-    USER_STORAGE_KEY,
-    JSON.stringify(user)
-  );
+// TODO: 마이페이지를 React Query로 옮길 때 제거할 임시 호환 함수입니다.
+export const getCurrentUser = (): AuthUser | null => {
+  const savedUser = localStorage.getItem(USER_STORAGE_KEY);
+
+  if (!savedUser) return null;
+
+  try {
+    return JSON.parse(savedUser) as AuthUser;
+  } catch {
+    localStorage.removeItem(USER_STORAGE_KEY);
+    return null;
+  }
 };

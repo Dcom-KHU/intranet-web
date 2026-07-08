@@ -13,9 +13,12 @@ export const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('access_token');
+  const isLoginRequest = config.url?.endsWith('/api/auth/login');
 
-  if (token) {
+  if (token && !isLoginRequest) {
     config.headers.Authorization = `Bearer ${token}`;
+  } else {
+    delete config.headers.Authorization;
   }
 
   return config;
