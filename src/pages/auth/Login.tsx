@@ -1,53 +1,62 @@
+import axios from "axios";
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { MdInfoOutline } from "react-icons/md";
+import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 
-import {
-  isPasswordResetRequired,
-  login,
-  type LoginResult,
-} from "../../features/auth/utils/auth.utils";
+import useLogin from "@/features/auth/hooks/useLogin";
+
 import Input from "../../components/ui/Input";
 import InputLabel from "../../components/ui/InputLabel";
 import { Button } from "../../components/ui/Button";
 import dcomLogo from "../../assets/dcom-logo-black.png";
-import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 
 
-const loginMessages: Record<
-  Exclude<LoginResult, { success: true }>["reason"],
-  string
-> = {
+
+
+const loginMessages = {
   invalidCredentials: "아이디 또는 비밀번호가 올바르지 않습니다.",
   pendingApproval: "가입 승인 대기 중입니다. 관리자 승인 후 로그인할 수 있습니다.",
   rejected: "가입이 승인되지 않은 계정입니다. 관리자에게 문의해주세요.",
   networkError: "네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
 };
 
+
 const Login = () => {
+  const navigate = useNavigate();
+  const login = useLogin();
+
   const [userID, setUserID] = useState("");
   const [password, setPassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [loginMessage, setLoginMessage] = useState("");
-  const navigate = useNavigate();
+  
 
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const result = await login(userID, password);
+    try {
+      const response = await login.mutateAsync({
+        loginId: userID,
+        password,
+      });
 
-    if (result.success) {
       navigate(
-        isPasswordResetRequired()
+        response.requirePasswordChange
           ? "/my-page?section=password"
           : "/home"
       );
-      return;
-    }
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        setLoginMessage(loginMessages.invalidCredentials);
+        return;
+      }
 
-    setLoginMessage(loginMessages[result.reason]);
+      setLoginMessage(loginMessages.networkError);
+    }
   };
+
 
   const clearLoginMessage = () => setLoginMessage("");
 
@@ -114,7 +123,14 @@ const Login = () => {
             </p>
           )}
 
-          <Button type="submit" className="w-full">Login</Button>
+          <Button 
+            type="submit" 
+            className="w-full"
+            disabled={login.isPending}
+          >
+            {login.isPending ? "Logging in..." : "Login"}
+          </Button>
+
           <span className="mt-5 block text-center text-sm text-gray-500">
             Don't have an account?
             <a

@@ -13,9 +13,15 @@ export const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('access_token');
+  const isPublicAuthRequest = [
+    '/api/auth/login',
+    '/api/auth/password/reset/send',
+  ].some((path) => config.url?.endsWith(path));
 
-  if (token) {
+  if (token && !isPublicAuthRequest) {
     config.headers.Authorization = `Bearer ${token}`;
+  } else {
+    delete config.headers.Authorization;
   }
 
   return config;

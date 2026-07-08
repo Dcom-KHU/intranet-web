@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 
 import { Button } from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
+import useChangePassword from "../../auth/hooks/useChangePassword";
+import useResetPassword from "../../auth/hooks/useResetPassword";
 import type { User } from "../../auth/types/user.type";
 import {
   validatePassword,
   validatePasswordMatch,
-  verifyCurrentPassword,
 } from "../../auth/utils/auth.utils";
-import type { DirtyChangeHandler, SaveUser } from "../types/types";
+import type { DirtyChangeHandler } from "../types/types";
 import LabeledInput from "./LabeledInput";
 
 type PasswordField = "currentPassword" | "newPassword" | "confirmPassword";
@@ -16,15 +17,11 @@ type PasswordErrors = Partial<Record<PasswordField, string>>;
 
 interface PasswordPanelProps {
   user: User;
-  saveUser: SaveUser;
-  saving: boolean;
   onDirtyChange: DirtyChangeHandler;
 }
 
 export default function PasswordPanel({
   user,
-  saveUser,
-  saving,
   onDirtyChange,
 }: PasswordPanelProps) {
   const [currentPassword, setCurrentPassword] = useState("");
@@ -32,6 +29,10 @@ export default function PasswordPanel({
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState<PasswordErrors>({});
   const [message, setMessage] = useState("");
+  const changePassword = useChangePassword();
+  const resetPassword = useResetPassword();
+  const isTemporaryPasswordUser = user.requirePasswordChange;
+  const saving = changePassword.isPending || resetPassword.isPending;
   const isDirty = newPassword.length > 0;
 
   useEffect(() => {
@@ -49,7 +50,7 @@ export default function PasswordPanel({
     setCurrentPassword(value);
     setMessage("");
 
-    if (verifyCurrentPassword(user.userID, value)) {
+    if (value) {
       setErrors((previous) => {
         if (!previous.currentPassword) return previous;
         const next = { ...previous };
@@ -90,11 +91,11 @@ export default function PasswordPanel({
   const handlePasswordSave = async () => {
     const nextErrors: PasswordErrors = {};
 
-    if (!verifyCurrentPassword(user.userID, currentPassword)) {
-      nextErrors.currentPassword = "현재 비밀번호가 일치하지 않습니다.";
+    if (!isTemporaryPasswordUser && !currentPassword) {
+      nextErrors.currentPassword = "현재 비밀번호를 입력해 주세요.";
     }
     if (!validatePassword(newPassword)) {
-      nextErrors.newPassword = "영문과 숫자를 포함해 8자 이상 입력해주세요.";
+      nextErrors.newPassword = "영문과 숫자를 포함해 8자 이상 입력해 주세요.";
     }
     if (!validatePasswordMatch(newPassword, confirmPassword)) {
       nextErrors.confirmPassword = "새 비밀번호가 일치하지 않습니다.";
@@ -104,21 +105,30 @@ export default function PasswordPanel({
     setMessage("");
     if (Object.keys(nextErrors).length > 0) return;
 
-    const success = await saveUser({ ...user, password: newPassword });
-    setMessage(success ? "비밀번호가 변경되었습니다." : "변경에 실패했습니다.");
+    try {
+      if (isTemporaryPasswordUser) {
+        await resetPassword.mutateAsync({ newPassword });
+      } else {
+        await changePassword.mutateAsync({
+          currentPassword,
+          newPassword,
+        });
+      }
 
-    if (success) {
+      setMessage("비밀번호가 변경되었습니다.");
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
+    } catch {
+      setMessage("비밀번호 변경에 실패했습니다.");
     }
   };
 
   return (
-    <section className="px-10 pt-10 pb-5">
+    <section className="px-10 pb-5 pt-10">
       <h2 className="mb-2 text-base font-bold text-[#0F2854]">비밀번호 변경</h2>
       <p className="mb-8 text-xs text-gray-500">
-        영문과 숫자를 포함한 8자 이상의 비밀번호를 사용해주세요.
+        영문과 숫자를 포함한 8자 이상의 비밀번호를 사용해 주세요.
       </p>
 
       <div className="space-y-5">
@@ -127,9 +137,16 @@ export default function PasswordPanel({
             type="password"
             autoComplete="current-password"
             value={currentPassword}
+            disabled={isTemporaryPasswordUser}
+            placeholder={
+              isTemporaryPasswordUser
+                ? "임시 비밀번호 로그인 상태에서는 입력하지 않습니다."
+                : ""
+            }
             onChange={(event) => handleCurrentPasswordChange(event.target.value)}
           />
         </LabeledInput>
+
         <LabeledInput label="새 비밀번호" error={errors.newPassword}>
           <Input
             type="password"
@@ -138,14 +155,13 @@ export default function PasswordPanel({
             onChange={(event) => handleNewPasswordChange(event.target.value)}
           />
         </LabeledInput>
+
         <LabeledInput label="새 비밀번호 확인" error={errors.confirmPassword}>
           <Input
             type="password"
             autoComplete="new-password"
             value={confirmPassword}
-            onChange={(event) =>
-              handleConfirmPasswordChange(event.target.value)
-            }
+            onChange={(event) => handleConfirmPasswordChange(event.target.value)}
           />
         </LabeledInput>
       </div>

@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import type { ReactNode } from "react";
-import { getCurrentUser, isLoggedIn } from "../features/auth/utils/auth.utils";
+import useAuth from "../features/auth/hooks/useAuth";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -11,11 +11,17 @@ export default function ProtectedRoute({
   children,
   requireAdmin = false,
 }: ProtectedRouteProps) {
-  if (!isLoggedIn()) {
+  const { currentUser, isLoggedIn, isAuthLoading } = useAuth();
+
+  if (isAuthLoading) {
+    return <div className="flex min-h-screen items-center justify-center">Loading...</div>;
+  }
+
+  if (!isLoggedIn) {
     return <Navigate to="/" replace />;
   }
 
-  if (requireAdmin && getCurrentUser()?.role !== "ADMIN") {
+  if (requireAdmin && currentUser?.role !== "ADMIN") {
     return <Navigate to="/home" replace />;
   }
 

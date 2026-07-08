@@ -1,9 +1,10 @@
 import { useRef, useState, useEffect } from "react";
-import type { AuthUser } from "../features/auth/types/auth-user.type";
+import { type AuthUser } from "../features/auth/types/auth-user.type";
 import UserDisplayName from "./ui/UserDisplay";
-import { logout } from "../features/auth/utils/auth.utils";
+import useLogout from "../features/auth/hooks/useLogout";
 import { useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
+import { REFRESH_TOKEN_KEY } from "@/features/auth/constants/auth.constants";
 
 interface ProfileMenuProps {
   user: AuthUser;
@@ -11,6 +12,7 @@ interface ProfileMenuProps {
 
 const ProfileMenu = ({ user }: ProfileMenuProps) => {
   const navigate = useNavigate();
+  const logout = useLogout();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -77,7 +79,21 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
 
             <button
               className="w-full rounded-md bg-[#4988C4] py-2 text-sm text-white hover:bg-[#3D79B2]"
-              onClick={logout}
+              disabled={logout.isPending}
+              onClick={() => {
+                const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
+
+                if (!refreshToken) {
+                  navigate("/", { replace: true });
+                  return;
+                }
+
+                logout.mutate(refreshToken, {
+                  onSettled: () => {
+                    navigate("/", { replace: true });
+                  },
+                });
+              }}
             >
               로그아웃
             </button>

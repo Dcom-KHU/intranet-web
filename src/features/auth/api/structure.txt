@@ -1,0 +1,6 @@
+auth.api.ts 
+로그인/로그아웃/사용자 인증 상태만
+- login
+- me
+- logout
+
