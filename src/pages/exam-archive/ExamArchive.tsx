@@ -1,43 +1,42 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useExamArchives } from "../../features/exam-archive/hooks/useExamArchives";
+import { useSearchExamArchives } from "../../features/exam-archive/hooks/useSearchExamArchives";
 import { type ExamArchiveListType } from "../../features/exam-archive/types/exam-archive.type";
 import { HiUpload } from "react-icons/hi";
 import { Button } from "../../components/ui/Button";
-import DataTable, { type DataTableColumn } from "../../components/ui/DataTable";
+import DataTable, {
+  type DataTableColumn,
+} from "../../components/ui/DataTable";
 import SearchBar from "../../components/ui/SearchBar";
 import ConvertTime from "@/components/ConvertTime";
 import Pagination from "@/components/ui/Pagination";
 
 const SEARCH_LOADING_TIME = 250;
 
-
 const ExamArchive = () => {
   const navigate = useNavigate();
+
   const size = 10;
   const [page, setPage] = useState(0);
-  
+
   const [searchKeyword, setSearchKeyword] = useState("");
   const [appliedKeyword, setAppliedKeyword] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+
   const searchTimerRef = useRef<number | null>(null);
 
-  const { data, pageInfo } = useExamArchives(page, size);
+  const archiveQuery = useExamArchives(page, size);
 
+  const searchQuery = useSearchExamArchives(
+    appliedKeyword,
+    page,
+    size,
+  );
 
-  const filteredArchives = useMemo(() => {
-    const keyword = appliedKeyword.trim().toLowerCase();
-
-    if (!keyword) {
-      return data;
-    }
-
-    return data.filter(
-      (item) =>
-        item.subject.toLowerCase().includes(keyword) ||
-        item.professor.toLowerCase().includes(keyword),
-    );
-  }, [data, appliedKeyword]);
+  const { data, pageInfo } = appliedKeyword.trim()
+    ? searchQuery
+    : archiveQuery;
 
   const columns: DataTableColumn<ExamArchiveListType>[] = [
     {
@@ -47,7 +46,9 @@ const ExamArchive = () => {
       render: (item) => (
         <div className="flex min-w-0 items-center gap-2 text-sm">
           <span className="truncate">{item.subject}</span>
-          <span className="shrink-0 text-[#4988C4]">[{item.count}]</span>
+          <span className="shrink-0 text-[#4988C4]">
+            [{item.count}]
+          </span>
         </div>
       ),
     },
@@ -73,8 +74,10 @@ const ExamArchive = () => {
     }
 
     setIsSearching(true);
+
     searchTimerRef.current = window.setTimeout(() => {
-      setAppliedKeyword(searchKeyword);
+      setPage(0);
+      setAppliedKeyword(searchKeyword.trim());
       setIsSearching(false);
     }, SEARCH_LOADING_TIME);
   };
@@ -93,6 +96,7 @@ const ExamArchive = () => {
         <h1 className="text-xl font-bold text-[#4988C4]">
           족보 아카이브
         </h1>
+
         <p className="mt-2 text-sm text-gray-500">
           선배들이 남긴 귀중한 전공 자료를 확인해보세요.
         </p>
@@ -118,30 +122,43 @@ const ExamArchive = () => {
 
       <section>
         <h2 className="mb-4 text-lg font-semibold">
-          { appliedKeyword.trim() 
-            ? <div className="flex justify-between items-end">
-                <span>"{appliedKeyword}" 검색 결과</span>
-                <span className="text-sm text-gray-400 font-normal"><span className="text-base text-[#4988C4] font-semibold">{filteredArchives.length}</span> 개의 게시물</span>
-            </div> 
-            : "최근 업로드된 족보"
-          }
+          {appliedKeyword ? (
+            <div className="flex items-end justify-between">
+              <span>
+                "{appliedKeyword}" 검색 결과
+              </span>
+
+              <span className="text-sm font-normal text-gray-400">
+                <span className="text-base font-semibold text-[#4988C4]">
+                  {pageInfo.totalElements}
+                </span>{" "}
+                개의 게시물
+              </span>
+            </div>
+          ) : (
+            "최근 업로드된 족보"
+          )}
         </h2>
 
         <DataTable
           columns={columns}
-          data={filteredArchives}
+          data={data}
           rowKey={(item) => item.id}
           isLoading={isSearching}
           loadingMessage="검색 중..."
           emptyMessage="검색 결과가 없습니다."
-          onRowClick={(item) => navigate(`/exam-archive/${item.id}`)}
+          onRowClick={(item) =>
+            navigate(`/exam-archive/${item.id}`)
+          }
         />
 
         <Pagination
           className="mt-6"
           currentPage={pageInfo.page + 1}
           totalPages={pageInfo.totalPages}
-          onPageChange={(page) => setPage(page - 1)}
+          onPageChange={(nextPage) =>
+            setPage(nextPage - 1)
+          }
         />
       </section>
     </div>
