@@ -10,7 +10,7 @@ import { Button } from "../../components/ui/Button";
 import Loading from "../../components/Loading";
 import UserDisplayName from "../../components/ui/UserDisplay";
 import PageBackButton from "../../components/ui/PageBackButton";
-import { downloadExamArchiveFile } from "../../features/exam-archive/api/exam-archive.api";
+import { deleteExamPost, downloadExamArchiveFile } from "../../features/exam-archive/api/exam-archive.api";
 
 
 const ExamArchiveDetail = () => {
@@ -23,6 +23,18 @@ const ExamArchiveDetail = () => {
   if (!data) {
     return <Loading />;
   }
+
+  const handleDeletePost = async (archiveId: number, recordId: number) => {
+    if (window.confirm("정말로 이 포스트를 삭제하시겠습니까?")) {
+
+      await deleteExamPost(archiveId, recordId);
+
+      setTimeout(() => {
+        navigate(`/exam-archive`);
+      }, 500);
+
+    }
+  };
 
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-20">
@@ -121,6 +133,9 @@ const ExamArchiveDetail = () => {
                     type="button"
                     aria-label="삭제"
                     className="text-gray-400 hover:text-red-400"
+                    onClick={() =>
+                      handleDeletePost(archiveId, post.id)
+                    }
                   >
                     <GoTrash size={16} />
                   </button>

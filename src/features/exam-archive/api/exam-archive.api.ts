@@ -11,28 +11,10 @@ import {
   toCreateExamArchiveRequest,
 } from "../utils/exam-archive.utils";
 import type {
+  ExamArchiveResponseDto,
   UpdateExamArchiveRequestDto,
-  UpdateExamArchiveResponseDto,
 } from "../dto/update-exam-archive.dto";
 
-
-
-// 족보 게시글 등록
-export const createExamArchives = async (posts: UploadPostDraft[]) => {
-  await Promise.all(
-    posts.map((post) => {
-      const formData = new FormData();
-
-      formData.append(
-        "request",
-        JSON.stringify(toCreateExamArchiveRequest(post)),
-      );
-      post.files.forEach((file) => formData.append("files", file));
-
-      return api.post("/api/archives", formData);
-    }),
-  );
-};
 
 
 // 족보 목록 조회
@@ -103,6 +85,24 @@ export const downloadExamArchiveFile = async (
 };
 
 
+// 족보 게시글 등록
+export const createExamArchives = async (posts: UploadPostDraft[]) => {
+  await Promise.all(
+    posts.map((post) => {
+      const formData = new FormData();
+
+      formData.append(
+        "request",
+        JSON.stringify(toCreateExamArchiveRequest(post)),
+      );
+      post.files.forEach((file) => formData.append("files", file));
+
+      return api.post("/api/archives", formData);
+    }),
+  );
+};
+
+
 // 족보 포스트 수정
 export const updateExamPost = async (
   archiveId: number,
@@ -142,9 +142,23 @@ export const updateExamPost = async (
     formData.append("files", file);
   });
 
-  const response = await api.put<UpdateExamArchiveResponseDto>(
+  const response = await api.put<ExamArchiveResponseDto>(
     `/api/archives/${archiveId}/records/${recordId}`,
     formData,
+  );
+
+  return response.data;
+};
+
+// 족보 포스트 삭제
+export const deleteExamPost = async (
+  archiveId: number, 
+  recordId: number
+) => {
+  console.log(`Deleting post with archiveId: ${archiveId}, recordId: ${recordId}`);
+
+  const response = await api.delete<ExamArchiveResponseDto>(
+    `/api/archives/${archiveId}/records/${recordId}`,
   );
 
   return response.data;

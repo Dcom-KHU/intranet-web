@@ -8,7 +8,7 @@ export interface UpdateExamArchiveRequestDto {
   deleteFileIds: number[];
 }
 
-export interface UpdateExamArchiveResponseDto {
+export interface ExamArchiveResponseDto {
   success: boolean;
   status: number;
   message: string;

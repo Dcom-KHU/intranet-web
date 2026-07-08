@@ -18,6 +18,10 @@ import {
 import UploadEntryCard from "./UploadEntryCard";
 import PageBackButton from "../../../components/ui/PageBackButton";
 
+type FormMessage = {
+  type: "error" | "success";
+  text: string;
+};
 
 export default function UploadForm({
   mode,
@@ -38,12 +42,17 @@ export default function UploadForm({
   const [entries, setEntries] = useState<UploadEntry[]>(() => initialEntries);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const [formMessage, setFormMessage] = useState<FormMessage | null>(null);
 
   const config = uploadModeConfig[mode];
   const canAddMultiplePosts = config.allowMultiplePosts && !onSubmit;
   const isEditMode = Boolean(onSubmit);
   const isDirty =
     getEntriesSignature(entries) !== getEntriesSignature(initialEntries);
+
+  const showMessage = (text: string, type: FormMessage["type"] = "error") => {
+    setFormMessage({ type, text });
+  };
 
   const requestCancel = () => {
     if (onCancel && isDirty) {
@@ -60,6 +69,7 @@ export default function UploadForm({
   };
 
   const updateEntry = (id: number, patch: Partial<UploadPostDraft>) => {
+    setFormMessage(null);
     setEntries((currentEntries) =>
       currentEntries.map((entry) =>
         entry.id === id ? { ...entry, ...patch } : entry,
@@ -68,6 +78,7 @@ export default function UploadForm({
   };
 
   const addEntry = () => {
+    setFormMessage(null);
     const nextId = nextIdRef.current;
     nextIdRef.current += 1;
 
@@ -83,6 +94,7 @@ export default function UploadForm({
       return;
     }
 
+    setFormMessage(null);
     setEntries((currentEntries) =>
       currentEntries.filter((entry) => entry.id !== id),
     );
@@ -95,7 +107,7 @@ export default function UploadForm({
         (entry) => !entry.subject.trim() || !entry.professor.trim(),
       )
     ) {
-      window.alert("과목명과 교수명을 입력해주세요.");
+      showMessage("과목명과 교수명을 입력해주세요.");
       return false;
     }
 
@@ -103,7 +115,7 @@ export default function UploadForm({
       config.requireTitle &&
       entries.some((entry) => !entry.title.trim())
     ) {
-      window.alert("제목을 입력해주세요.");
+      showMessage("제목을 입력해주세요.");
       return false;
     }
 
@@ -118,7 +130,7 @@ export default function UploadForm({
         return !text;
       })
     ) {
-      window.alert("설명을 입력해주세요.");
+      showMessage("내용을 입력해주세요.");
       return false;
     }
 
@@ -131,7 +143,7 @@ export default function UploadForm({
           entry.existingFileItems.length === 0,
       )
     ) {
-      window.alert("사진을 최소 1개 이상 첨부해주세요.");
+      showMessage("사진을 최소 1개 이상 첨부해주세요.");
       return false;
     }
 
@@ -142,6 +154,7 @@ export default function UploadForm({
     event.preventDefault();
     if (!validateEntries()) return;
 
+    setFormMessage(null);
     setIsSubmitting(true);
 
     try {
@@ -159,25 +172,31 @@ export default function UploadForm({
         await uploadPosts({ mode, posts });
       }
 
-      window.alert(
+      showMessage(
         onSubmit
           ? "게시글을 수정했습니다."
           : `${entries.length}개의 글을 업로드했습니다.`,
+        "success",
       );
     } catch (error) {
+      let errorMessage = onSubmit
+        ? "게시글 수정에 실패했습니다."
+        : "업로드에 실패했습니다. 잠시 후 다시 시도해주세요.";
+
       if (axios.isAxiosError(error)) {
         console.error("업로드 실패 응답:", {
           status: error.response?.status,
           data: error.response?.data,
         });
+        const responseMessage = error.response?.data?.message;
+
+        if (typeof responseMessage === "string") {
+          errorMessage = responseMessage;
+        }
       } else {
         console.error("업로드 실패:", error);
       }
-      window.alert(
-        onSubmit
-          ? "게시글 수정에 실패했습니다."
-          : "아직 서버 API가 연결되지 않았습니다. 콘솔에서 전송 형태를 확인해주세요.",
-      );
+      showMessage(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -210,6 +229,17 @@ export default function UploadForm({
             />
           ))}
         </div>
+
+        {formMessage && (
+          <p
+            className={`mt-4 text-right text-xs ${
+              formMessage.type === "error" ? "text-red-500" : "text-green-600"
+            }`}
+            role={formMessage.type === "error" ? "alert" : "status"}
+          >
+            {formMessage.text}
+          </p>
+        )}
 
         <div className="mt-5 flex items-center gap-4">
           {canAddMultiplePosts && (
