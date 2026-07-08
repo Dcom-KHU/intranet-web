@@ -82,8 +82,6 @@ export default function MyPage() {
           {selectedMenu === "password" && (
             <PasswordPanel
               user={user}
-              saveUser={saveUser}
-              saving={saving}
               onDirtyChange={handleDirtyChange}
             />
           )}

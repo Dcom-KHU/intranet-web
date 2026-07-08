@@ -1,90 +1,52 @@
-import { type FormEvent, useEffect, useState } from "react";
+import axios from "axios";
+import { type FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { Button } from "../../components/ui/Button";
 import Input from "../../components/ui/Input";
 import InputLabel from "../../components/ui/InputLabel";
 import Modal from "../../components/ui/Modal";
-import {
-  PASSWORD_RESET_RESEND_COOLDOWN_MS,
-  requestTemporaryPassword,
-  validateEmail,
-  type PasswordResetStatus,
-} from "../../features/auth/utils/auth.utils";
-
-const formatRemainingTime = (milliseconds: number) => {
-  const totalSeconds = Math.max(0, Math.ceil(milliseconds / 1000));
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-
-  return `${minutes}:${String(seconds).padStart(2, "0")}`;
-};
+import usePasswordResetSend from "../../features/auth/hooks/usePasswordResetSend";
+import { validateEmail } from "../../features/auth/utils/auth.utils";
 
 export default function ForgetPassword() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const [resetStatus, setResetStatus] = useState<PasswordResetStatus | null>(
-    null
-  );
-  const [now, setNow] = useState(Date.now());
-  const [modalMessage, setModalMessage] = useState<{
-    title: string;
-    description: string;
-  } | null>(null);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const navigate = useNavigate();
+  const passwordReset = usePasswordResetSend();
 
-  useEffect(() => {
-    if (!resetStatus) return;
+  const requestPassword = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
-    const timer = window.setInterval(() => setNow(Date.now()), 1000);
-    return () => window.clearInterval(timer);
-  }, [resetStatus]);
+    const normalizedEmail = email.trim();
 
-  const resendAvailableIn = resetStatus
-    ? Math.max(
-        0,
-        resetStatus.sentAt + PASSWORD_RESET_RESEND_COOLDOWN_MS - now
-      )
-    : 0;
-  const expiresIn = resetStatus
-    ? Math.max(0, resetStatus.expiresAt - now)
-    : 0;
-
-  const requestPassword = () => {
-    if (!validateEmail(email)) {
-      setError("올바른 이메일 형식을 입력해주세요.");
+    if (!validateEmail(normalizedEmail)) {
+      setError("올바른 이메일 형식을 입력해 주세요.");
       return;
     }
 
-    const result = requestTemporaryPassword(email);
+    try {
+      await passwordReset.mutateAsync({ email: normalizedEmail });
+      setError("");
+      setIsSuccessModalOpen(true);
+    } catch (requestError) {
+      if (axios.isAxiosError(requestError)) {
+        const message = requestError.response?.data?.message;
 
-    // 이미 가입된 이메일인지 확인
-    if (result.status === "userNotFound") {
-      setError("가입된 이메일을 찾을 수 없습니다.");
-      return;
+        if (typeof message === "string" && message.length > 0) {
+          setError(message);
+          return;
+        }
+
+        if ([400, 404].includes(requestError.response?.status ?? 0)) {
+          setError("가입된 이메일을 찾을 수 없습니다.");
+          return;
+        }
+      }
+
+      setError("임시 비밀번호 전송에 실패했습니다. 잠시 후 다시 시도해 주세요.");
     }
-
-    if (result.status === "resendTooSoon") {
-      setResetStatus(result.reset);
-      setModalMessage({
-        title: "잠시 후 다시 시도해주세요.",
-        description: "임시 비밀번호는 60초마다 재전송할 수 있습니다.",
-      });
-      return;
-    }
-
-    setError("");
-    setResetStatus(result.reset);
-    setModalMessage({
-      title: "임시 비밀번호를 전송했습니다.",
-      description:
-        "임시 비밀번호는 10분 동안 사용할 수 있습니다. 현재 mock 환경에서는 브라우저 콘솔에서 확인해주세요.",
-    });
-  };
-
-  const resendPassword = () => {
-    if (resendAvailableIn > 0) return;
-
-    requestPassword();
   };
 
   return (
@@ -94,48 +56,39 @@ export default function ForgetPassword() {
           비밀번호 찾기
         </h1>
         <p className="mb-8 text-center text-sm leading-6 text-gray-500">
-          가입한 이메일로 임시 비밀번호를 전송합니다.
+          가입한 이메일로 일정 시간 동안 사용할 수 있는 임시 비밀번호를 보내드립니다.
         </p>
 
-        <form
-          onSubmit={(event: FormEvent<HTMLFormElement>) => {
-            event.preventDefault();
-            requestPassword();
-          }}
-        >
+        <form onSubmit={requestPassword}>
           <div className="mb-4">
             <InputLabel htmlFor="reset-email">이메일</InputLabel>
             <Input
               id="reset-email"
               type="email"
-              placeholder="가입한 이메일을 입력해주세요"
+              placeholder="가입한 이메일을 입력해 주세요"
               value={email}
+              disabled={passwordReset.isPending}
               onChange={(event) => {
                 setEmail(event.target.value);
                 setError("");
               }}
             />
-            {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
+            {error && (
+              <p className="mt-1 text-xs text-red-500" role="alert">
+                {error}
+              </p>
+            )}
           </div>
 
-          <Button variant="secondary" type="submit" className="w-full">임시 비밀번호 전송</Button>
+          <Button
+            variant="secondary"
+            type="submit"
+            className="w-full"
+            disabled={passwordReset.isPending}
+          >
+            {passwordReset.isPending ? "전송 중..." : "임시 비밀번호 전송"}
+          </Button>
         </form>
-
-        {resetStatus && (
-          <div className="mt-6 border-t border-gray-100 pt-5 text-center text-xs text-gray-500">
-            <p>임시 비밀번호 유효 시간: {formatRemainingTime(expiresIn)}</p>
-            <button
-              type="button"
-              className="mt-3 font-medium text-blue-600 disabled:text-gray-400"
-              disabled={resendAvailableIn > 0}
-              onClick={resendPassword}
-            >
-              {resendAvailableIn > 0
-                ? `재전송 가능까지 ${formatRemainingTime(resendAvailableIn)}`
-                : "임시 비밀번호 재전송"}
-            </button>
-          </div>
-        )}
 
         <button
           type="button"
@@ -146,14 +99,14 @@ export default function ForgetPassword() {
         </button>
       </div>
 
-      {modalMessage && (
+      {isSuccessModalOpen && (
         <Modal
           isOpen
           badge="비밀번호 찾기"
-          title={modalMessage.title}
-          description={modalMessage.description}
-          actionLabel="확인"
-          onAction={() => setModalMessage(null)}
+          title="임시 비밀번호를 전송했습니다."
+          description="이메일에서 임시 비밀번호를 확인한 뒤 로그인해 주세요. 로그인 후 비밀번호를 변경해야 합니다."
+          actionLabel="로그인하러 가기"
+          onAction={() => navigate("/")}
           labelledById="password-reset-modal-title"
         />
       )}
