@@ -5,7 +5,7 @@ import DataTable, {
   type DataTableColumn,
 } from "../../../components/ui/DataTable";
 import Pagination from "../../../components/ui/Pagination";
-import { useMyPosts } from "../hooks/useMyActivity";
+import { useMyPosts } from "../hooks/useMyPosts";
 import type { MyPostItem } from "../types/types";
 import ActivityBoardBadge from "./ActivityBoardBadge";
 
@@ -39,22 +39,23 @@ interface MyPostsPanelProps {
 }
 
 export default function MyPostsPanel({
-  studentNumber,
-  isAdmin,
+  studentNumber: _studentNumber,
+  isAdmin: _isAdmin,
 }: MyPostsPanelProps) {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
-  const { data, loading, error } = useMyPosts(studentNumber, isAdmin);
-  const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentPosts = data.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const { data, total, loading, error } = useMyPosts(
+    currentPage - 1,
+    ITEMS_PER_PAGE,
+  );
+  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
 
   return (
     <section className="px-10 pt-10 pb-5">
       <div className="mb-8 flex items-end justify-between">
         <h2 className="text-base font-bold text-[#0F2854]">내가 쓴 글</h2>
         {!loading && !error && (
-          <span className="text-xs text-gray-400">총 {data.length}개</span>
+          <span className="text-xs text-gray-400">총 {total}개</span>
         )}
       </div>
 
@@ -65,7 +66,7 @@ export default function MyPostsPanel({
       ) : (
         <DataTable
           columns={columns}
-          data={currentPosts}
+          data={data}
           rowKey={(post) => post.key}
           onRowClick={(post) => navigate(post.href)}
           isLoading={loading}

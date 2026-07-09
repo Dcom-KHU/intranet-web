@@ -1,84 +1,94 @@
+import { api } from "@/api/client";
+import axios from "axios";
+
 import { getCommentsByAuthor } from "../../comment/api/comment.api";
-import { getExam, getExamArchives } from "../../exam-archive/api/exam-archive.api";
 import { getGalleryPosts } from "../../gallery/api/gallery.api";
 import { getInfos } from "../../info-sharing/api/info-sharing.api";
-import { getNotices } from "../../notice/api/notice.api";
-import type { MyCommentItem, MyPostItem } from "../types/types";
-import { toExamArchive } from "../../exam-archive/mapper/exam-archives.mapper";
+import type {
+  MyCommentItem,
+  MyPostDto,
+  MyPostItem,
+  MyPostsPage,
+  MyPostsResponseDto,
+  MyPostType,
+} from "../types/types";
 
 const byNewestDate = <T extends { date: string }>(left: T, right: T) =>
   right.date.localeCompare(left.date);
 
+const POST_TYPE: Record<MyPostType, { boardLabel: string; path: string }> = {
+  info: {
+    boardLabel: "정보 공유",
+    path: "/info",
+  },
+  archives: {
+    boardLabel: "족보",
+    path: "/exam-archive",
+  },
+  gallery: {
+    boardLabel: "활동 사진",
+    path: "/gallery",
+  },
+  notice: {
+    boardLabel: "공지사항",
+    path: "/notice",
+  },
+};
+
+type MyPostsApiResponse =
+  | MyPostsResponseDto
+  | {
+      data: MyPostsResponseDto;
+    };
+
+const unwrapMyPostsResponse = (
+  response: MyPostsApiResponse,
+): MyPostsResponseDto => {
+  if ("posts" in response) return response;
+
+  return response.data;
+};
+
+const toMyPostItem = (post: MyPostDto): MyPostItem => {
+  const postType = POST_TYPE[post.type];
+
+  return {
+    key: `${post.type}-${post.id}`,
+    id: post.id,
+    number: post.number,
+    board: post.type,
+    boardLabel: postType.boardLabel,
+    title: post.title,
+    date: post.createdAt.slice(0, 10),
+    href: `${postType.path}/${post.id}`,
+  };
+};
+
 export const getMyPosts = async (
-  studentNumber: string,
-  includeAdminContent: boolean,
-): Promise<MyPostItem[]> => {
-  const [notices, infos, exams, archives, galleryPosts] = await Promise.all([
-    getNotices(),
-    getInfos(),
-    getExam(),
-    getExamArchives(),
-    getGalleryPosts(),
-  ]);
-
-  const noticeItems: MyPostItem[] = notices
-    .filter((post) => post.author.studentNumber === studentNumber)
-    .map((post) => ({
-      key: `notice-${post.id}`,
-      board: "notice",
-      boardLabel: "공지사항",
-      title: post.title,
-      date: post.date,
-      href: `/notice/${post.id}`,
-    }));
-
-  const infoItems: MyPostItem[] = infos
-    .filter((post) => post.author.studentNumber === studentNumber)
-    .map((post) => ({
-      key: `info-sharing-${post.id}`,
-      board: "info-sharing",
-      boardLabel: "정보 공유",
-      title: post.title,
-      date: post.date,
-      href: `/info/${post.id}`,
-    }));
-
-  const examItems: MyPostItem[] = exams
-    .filter((post) => post.author.studentNumber === studentNumber)
-    .flatMap((post): MyPostItem[] => {
-      const archive = archives.content.map(toExamArchive).find(
-        (item) =>
-          item.subject === post.subject && item.professor === post.professor,
-      );
-
-      if (!archive) return [];
-
-      return [
-        {
-          key: `exam-archive-${post.id}`,
-          board: "exam-archive",
-          boardLabel: "족보",
-          title: `${post.subject} · ${post.semester} (${post.professor})`,
-          date: post.date,
-          href: `/exam-archive/${archive.id}`,
-        },
-      ];
+  page: number,
+  size: number,
+): Promise<MyPostsPage> => {
+  try {
+    const response = await api.get<MyPostsApiResponse>("/api/users/me/posts", {
+      params: {
+        page,
+        size,
+      },
     });
+    const data = unwrapMyPostsResponse(response.data);
 
-  const galleryItems: MyPostItem[] = includeAdminContent
-    ? galleryPosts.map((post) => ({
-        key: `gallery-${post.id}`,
-        board: "gallery",
-        boardLabel: "활동사진",
-        title: post.title,
-        date: post.date,
-        href: `/gallery/${post.id}`,
-      }))
-    : [];
+    return {
+      total: data.total,
+      posts: data.posts.map(toMyPostItem),
+    };
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error("status:", error.response?.status);
+      console.error("response:", error.response?.data);
+    }
 
-  return [...noticeItems, ...infoItems, ...examItems, ...galleryItems].sort(
-    byNewestDate,
-  );
+    throw error;
+  }
 };
 
 export const getMyComments = async (

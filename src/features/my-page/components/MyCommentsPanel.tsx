@@ -5,7 +5,7 @@ import DataTable, {
   type DataTableColumn,
 } from "../../../components/ui/DataTable";
 import Pagination from "../../../components/ui/Pagination";
-import { useMyComments } from "../hooks/useMyActivity";
+import { useMyComments } from "../hooks/useMyComments";
 import type { MyCommentItem } from "../types/types";
 import ActivityBoardBadge from "./ActivityBoardBadge";
 
