@@ -6,9 +6,11 @@ export type MyPostType = "info-posts" | "archives" | "photo-posts" | "notices";
 
 export type MyPostDto = {
   id: number;
-  number: number;
   title: string;
   type: MyPostType;
+  professor?: string;
+  archiveId?: string;
+  recordId?: string;
   createdAt: string;
 };
 
