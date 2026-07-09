@@ -8,7 +8,7 @@ import {
   LuMessageCircle,
 } from "react-icons/lu";
 
-import type { ActiveMenu } from "../types/types";
+import type { ActiveMenu } from "../types/my.types";
 
 type MenuItem = {
   id: ActiveMenu;

@@ -6,7 +6,7 @@ import {
   validateEmail,
   validatePhoneNumber,
 } from "../../auth/utils/auth.utils";
-import type { SaveUser } from "../types/types";
+import type { SaveUser } from "../types/my.types";
 
 type ProfileField = "name" | "email" | "phoneNumber";
 type ProfileErrors = Partial<Record<ProfileField, string>>;

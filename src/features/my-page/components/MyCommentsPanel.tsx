@@ -6,7 +6,7 @@ import DataTable, {
 } from "../../../components/ui/DataTable";
 import Pagination from "../../../components/ui/Pagination";
 import { useMyComments } from "../hooks/useMyComments";
-import type { MyCommentItem } from "../types/types";
+import type { MyCommentItem } from "../types/my.types";
 import ActivityBoardBadge from "./ActivityBoardBadge";
 
 const ITEMS_PER_PAGE = 5;

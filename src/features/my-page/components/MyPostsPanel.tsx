@@ -6,17 +6,44 @@ import DataTable, {
 } from "../../../components/ui/DataTable";
 import Pagination from "../../../components/ui/Pagination";
 import { useMyPosts } from "../hooks/useMyPosts";
-import type { MyPostItem } from "../types/types";
+import type { MyPostDto, MyPostType } from "../types/my.types";
 import ActivityBoardBadge from "./ActivityBoardBadge";
 
 const ITEMS_PER_PAGE = 5;
 
-const columns: DataTableColumn<MyPostItem>[] = [
+const POST_TYPE: Record<MyPostType, { label: string; path: string }> = {
+  "info-posts": {
+    label: "정보 공유",
+    path: "/info",
+  },
+  "archives": {
+    label: "족보",
+    path: "/exam-archive",
+  },
+  "photo-posts": {
+    label: "활동 사진",
+    path: "/gallery",
+  },
+  "notices": {
+    label: "공지사항",
+    path: "/notice",
+  },
+};
+
+const getPostTypeMeta = (type: string) =>
+  POST_TYPE[type as MyPostType] ?? {
+    label: type,
+    path: "",
+  };
+
+const columns: DataTableColumn<MyPostDto>[] = [
   {
-    key: "board",
+    key: "type",
     header: "게시판",
     width: "w-28",
-    render: (post) => <ActivityBoardBadge label={post.boardLabel} />,
+    render: (post) => (
+      <ActivityBoardBadge label={getPostTypeMeta(post.type).label} />
+    ),
   },
   {
     key: "title",
@@ -25,11 +52,11 @@ const columns: DataTableColumn<MyPostItem>[] = [
     render: (post) => post.title,
   },
   {
-    key: "date",
+    key: "createdAt",
     header: "작성일",
     width: "w-28",
     cellClassName: "text-xs text-gray-400",
-    render: (post) => post.date,
+    render: (post) => post.createdAt.slice(0, 10),
   },
 ];
 
@@ -67,8 +94,12 @@ export default function MyPostsPanel({
         <DataTable
           columns={columns}
           data={data}
-          rowKey={(post) => post.key}
-          onRowClick={(post) => navigate(post.href)}
+          rowKey={(post) => `${post.type}-${post.id}`}
+          onRowClick={(post) => {
+            const { path } = getPostTypeMeta(post.type);
+
+            if (path) navigate(`${path}/${post.id}`);
+          }}
           isLoading={loading}
           loadingMessage="작성한 글을 불러오는 중입니다."
           emptyMessage="아직 작성한 글이 없습니다."

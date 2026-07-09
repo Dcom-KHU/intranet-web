@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 
 import { getMyPosts } from "../api/my-activity.api";
-import type { MyPostItem } from "../types/types";
+import type { MyPostDto } from "../types/my.types";
 
 type MyPostsState = {
-  data: MyPostItem[];
+  data: MyPostDto[];
   total: number;
   loading: boolean;
   error: string;

@@ -2,35 +2,19 @@ import type { User } from "../../auth/types/user.type";
 
 export type ActiveMenu = "profile" | "password" | "posts" | "comments";
 
-export type MyPostType = "info" | "archives" | "gallery" | "notice";
+export type MyPostType = "info-posts" | "archives" | "photo-posts" | "notices";
 
 export type MyPostDto = {
   id: number;
   number: number;
   title: string;
-  type: string;
+  type: MyPostType;
   createdAt: string;
 };
 
 export type MyPostsResponseDto = {
   total: number;
   posts: MyPostDto[];
-};
-
-export type MyPostItem = {
-  key: string;
-  id: number;
-  number: number;
-  board: MyPostType;
-  boardLabel: string;
-  title: string;
-  date: string;
-  href: string;
-};
-
-export type MyPostsPage = {
-  total: number;
-  posts: MyPostItem[];
 };
 
 export type MyCommentItem = {

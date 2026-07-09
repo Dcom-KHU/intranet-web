@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { getMyComments } from "../api/my-activity.api";
-import type { MyCommentItem } from "../types/types";
+import type { MyCommentItem } from "../types/my.types";
 
 type MyCommentsState = {
   data: MyCommentItem[];
