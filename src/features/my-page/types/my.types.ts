@@ -9,7 +9,6 @@ export type MyPostDto = {
   title: string;
   type: MyPostType;
   professor?: string;
-  archiveId?: string;
   recordId?: string;
   createdAt: string;
 };
