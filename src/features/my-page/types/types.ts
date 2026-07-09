@@ -8,7 +8,7 @@ export type MyPostDto = {
   id: number;
   number: number;
   title: string;
-  type: MyPostType;
+  type: string;
   createdAt: string;
 };
 

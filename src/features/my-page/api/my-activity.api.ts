@@ -35,6 +35,23 @@ const POST_TYPE: Record<MyPostType, { boardLabel: string; path: string }> = {
   },
 };
 
+const POST_TYPE_ALIASES: Record<string, MyPostType> = {
+  info: "info",
+  "info-posts": "info",
+  info_posts: "info",
+  "info-sharing": "info",
+  info_sharing: "info",
+  archives: "archives",
+  archive: "archives",
+  "exam-archive": "archives",
+  exam_archive: "archives",
+  gallery: "gallery",
+  "photo-posts": "gallery",
+  photo_posts: "gallery",
+  notice: "notice",
+  notices: "notice",
+};
+
 type MyPostsApiResponse =
   | MyPostsResponseDto
   | {
@@ -49,17 +66,24 @@ const unwrapMyPostsResponse = (
   return response.data;
 };
 
+const normalizePostType = (type: string | undefined): MyPostType => {
+  const normalizedType = type?.toLowerCase() ?? "";
+
+  return POST_TYPE_ALIASES[normalizedType] ?? "info";
+};
+
 const toMyPostItem = (post: MyPostDto): MyPostItem => {
-  const postType = POST_TYPE[post.type];
+  const board = normalizePostType(post.type);
+  const postType = POST_TYPE[board];
 
   return {
-    key: `${post.type}-${post.id}`,
+    key: `${board}-${post.id}`,
     id: post.id,
     number: post.number,
-    board: post.type,
+    board,
     boardLabel: postType.boardLabel,
     title: post.title,
-    date: post.createdAt.slice(0, 10),
+    date: post.createdAt?.slice(0, 10) ?? "",
     href: `${postType.path}/${post.id}`,
   };
 };
