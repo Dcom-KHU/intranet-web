@@ -49,3 +49,7 @@ export const getMyComments = async (
 
   return response.data.data;
 };
+
+export const withdrawMe = async () => {
+  await api.patch("/api/users/me/withdraw");
+};
