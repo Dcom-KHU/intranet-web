@@ -19,6 +19,7 @@ const loginMessages = {
   invalidCredentials: "아이디 또는 비밀번호가 올바르지 않습니다.",
   pendingApproval: "가입 승인 대기 중입니다. 관리자 승인 후 로그인할 수 있습니다.",
   rejected: "가입이 승인되지 않은 계정입니다. 관리자에게 문의해주세요.",
+  withdrawn: "탈퇴한 회원입니다. 다시 회원가입을 진행해주세요.",
   networkError: "네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
 };
 
@@ -48,9 +49,18 @@ const Login = () => {
           : "/home"
       );
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 401) {
-        setLoginMessage(loginMessages.invalidCredentials);
-        return;
+      if (axios.isAxiosError(error)) {
+        const status = error.response?.status;
+
+        if (status === 401) {
+          setLoginMessage(loginMessages.invalidCredentials);
+          return;
+        }
+
+        if (status === 403) {
+          setLoginMessage(loginMessages.withdrawn);
+          return;
+        }
       }
 
       setLoginMessage(loginMessages.networkError);
