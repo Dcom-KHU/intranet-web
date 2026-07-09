@@ -18,14 +18,19 @@ export type MyPostsResponseDto = {
   posts: MyPostDto[];
 };
 
-export type MyCommentItem = {
-  key: string;
-  board: "gallery" | "info-sharing";
-  boardLabel: string;
-  postTitle: string;
+export type MyCommentDto = {
+  id: number;
+  number: number;
+  type: string;
+  targetId: number;
+  targetTitle: string;
   content: string;
-  date: string;
-  href: string;
+  createdAt: string;
+};
+
+export type MyCommentsResponseDto = {
+  total: number;
+  comments: MyCommentDto[];
 };
 
 export type SaveUser = (nextUser?: User) => Promise<boolean>;

@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
 
 import { getMyComments } from "../api/my-activity.api";
-import type { MyCommentItem } from "../types/my.types";
+import type { MyCommentDto } from "../types/my.types";
 
 type MyCommentsState = {
-  data: MyCommentItem[];
+  data: MyCommentDto[];
+  total: number;
   loading: boolean;
   error: string;
 };
 
-export const useMyComments = (studentNumber: string) => {
+export const useMyComments = (page: number, size: number) => {
   const [state, setState] = useState<MyCommentsState>({
     data: [],
+    total: 0,
     loading: true,
     error: "",
   });
@@ -25,11 +27,12 @@ export const useMyComments = (studentNumber: string) => {
       error: "",
     }));
 
-    getMyComments(studentNumber)
-      .then((data) => {
+    getMyComments(page, size)
+      .then(({ comments, total }) => {
         if (!cancelled) {
           setState({
-            data,
+            data: comments,
+            total,
             loading: false,
             error: "",
           });
@@ -41,6 +44,7 @@ export const useMyComments = (studentNumber: string) => {
         if (!cancelled) {
           setState({
             data: [],
+            total: 0,
             loading: false,
             error: "댓글 활동 내역을 불러오지 못했습니다.",
           });
@@ -50,7 +54,7 @@ export const useMyComments = (studentNumber: string) => {
     return () => {
       cancelled = true;
     };
-  }, [studentNumber]);
+  }, [page, size]);
 
   return state;
 };
