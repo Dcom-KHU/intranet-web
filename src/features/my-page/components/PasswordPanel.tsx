@@ -9,7 +9,7 @@ import {
   validatePassword,
   validatePasswordMatch,
 } from "../../auth/utils/auth.utils";
-import type { DirtyChangeHandler } from "../types/types";
+import type { DirtyChangeHandler } from "../types/my.types";
 import LabeledInput from "./LabeledInput";
 
 type PasswordField = "currentPassword" | "newPassword" | "confirmPassword";

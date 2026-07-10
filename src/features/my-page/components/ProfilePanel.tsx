@@ -4,7 +4,7 @@ import { Button } from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
 import type { User } from "../../auth/types/user.type";
 import useProfileForm from "../hooks/useProfileForm";
-import type { DirtyChangeHandler, SaveUser } from "../types/types";
+import type { DirtyChangeHandler, SaveUser } from "../types/my.types";
 import LabeledInput from "./LabeledInput";
 import ProfileEmailField from "./ProfileEmailField";
 
@@ -64,6 +64,7 @@ export default function ProfilePanel({
           email={form.isEditing ? form.draft.email : user.email}
           isEditing={form.isEditing}
           isCodeSent={form.isEmailCodeSent}
+          isSendingCode={form.isEmailCodeSending}
           code={form.emailCode}
           isVerified={form.isEmailVerified}
           error={form.errors.email}

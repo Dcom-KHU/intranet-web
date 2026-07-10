@@ -6,6 +6,8 @@ interface PaginationProps {
   className?: string;
 }
 
+const PAGES_PER_GROUP = 10;
+
 export default function Pagination({
   currentPage,
   totalPages,
@@ -14,6 +16,14 @@ export default function Pagination({
   className = "",
 }: PaginationProps) {
   if (totalPages <= 1) return null;
+
+  const currentGroup = Math.floor((currentPage - 1) / PAGES_PER_GROUP);
+  const startPage = currentGroup * PAGES_PER_GROUP + 1;
+  const endPage = Math.min(startPage + PAGES_PER_GROUP - 1, totalPages);
+  const visiblePages = Array.from(
+    { length: endPage - startPage + 1 },
+    (_, index) => startPage + index,
+  );
 
   const moveTo = (page: number) => {
     if (page >= 1 && page <= totalPages && page !== currentPage) {
@@ -36,28 +46,26 @@ export default function Pagination({
         &lt;
       </button>
 
-      {Array.from({ length: totalPages }, (_, index) => index + 1).map(
-        (page) => {
-          const isActive = page === currentPage;
+      {visiblePages.map((page) => {
+        const isActive = page === currentPage;
 
-          return (
-            <button
-              key={page}
-              type="button"
-              onClick={() => moveTo(page)}
-              aria-current={isActive ? "page" : undefined}
-              aria-label={`${page}페이지`}
-              className={`flex size-6 items-center justify-center rounded border transition ${
-                isActive
-                  ? "border-[#4988C4] bg-[#4988C4] text-white"
-                  : "border-gray-200 text-gray-500 hover:border-gray-400"
-              }`}
-            >
-              {page}
-            </button>
-          );
-        },
-      )}
+        return (
+          <button
+            key={page}
+            type="button"
+            onClick={() => moveTo(page)}
+            aria-current={isActive ? "page" : undefined}
+            aria-label={`${page}페이지`}
+            className={`flex size-6 items-center justify-center rounded border transition ${
+              isActive
+                ? "border-[#4988C4] bg-[#4988C4] text-white"
+                : "border-gray-200 text-gray-500 hover:border-gray-400"
+            }`}
+          >
+            {page}
+          </button>
+        );
+      })}
 
       <button
         type="button"
