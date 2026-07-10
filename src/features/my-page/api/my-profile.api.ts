@@ -16,6 +16,20 @@ type VerifyEmailVerificationRequest = {
   verificationCode: string;
 };
 
+export type UpdateMySettingsRequest = {
+  name: string;
+  phoneNumber: string;
+  emailChangeToken?: string;
+};
+
+export type UpdateMySettingsResponse = {
+  name: string;
+  studentId: string;
+  email: string;
+  phoneNumber: string;
+  message: string;
+};
+
 export type VerifyEmailVerificationResponse = {
   emailChangeToken: string;
   message: string;
@@ -38,6 +52,15 @@ export const verifyEmailChangeVerification = async (
     newEmail,
     verificationCode,
   } satisfies VerifyEmailVerificationRequest);
+
+  return response.data.data;
+};
+
+export const updateMySettings = async (request: UpdateMySettingsRequest) => {
+  const response = await api.patch<ApiResponse<UpdateMySettingsResponse>>(
+    "/api/users/me/settings",
+    request,
+  );
 
   return response.data.data;
 };

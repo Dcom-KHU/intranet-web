@@ -33,6 +33,13 @@ export type MyCommentsResponseDto = {
   comments: MyCommentDto[];
 };
 
-export type SaveUser = (nextUser?: User) => Promise<boolean>;
+export type SaveUserOptions = {
+  emailChangeToken?: string;
+};
+
+export type SaveUser = (
+  nextUser?: User,
+  options?: SaveUserOptions,
+) => Promise<boolean>;
 
 export type DirtyChangeHandler = (isDirty: boolean) => void;

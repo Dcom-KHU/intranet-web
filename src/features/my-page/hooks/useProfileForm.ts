@@ -193,7 +193,9 @@ export default function useProfileForm(user: User, saveUser: SaveUser) {
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
 
-    const success = await saveUser(draft);
+    const success = await saveUser(draft, {
+      ...(isEmailChanged ? { emailChangeToken } : {}),
+    });
     setMessage(
       success ? "개인 정보가 저장되었습니다." : "저장에 실패했습니다.",
     );
