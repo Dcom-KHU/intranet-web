@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from "react";
 
 import useEmailVerification from "../../auth/hooks/useEmailVerification";
@@ -6,6 +7,7 @@ import {
   validateEmail,
   validatePhoneNumber,
 } from "../../auth/utils/auth.utils";
+import { sendEmailChangeVerification } from "../api/my-profile.api";
 import type { SaveUser } from "../types/my.types";
 
 type ProfileField = "name" | "email" | "phoneNumber";
@@ -13,6 +15,10 @@ type ProfileErrors = Partial<Record<ProfileField, string>>;
 
 const EMAIL_FORMAT_ERROR = "올바른 이메일 형식이 아닙니다.";
 const EMAIL_VERIFICATION_ERROR = "이메일 인증을 완료해주세요.";
+const EMAIL_SEND_ERROR =
+  "인증 메일 발송에 실패했습니다. 잠시 후 다시 시도해주세요.";
+const EMAIL_DUPLICATE_ERROR =
+  "이미 존재하는 이메일입니다. 다른 이메일을 입력해주세요.";
 const PHONE_FORMAT_ERROR = "010-XXXX-XXXX 형식으로 입력해주세요.";
 
 export default function useProfileForm(user: User, saveUser: SaveUser) {
@@ -21,6 +27,7 @@ export default function useProfileForm(user: User, saveUser: SaveUser) {
   const [errors, setErrors] = useState<ProfileErrors>({});
   const [message, setMessage] = useState("");
   const [isEmailCodeSent, setIsEmailCodeSent] = useState(false);
+  const [isEmailCodeSending, setIsEmailCodeSending] = useState(false);
   const emailVerification = useEmailVerification();
 
   const isEmailChanged = draft.email !== user.email;
@@ -43,6 +50,7 @@ export default function useProfileForm(user: User, saveUser: SaveUser) {
     setErrors({});
     setMessage("");
     setIsEmailCodeSent(false);
+    setIsEmailCodeSending(false);
     emailVerification.reset();
   };
 
@@ -72,8 +80,8 @@ export default function useProfileForm(user: User, saveUser: SaveUser) {
     });
   };
 
-  const handleSendEmailCode = () => {
-    if (!emailVerification.sendCode(draft.email)) {
+  const handleSendEmailCode = async () => {
+    if (!validateEmail(draft.email)) {
       setErrors((previous) => ({
         ...previous,
         email: EMAIL_FORMAT_ERROR,
@@ -81,14 +89,33 @@ export default function useProfileForm(user: User, saveUser: SaveUser) {
       return;
     }
 
-    setIsEmailCodeSent(true);
-    if (isEmailChanged) {
+    try {
+      setIsEmailCodeSending(true);
+      emailVerification.reset();
+
+      await sendEmailChangeVerification(draft.email);
+
+      setIsEmailCodeSent(true);
+      setMessage("인증 메일을 발송했습니다.");
+
+      if (isEmailChanged) {
+        setErrors((previous) => ({
+          ...previous,
+          email: EMAIL_VERIFICATION_ERROR,
+        }));
+      } else {
+        clearFieldError("email");
+      }
+    } catch (error) {
       setErrors((previous) => ({
         ...previous,
-        email: EMAIL_VERIFICATION_ERROR,
+        email:
+          axios.isAxiosError(error) && error.response?.status === 409
+            ? EMAIL_DUPLICATE_ERROR
+            : EMAIL_SEND_ERROR,
       }));
-    } else {
-      clearFieldError("email");
+    } finally {
+      setIsEmailCodeSending(false);
     }
   };
 
@@ -127,7 +154,9 @@ export default function useProfileForm(user: User, saveUser: SaveUser) {
     if (Object.keys(nextErrors).length > 0) return;
 
     const success = await saveUser(draft);
-    setMessage(success ? "개인 정보가 저장되었습니다." : "저장에 실패했습니다.");
+    setMessage(
+      success ? "개인 정보가 저장되었습니다." : "저장에 실패했습니다.",
+    );
 
     if (success) {
       setIsEditing(false);
@@ -143,6 +172,7 @@ export default function useProfileForm(user: User, saveUser: SaveUser) {
     errors,
     message,
     isEmailCodeSent,
+    isEmailCodeSending,
     emailCode: emailVerification.code,
     isEmailVerified: emailVerification.isVerified,
     emailVerificationError: emailVerification.error,

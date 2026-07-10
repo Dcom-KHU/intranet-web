@@ -6,6 +6,7 @@ interface ProfileEmailFieldProps {
   email: string;
   isEditing: boolean;
   isCodeSent: boolean;
+  isSendingCode?: boolean;
   code: string;
   isVerified: boolean;
   error?: string;
@@ -20,6 +21,7 @@ export default function ProfileEmailField({
   email,
   isEditing,
   isCodeSent,
+  isSendingCode = false,
   code,
   isVerified,
   error,
@@ -50,10 +52,11 @@ export default function ProfileEmailField({
           <Button
             type="button"
             variant="secondary"
-            className="w-16 text-xs"
+            className="w-20 text-xs disabled:cursor-not-allowed disabled:opacity-60"
             onClick={onSendCode}
+            disabled={isSendingCode}
           >
-            인증
+            {isSendingCode ? "발송중" : "인증"}
           </Button>
         )}
       </div>
@@ -68,7 +71,7 @@ export default function ProfileEmailField({
             />
             {isVerified && (
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500">
-                ✓
+                완료
               </span>
             )}
           </div>
