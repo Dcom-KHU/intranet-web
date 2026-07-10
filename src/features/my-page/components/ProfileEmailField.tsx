@@ -1,3 +1,4 @@
+import { IoCheckmark } from "react-icons/io5";
 import { Button } from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
 import InputLabel from "../../../components/ui/InputLabel";
@@ -52,7 +53,7 @@ export default function ProfileEmailField({
           <Button
             type="button"
             variant="secondary"
-            className="w-20 text-xs disabled:cursor-not-allowed disabled:opacity-60"
+            className="w-16 text-xs disabled:cursor-not-allowed disabled:opacity-60"
             onClick={onSendCode}
             disabled={isSendingCode}
           >
@@ -71,7 +72,7 @@ export default function ProfileEmailField({
             />
             {isVerified && (
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500">
-                완료
+                <IoCheckmark />
               </span>
             )}
           </div>
@@ -92,11 +93,7 @@ export default function ProfileEmailField({
           {displayedError}
         </p>
       )}
-      {isVerified && (
-        <p className="mt-1 text-xs text-green-500">
-          이메일 인증이 완료되었습니다.
-        </p>
-      )}
+      
     </div>
   );
 }
