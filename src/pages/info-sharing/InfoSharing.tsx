@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { HiUpload } from "react-icons/hi";
@@ -9,6 +9,8 @@ import DataTable, { type DataTableColumn } from "../../components/ui/DataTable";
 import SearchBar from "../../components/ui/SearchBar";
 import { useInfos } from "../../features/info-sharing/hooks/useInfos";
 import type { InfoPostList } from "../../features/info-sharing/types/info-sharing.type";
+import ConvertTime from "@/components/ConvertTime";
+import Pagination from "@/components/ui/Pagination";
 
 
 const INFOSHARING_TEXT = {
@@ -24,33 +26,22 @@ const INFOSHARING_TEXT = {
 
 const InfoSharing = () => {
   const navigate = useNavigate();
-  const { data: infos } = useInfos();
   // const { currentUser } = useAuth();
   // const isAdmin = currentUser?.role === "ADMIN";
   const [searchKeyword, setSearchKeyword] = useState("");
   const [appliedKeyword, setAppliedKeyword] = useState("");
-
-  const filteredInfos = useMemo(() => {
-    const keyword = appliedKeyword.trim().toLowerCase();
-
-    if (!keyword) {
-      return infos ?? [];
-    }
-
-    return (infos ?? []).filter(
-      (info) =>
-        info.title.toLowerCase().includes(keyword) ||
-        info.author.name.toLowerCase().includes(keyword),
-    );
-  }, [infos, appliedKeyword]);
+  const [page, setPage] = useState(0);
+  const size = 10;
+  const { data: infos, pageInfo } = useInfos(page, size, appliedKeyword);
 
   const columns: DataTableColumn<InfoPostList>[] = [
     {
-      key: "id",
+      key: "number",
       header: INFOSHARING_TEXT.number,
       width: "w-[8%]",
       cellClassName: "text-sm text-gray-500",
-      render: (info) => info.id,
+      render: (info) =>
+        pageInfo.page * pageInfo.size + infos.indexOf(info) + 1,
     },
     {
       key: "title",
@@ -78,11 +69,11 @@ const InfoSharing = () => {
       render: (info) => info.author.name,
     },
     {
-      key: "date",
+      key: "createdAt",
       header: INFOSHARING_TEXT.date,
       width: "w-[17%]",
       cellClassName: "truncate text-sm text-gray-500",
-      render: (info) => info.date,
+      render: (info) => <ConvertTime date={info.createdAt} />,
     },
   ];
 
@@ -101,7 +92,10 @@ const InfoSharing = () => {
         <SearchBar
           value={searchKeyword}
           onChange={setSearchKeyword}
-          onSearch={() => setAppliedKeyword(searchKeyword)}
+          onSearch={() => {
+            setPage(0);
+            setAppliedKeyword(searchKeyword.trim());
+          }}
           placeholder={INFOSHARING_TEXT.searchPlaceholder}
         />
 
@@ -118,10 +112,17 @@ const InfoSharing = () => {
       <section>
         <DataTable
           columns={columns}
-          data={filteredInfos}
+          data={infos}
           rowKey={(info) => info.id}
           emptyMessage={INFOSHARING_TEXT.empty}
           onRowClick={(info) => navigate(`/info/${info.id}`)}
+        />
+
+        <Pagination
+          className="mt-6"
+          currentPage={pageInfo.page + 1}
+          totalPages={pageInfo.totalPages}
+          onPageChange={(nextPage) => setPage(nextPage - 1)}
         />
       </section>
     </div>

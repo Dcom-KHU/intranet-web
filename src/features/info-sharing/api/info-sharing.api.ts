@@ -1,5 +1,8 @@
+import { api } from "@/api/client";
+import { type UploadPostDraft } from "../../upload/types/upload.type";
 import { infoPostList, infoPostDetail } from "../../../mocks/info-sharing.mock";
-import type { UploadPostDraft } from "../../upload/types/upload.type";
+import type { InfosResponse } from "../types/info-sharing.type";
+
 
 const htmlToText = (html: string) =>
   html
@@ -9,8 +12,31 @@ const htmlToText = (html: string) =>
     .replace(/&nbsp;/g, " ")
     .trim();
 
-export const getInfos = async () => {
-  return Promise.resolve(infoPostList);
+
+export interface InfosRequest {
+  page?: number;
+  size?: number;
+  keyword?: string;
+}
+
+// 정보공유 게시글 목록 조회
+export const getInfos = async ({
+  page = 0,
+  size = 10,
+  keyword,
+}: InfosRequest) => {
+  const response = await api.get<{ data: InfosResponse }>(
+    "/api/info-posts", {
+      params: {
+        page,
+        size,
+        ...(keyword ? { keyword } : {}),
+      },
+    });
+
+    console.log(response.data)
+
+    return response.data.data;
 };
 
 export const getInfoDetailById = async (id: number) => {
@@ -38,5 +64,6 @@ export const updateInfoPost = async (id: number, post: UploadPostDraft) => {
 
   listItem.title = detail.title;
   listItem.hasAttachment = detail.attachments.length > 0;
+  listItem.fileCount = detail.attachments.length;
   return detail;
 };
