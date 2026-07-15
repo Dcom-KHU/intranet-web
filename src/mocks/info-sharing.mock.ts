@@ -12,7 +12,6 @@ export const infoPostList: InfoPostList[] = [
     createdAt: "2026-06-20T10:00:00",
     hasAttachment: true,
     fileCount: 2,
-    views: 0,
   },
   {
     id: 2,
@@ -24,7 +23,6 @@ export const infoPostList: InfoPostList[] = [
     createdAt: "2026-06-21T10:00:00",
     hasAttachment: true,
     fileCount: 1,
-    views: 0,
   },
   {
     id: 3,
@@ -36,7 +34,6 @@ export const infoPostList: InfoPostList[] = [
     createdAt: "2026-06-22T10:00:00",
     hasAttachment: false,
     fileCount: 0,
-    views: 0,
   },
   {
     id: 4,
@@ -48,7 +45,6 @@ export const infoPostList: InfoPostList[] = [
     createdAt: "2026-06-23T10:00:00",
     hasAttachment: false,
     fileCount: 0,
-    views: 0,
   },
   {
     id: 5,
@@ -60,7 +56,6 @@ export const infoPostList: InfoPostList[] = [
     createdAt: "2026-06-24T10:00:00",
     hasAttachment: true,
     fileCount: 1,
-    views: 0,
   },
 ];
 
