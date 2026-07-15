@@ -28,7 +28,7 @@ const ManageUsers = () => {
 
   useEffect(() => {
     setManagedUsers(
-      users.filter((user) => (user.approvalStatus ?? "APPROVED") === "APPROVED"),
+      users.filter((user) => (user.status ?? "APPROVED") === "APPROVED"),
     );
   }, [users]);
 

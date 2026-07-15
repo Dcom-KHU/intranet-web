@@ -16,7 +16,7 @@ const ManagePendingUsers = () => {
 
   useEffect(() => {
     setPendingUsers(
-      users.filter((user) => user.approvalStatus === "PENDING"),
+      users.filter((user) => user.status === "PENDING"),
     );
   }, [users]);
 

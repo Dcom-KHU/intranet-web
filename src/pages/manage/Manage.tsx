@@ -23,12 +23,12 @@ const Manage = () => {
 
   useEffect(() => {
     setPendingUsers(
-      users.filter((user) => user.approvalStatus === "PENDING"),
+      users.filter((user) => user.status === "PENDING"),
     );
   }, [users]);
 
   const approvedUsers = users.filter(
-    (user) => (user.approvalStatus ?? "APPROVED") === "APPROVED",
+    (user) => (user.status ?? "APPROVED") === "APPROVED",
   );
 
   const handleApprove = (userId: number) => {
