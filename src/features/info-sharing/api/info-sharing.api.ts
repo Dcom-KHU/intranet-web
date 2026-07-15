@@ -69,3 +69,11 @@ export const updateInfoPost = async (id: number, post: UploadPostDraft) => {
   return toUpdatedInfoPost(response.data.data);
 };
 
+// 정보공유 게시글 삭제
+export const deleteInfoPost = async (id: number) => {
+  const response = await api.delete(
+    `/api/info-posts/${id}`,
+  );
+
+  return response.data;
+}

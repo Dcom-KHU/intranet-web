@@ -9,6 +9,7 @@ import Loading from "../../components/Loading";
 import CommentSection from "../../features/comment/components/CommentSection";
 import UserDisplayName from "../../components/ui/UserDisplay";
 import PageBackButton from "../../components/ui/PageBackButton";
+import { deleteInfoPost } from "@/features/info-sharing/api/info-sharing.api";
 
 
 const InfoSharingDetail = () => {
@@ -23,6 +24,18 @@ const InfoSharingDetail = () => {
         console.log('[InfoSharingDetail.tsx] info 데이터가 없습니다.')
         return <Loading />
     }   
+
+    const handleDeletePost = async (postId: number) => {
+        if (window.confirm("정말로 이 포스트를 삭제하시겠습니까?")) {
+    
+          await deleteInfoPost(postId);
+    
+          setTimeout(() => {
+            navigate(`/info`);
+          }, 500);
+    
+        }
+      };
     
     return(
         <div className="px-4 py-8 sm:px-6 lg:px-20">
@@ -85,6 +98,7 @@ const InfoSharingDetail = () => {
                                     type="button"
                                     aria-label="삭제"
                                     className="text-gray-400 hover:text-red-400"
+                                    onClick={() => handleDeletePost(postId)}
                                 >
                                     <GoTrash size={16} />
                                 </button>
