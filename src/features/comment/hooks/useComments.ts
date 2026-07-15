@@ -39,7 +39,12 @@ export const useComments = (postId: number, target: CommentTarget) => {
     };
 
     const updateComment = async (commentId: number, content: string) => {
-        const updatedComment = await updateCommentApi(commentId, target, content);
+        const updatedComment = await updateCommentApi(
+            postId,
+            commentId,
+            target,
+            content,
+        );
         setData((comments) =>
             comments.map((comment) =>
                 comment.id === commentId ? updatedComment : comment,
@@ -48,7 +53,7 @@ export const useComments = (postId: number, target: CommentTarget) => {
     };
 
     const deleteComment = async (commentId: number) => {
-        await deleteCommentApi(commentId, target);
+        await deleteCommentApi(postId, commentId, target);
         setData((comments) =>
             comments.filter((comment) => comment.id !== commentId),
         );

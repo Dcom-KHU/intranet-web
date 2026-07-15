@@ -1,42 +1,97 @@
-import { infoPostList, infoPostDetail } from "../../../mocks/info-sharing.mock";
-import type { UploadPostDraft } from "../../upload/types/upload.type";
+import { api } from "@/api/client";
+import { type UploadPostDraft } from "../../upload/types/upload.type";
+import type {
+  InfoPostDetailResponse,
+  InfosResponse,
+} from "../types/info-sharing.type";
+import {
+  toCreateInfoPostRequest,
+  toInfoPostDetail,
+  toUpdatedInfoPost,
+  toUpdateInfoPostRequest,
+} from "../mapper/info.mapper";
+import type { UpdateInfoPostResponseDto } from "../dto/update-info-post.dto";
 
-const htmlToText = (html: string) =>
-  html
-    .replace(/<\/(p|div|li|h[1-6])>/gi, "\n")
-    .replace(/<br\s*\/?>/gi, "\n")
-    .replace(/<[^>]*>/g, "")
-    .replace(/&nbsp;/g, " ")
-    .trim();
 
-export const getInfos = async () => {
-  return Promise.resolve(infoPostList);
+export interface InfosRequest {
+  page?: number;
+  size?: number;
+  keyword?: string;
+}
+
+// 정보공유 게시글 목록 조회
+export const getInfos = async ({
+  page = 0,
+  size = 10,
+  keyword,
+}: InfosRequest) => {
+  const response = await api.get<{ data: InfosResponse }>(
+    "/api/info-posts", {
+      params: {
+        page,
+        size,
+        ...(keyword ? { keyword } : {}),
+      },
+    });
+
+    console.log(response.data)
+
+    return response.data.data;
 };
 
+// 정보공유 게시글 상세 조회
 export const getInfoDetailById = async (id: number) => {
-  const info = infoPostDetail.find((item) => item.id === id);
+  const response = await api.get<{ data: InfoPostDetailResponse }>(
+    `/api/info-posts/${id}`
+  );
 
-  if (!info) {
-    return null;
-  }
+  console.log("상세:", response.data)
 
-  return Promise.resolve(info);
+  return toInfoPostDetail(response.data.data);
 };
 
+// 정보공유 게시글 등록
+export const createInfoPosts = async (posts: UploadPostDraft[]) => {
+  await Promise.all(
+    posts.map((post) => {
+      const formData = new FormData();
+
+      formData.append(
+        "request",
+        JSON.stringify(toCreateInfoPostRequest(post)),
+      );
+      post.files.forEach((file) => formData.append("files", file));
+
+      return api.post("/api/info-posts", formData);
+    }),
+  );
+};
+
+// 정보공유 게시글 수정
 export const updateInfoPost = async (id: number, post: UploadPostDraft) => {
-  const detail = infoPostDetail.find((item) => item.id === id);
-  const listItem = infoPostList.find((item) => item.id === id);
+  const formData = new FormData();
 
-  if (!detail || !listItem) throw new Error("게시글을 찾을 수 없습니다.");
+  formData.append(
+    "request",
+    JSON.stringify(toUpdateInfoPostRequest(post)),
+  );
+  post.files.forEach((file) => formData.append("files", file));
 
-  detail.title = post.title;
-  detail.description = htmlToText(post.descriptionHtml);
-  detail.attachments = [
-    ...post.existingFiles,
-    ...post.files.map((file) => file.name),
-  ];
+  const response = await api.put<UpdateInfoPostResponseDto>(
+    `/api/info-posts/${id}`,
+    formData,
+  );
 
-  listItem.title = detail.title;
-  listItem.hasAttachment = detail.attachments.length > 0;
-  return detail;
+  console.log('수정완료');
+
+  return toUpdatedInfoPost(response.data.data);
 };
+
+// 정보공유 게시글 삭제
+export const deleteInfoPost = async (id: number) => {
+  const response = await api.delete(
+    `/api/info-posts/${id}`,
+  );
+
+  return response.data;
+}

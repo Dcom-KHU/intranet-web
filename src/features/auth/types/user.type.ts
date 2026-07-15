@@ -10,4 +10,6 @@ export type User = {
   role: "USER" | "ADMIN";
   status?: "PENDING" | "APPROVED" | "REJECTED";
   requirePasswordChange: boolean;
+  requestedAt?: string;
+  lastLoginAt?: string;
 };

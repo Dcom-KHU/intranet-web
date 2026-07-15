@@ -64,7 +64,7 @@ const Home = () => {
                             <div
                                 key={item.id}
                                 className="flex py-1 text-sm hover:font-bold cursor-pointer items-center justify-between overflow-hidden"
-                                onClick={() => navigate(`/notice/${item.id}`)}
+                                onClick={() => navigate(`/info/${item.id}`)}
                             >
                                 <p className="min-w-0 truncate">
                                     {item.author.name}
@@ -77,11 +77,11 @@ const Home = () => {
                                 </p>
                                 <p className="text-gray-400 text-xs flex-shrink-0 ml-2">
                                     <span className="sm:hidden">
-                                        {item.date.slice(5)}
+                                        {item.createdAt.slice(5, 10)}
                                     </span>
 
                                     <span className="hidden sm:inline">
-                                        {item.date}
+                                        {item.createdAt.slice(0, 10)}
                                     </span>
                                 </p>
                             </div>

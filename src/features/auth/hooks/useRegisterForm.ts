@@ -176,9 +176,9 @@ export default function useRegisterForm() {
       email,
       name: name.trim(),
       phoneNumber: phoneValidation.phone,
-      image: "",
       role: "USER",
-      approvalStatus: "PENDING",
+      status: "PENDING",
+      requirePasswordChange: false,
     });
 
     setRegisterModalType(success ? "registerComplete" : "registerFailed");

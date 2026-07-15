@@ -274,7 +274,7 @@ export default function UploadEntryCard({
 
       <UploadToolbar
         editor={editor}
-        attachmentLabel={config.showExamFields ? "파일 첨부" : "사진 첨부"}
+        attachmentLabel={mode === "gallery" ? "사진 첨부" : "파일 첨부"}
         onAttach={() => fileInputRef.current?.click()}
       />
 
@@ -282,7 +282,7 @@ export default function UploadEntryCard({
         ref={fileInputRef}
         type="file"
         multiple
-        accept={config.showExamFields ? undefined : "image/*"}
+        accept={mode === "gallery" ? "image/*" : undefined}
         className="hidden"
         onChange={(event) => {
           appendFiles(Array.from(event.target.files ?? []));
