@@ -140,7 +140,7 @@ const Manage = () => {
                               disabled={processingUserId !== null}
                               onClick={() => void handleApprove(user.id)}
                             >
-                              {processingUserId === user.id ? "처리 중" : "승인"}
+                              승인
                             </Button>
                             <Button
                               className="flex-1 px-0"
@@ -148,7 +148,7 @@ const Manage = () => {
                               disabled={processingUserId !== null}
                               onClick={() => void handleReject(user.id)}
                             >
-                              {processingUserId === user.id ? "처리 중" : "거절"}
+                              거절
                             </Button>
                           </div>
                         </div>
