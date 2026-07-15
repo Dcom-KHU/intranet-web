@@ -101,13 +101,15 @@ const photoPostsCommentApi: CommentApi = {
     photoPostComments = [...photoPostComments, comment];
     return comment;
   },
-  // 수정 API 연결 전 임시 로컬 처리
-  update: async (_albumId, commentId, content) => {
-    const comment = photoPostComments.find((item) => item.id === commentId);
+  // 댓글 수정
+  update: async (albumId, commentId, content) => {
+    const request: UpdateCommentRequestDto = { content };
+    const response = await api.put<CommentResponseDto>(
+      `/api/photo-posts/${albumId}/comments/${commentId}`,
+      request,
+    );
+    const updatedComment = toComment(response.data.data);
 
-    if (!comment) throw new Error("댓글을 찾을 수 없습니다.");
-
-    const updatedComment = { ...comment, content };
     photoPostComments = photoPostComments.map((item) =>
       item.id === commentId ? updatedComment : item,
     );
