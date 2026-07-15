@@ -62,9 +62,10 @@ const Manage = () => {
         currentUsers.filter((user) => user.id !== userId),
       );
       setPendingCount((count) => Math.max(0, count - 1));
+      void refetch();
     } catch (error) {
-      console.error("회원 승인 실패:", error);
-      window.alert("회원 승인에 실패했습니다.");
+      console.error("회원 거절 실패:", error);
+      window.alert("회원 거절에 실패했습니다.");
     } finally {
       setProcessingUserId(null);
     }
@@ -145,9 +146,9 @@ const Manage = () => {
                               className="flex-1 px-0"
                               variant="refusal"
                               disabled={processingUserId !== null}
-                              onClick={() => handleReject(user.id)}
+                              onClick={() => void handleReject(user.id)}
                             >
-                              거절
+                              {processingUserId === user.id ? "처리 중" : "거절"}
                             </Button>
                           </div>
                         </div>
