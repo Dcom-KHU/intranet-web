@@ -77,6 +77,7 @@ const createMockCommentApi = (initialComments: Comment[]): CommentApi => {
 let infoComments: Comment[] = [];
 
 const infoSharingCommentApi: CommentApi = {
+  // 게시글 댓글
   getByPostId: async (postId) => {
     const response = await api.get<CommentsResponseDto>(
       `/api/info-posts/${postId}/comments`,
@@ -85,6 +86,7 @@ const infoSharingCommentApi: CommentApi = {
     infoComments = response.data.data.comments.map(toComment);
     return infoComments;
   },
+  // 댓글 작성
   create: async (postId, _author, content) => {
     const request: CreateCommentRequestDto = { content };
     const response = await api.post<CommentResponseDto>(
@@ -96,6 +98,7 @@ const infoSharingCommentApi: CommentApi = {
     infoComments = [...infoComments, comment];
     return comment;
   },
+  // 댓글 수정
   update: async (postId, commentId, content) => {
     const request: UpdateCommentRequestDto = { content };
     const response = await api.put<CommentResponseDto>(
@@ -109,6 +112,7 @@ const infoSharingCommentApi: CommentApi = {
     );
     return updatedComment;
   },
+  // 댓글 삭제
   delete: async (postId, commentId) => {
     await api.delete(
       `/api/info-posts/${postId}/comments/${commentId}`,
