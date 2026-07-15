@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { getAdminDashboard } from "../api/manage.api";
 import type { AdminDashboard } from "../types/manage-dashboard.type";
@@ -8,24 +8,21 @@ export const useAdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    let cancelled = false;
-
-    getAdminDashboard()
-      .then((dashboard) => {
-        if (!cancelled) setData(dashboard);
-      })
-      .catch(() => {
-        if (!cancelled) setError("대시보드 정보를 불러오지 못했습니다.");
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
+  const fetchDashboard = useCallback(async () => {
+    try {
+      const dashboard = await getAdminDashboard();
+      setData(dashboard);
+      setError("");
+    } catch {
+      setError("대시보드 정보를 불러오지 못했습니다.");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  return { data, loading, error };
+  useEffect(() => {
+    void fetchDashboard();
+  }, [fetchDashboard]);
+
+  return { data, loading, error, refetch: fetchDashboard };
 };

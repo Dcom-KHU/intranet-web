@@ -15,19 +15,21 @@ import { Button } from "../../components/ui/Button";
 import Container from "../../components/ui/Container";
 import { useAdminDashboard } from "../../features/manage/hooks/useAdminDashboard";
 import type { DashboardSignupRequest } from "../../features/manage/types/manage-dashboard.type";
-import { approveUser } from "../../features/manage/api/manage.api";
+import { approveUser, rejectUser } from "../../features/manage/api/manage.api";
 
 const Manage = () => {
   const navigate = useNavigate();
-  const { data: dashboard, loading, error } = useAdminDashboard();
+  const { data: dashboard, loading, error, refetch } = useAdminDashboard();
   const [pendingUsers, setPendingUsers] = useState<DashboardSignupRequest[]>([]);
   const [pendingCount, setPendingCount] = useState(0);
+  const [totalUserCount, setTotalUserCount] = useState(0);
   const [processingUserId, setProcessingUserId] = useState<number | null>(null);
 
   useEffect(() => {
     if (!dashboard) return;
     setPendingUsers(dashboard.recentSignupRequests);
     setPendingCount(dashboard.pendingUserCount);
+    setTotalUserCount(dashboard.totalUserCount);
   }, [dashboard]);
 
   const handleApprove = async (userId: number) => {
@@ -40,6 +42,8 @@ const Manage = () => {
         currentUsers.filter((user) => user.id !== userId),
       );
       setPendingCount((count) => Math.max(0, count - 1));
+      setTotalUserCount((count) => count + 1);
+      void refetch();
     } catch (error) {
       console.error("회원 승인 실패:", error);
       window.alert("회원 승인에 실패했습니다.");
@@ -48,11 +52,22 @@ const Manage = () => {
     }
   };
 
-  const handleReject = (userId: number) => {
-    setPendingUsers((currentUsers) =>
-      currentUsers.filter((user) => user.id !== userId),
-    );
-    setPendingCount((count) => Math.max(0, count - 1));
+  const handleReject = async (userId: number) => {
+    if (processingUserId !== null) return;
+
+    setProcessingUserId(userId);
+    try {
+      await rejectUser(userId);
+      setPendingUsers((currentUsers) =>
+        currentUsers.filter((user) => user.id !== userId),
+      );
+      setPendingCount((count) => Math.max(0, count - 1));
+    } catch (error) {
+      console.error("회원 승인 실패:", error);
+      window.alert("회원 승인에 실패했습니다.");
+    } finally {
+      setProcessingUserId(null);
+    }
   };
 
   if (loading) return <Loading />;
@@ -88,7 +103,7 @@ const Manage = () => {
               icon={IoPeopleOutline}
               showViewAll={false}
             >
-              <p className="text-4xl font-bold">{dashboard.totalUserCount}</p>
+              <p className="text-4xl font-bold">{totalUserCount}</p>
             </Container>
           </div>
 

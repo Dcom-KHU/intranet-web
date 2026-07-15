@@ -22,6 +22,15 @@ export const approveUser = async (userId: number) => {
   return response.data;
 };
 
+export const rejectUser = async (userId: number) => {
+  const response = await api.patch(
+    `/api/admin/users/${userId}/reject`,
+  );
+
+  console.log(userId, '가 거부되었습니다.')
+  return response.data;
+};
+
 // 나중에 axios로 바뀔 파일
 export const usersApi = {
   getAllUsers: async (): Promise<User[]> => {
