@@ -29,6 +29,7 @@ const infoSharingCommentApi: CommentApi = {
       `/api/info-posts/${postId}/comments`,
     );
 
+    console.log(response.data.data)
     return response.data.data.comments.map(toComment);
   },
   // 댓글 작성
@@ -65,6 +66,7 @@ const photoPostsCommentApi: CommentApi = {
       `/api/photo-posts/${albumId}/comments`,
     );
 
+    console.log(response.data.data)
     return response.data.data.comments.map(toComment);
   },
   // 댓글 생성
