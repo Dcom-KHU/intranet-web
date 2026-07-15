@@ -1,4 +1,3 @@
-import { GalleryComments } from "../../../mocks/comments.mock";
 import type { postAuthor } from "../../auth/types/post-author.type";
 import type { Comment } from "../types/comment.type";
 import { api } from "@/api/client";
@@ -27,55 +26,9 @@ type CommentApi = {
   delete: (postId: number, commentId: number) => Promise<void>;
 };
 
-/**
- * 현재는 mock 데이터를 사용한다.
- * 실제 API 연결 시 target별 구현체만 교체하면 호출부는 변경하지 않아도 된다.
- */
-const createMockCommentApi = (initialComments: Comment[]): CommentApi => {
-  let comments = [...initialComments];
-  let nextCommentId =
-    Math.max(0, ...initialComments.map((comment) => comment.id)) + 1;
-
-  return {
-    getByPostId: async (postId) =>
-      comments.filter((comment) => comment.postId === postId),
-
-    create: async (postId, author, content) => {
-      const comment: Comment = {
-        id: nextCommentId++,
-        postId,
-        author,
-        content,
-        createdAt: "방금 전",
-      };
-
-      comments = [...comments, comment];
-      return comment;
-    },
-
-    update: async (_postId, commentId, content) => {
-      const existingComment = comments.find(
-        (comment) => comment.id === commentId,
-      );
-
-      if (!existingComment) throw new Error("댓글을 찾을 수 없습니다.");
-
-      const updatedComment = { ...existingComment, content };
-      comments = comments.map((comment) =>
-        comment.id === commentId ? updatedComment : comment,
-      );
-
-      return updatedComment;
-    },
-
-    delete: async (_postId, commentId) => {
-      comments = comments.filter((comment) => comment.id !== commentId);
-    },
-  };
-};
-
 let infoComments: Comment[] = [];
 
+// 정보공유 게시글
 const infoSharingCommentApi: CommentApi = {
   // 게시글 댓글
   getByPostId: async (postId) => {
@@ -122,10 +75,20 @@ const infoSharingCommentApi: CommentApi = {
   },
 };
 
-const photoPostsMockApi = createMockCommentApi(GalleryComments);
+let photoPostComments: Comment[] = [];
+
+// 활동사진 게시글
 const photoPostsCommentApi: CommentApi = {
-  ...photoPostsMockApi,
-  // 댓글 목록 조회
+  // 댓글 목록
+  getByPostId: async (albumId) => {
+    const response = await api.get<CommentsResponseDto>(
+      `/api/photo-posts/${albumId}/comments`,
+    );
+
+    photoPostComments = response.data.data.comments.map(toComment);
+    return photoPostComments;
+  },
+  // 댓글 생성
   create: async (albumId, _author, content) => {
     const request: CreateCommentRequestDto = { content };
     const response = await api.post<CommentResponseDto>(
@@ -133,7 +96,28 @@ const photoPostsCommentApi: CommentApi = {
       request,
     );
 
-    return toComment(response.data.data);
+    const comment = toComment(response.data.data);
+
+    photoPostComments = [...photoPostComments, comment];
+    return comment;
+  },
+  // 수정 API 연결 전 임시 로컬 처리
+  update: async (_albumId, commentId, content) => {
+    const comment = photoPostComments.find((item) => item.id === commentId);
+
+    if (!comment) throw new Error("댓글을 찾을 수 없습니다.");
+
+    const updatedComment = { ...comment, content };
+    photoPostComments = photoPostComments.map((item) =>
+      item.id === commentId ? updatedComment : item,
+    );
+    return updatedComment;
+  },
+  // 삭제 API 연결 전 임시 로컬 처리
+  delete: async (_albumId, commentId) => {
+    photoPostComments = photoPostComments.filter(
+      (comment) => comment.id !== commentId,
+    );
   },
 };
 
