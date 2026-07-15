@@ -3,6 +3,27 @@ import { mockUsers } from "../../../mocks/user-data.mock";
 import { api } from "@/api/client";
 import type { AdminDashboardResponseDto } from "../dto/manage-dashboard.dto";
 import { toAdminDashboard } from "../mapper/manage-dashboard.mapper";
+import type { PendingUsersResponseDto } from "../dto/pending-users.dto";
+import { toPendingUsersPage } from "../mapper/pending-users.mapper";
+
+export interface PendingUsersRequest {
+  page?: number;
+  size?: number;
+  sort?: string[];
+}
+
+export const getPendingUsers = async ({
+  page = 0,
+  size = 10,
+  sort,
+}: PendingUsersRequest = {}) => {
+  const response = await api.get<PendingUsersResponseDto>(
+    "/api/admin/users/pending",
+    { params: { page, size, ...(sort ? { sort } : {}) } },
+  );
+
+  return toPendingUsersPage(response.data.data);
+};
 
 export const getAdminDashboard = async () => {
   const response = await api.get<AdminDashboardResponseDto>(
