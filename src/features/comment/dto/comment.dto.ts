@@ -17,3 +17,14 @@ export interface CommentsResponseDto {
     comments: CommentDto[];
   };
 }
+
+export interface CreateCommentRequestDto {
+  content: string;
+}
+
+export interface CommentResponseDto {
+  success: boolean;
+  status: number;
+  message: string;
+  data: CommentDto;
+}

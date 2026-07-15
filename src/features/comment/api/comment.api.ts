@@ -1,14 +1,17 @@
-import { GalleryComments, InfoComments } from "../../../mocks/comments.mock";
+import { GalleryComments } from "../../../mocks/comments.mock";
 import type { postAuthor } from "../../auth/types/post-author.type";
 import type { Comment } from "../types/comment.type";
 import { api } from "@/api/client";
-import type { CommentsResponseDto } from "../dto/comment.dto";
+import type {
+  CommentResponseDto,
+  CommentsResponseDto,
+  CreateCommentRequestDto,
+} from "../dto/comment.dto";
 import { toComment } from "../mapper/comment.mapper";
 
 export type CommentTarget = "photo-posts" | "info-sharing";
 
 type CommentApi = {
-  getAll: () => Promise<Comment[]>;
   getByPostId: (postId: number) => Promise<Comment[]>;
   create: (
     postId: number,
@@ -29,8 +32,6 @@ const createMockCommentApi = (initialComments: Comment[]): CommentApi => {
     Math.max(0, ...initialComments.map((comment) => comment.id)) + 1;
 
   return {
-    getAll: async () => [...comments],
-
     getByPostId: async (postId) =>
       comments.filter((comment) => comment.postId === postId),
 
@@ -68,18 +69,47 @@ const createMockCommentApi = (initialComments: Comment[]): CommentApi => {
   };
 };
 
+let infoComments: Comment[] = [];
+
+const infoSharingCommentApi: CommentApi = {
+  getByPostId: async (postId) => {
+    const response = await api.get<CommentsResponseDto>(
+      `/api/info-posts/${postId}/comments`,
+    );
+
+    infoComments = response.data.data.comments.map(toComment);
+    return infoComments;
+  },
+  create: async (postId, _author, content) => {
+    const request: CreateCommentRequestDto = { content };
+    const response = await api.post<CommentResponseDto>(
+      `/api/info-posts/${postId}/comments`,
+      request,
+    );
+    const comment = toComment(response.data.data);
+
+    infoComments = [...infoComments, comment];
+    return comment;
+  },
+  update: async (commentId, content) => {
+    const comment = infoComments.find((item) => item.id === commentId);
+
+    if (!comment) throw new Error("댓글을 찾을 수 없습니다.");
+
+    const updatedComment = { ...comment, content };
+    infoComments = infoComments.map((item) =>
+      item.id === commentId ? updatedComment : item,
+    );
+    return updatedComment;
+  },
+  delete: async (commentId) => {
+    infoComments = infoComments.filter((comment) => comment.id !== commentId);
+  },
+};
+
 const commentApiByTarget: Record<CommentTarget, CommentApi> = {
   "photo-posts": createMockCommentApi(GalleryComments),
-  "info-sharing": {
-    ...createMockCommentApi(InfoComments),
-    getByPostId: async (postId) => {
-      const response = await api.get<CommentsResponseDto>(
-        `/api/info-posts/${postId}/comments`,
-      );
-
-      return response.data.data.comments.map(toComment);
-    },
-  },
+  "info-sharing": infoSharingCommentApi,
 };
 
 const getCommentApi = (target: CommentTarget) => commentApiByTarget[target];
@@ -106,22 +136,3 @@ export const deleteComment = (
   commentId: number,
   target: CommentTarget,
 ) => getCommentApi(target).delete(commentId);
-
-export type CommentWithTarget = Comment & { target: CommentTarget };
-
-export const getCommentsByAuthor = async (
-  studentNumber: string,
-): Promise<CommentWithTarget[]> => {
-  const targets: CommentTarget[] = ["photo-posts", "info-sharing"];
-  const commentsByTarget = await Promise.all(
-    targets.map(async (target) => {
-      const comments = await getCommentApi(target).getAll();
-
-      return comments
-        .filter((comment) => comment.author.studentNumber === studentNumber)
-        .map((comment) => ({ ...comment, target }));
-    }),
-  );
-
-  return commentsByTarget.flat();
-};
