@@ -15,12 +15,14 @@ import { Button } from "../../components/ui/Button";
 import Container from "../../components/ui/Container";
 import { useAdminDashboard } from "../../features/manage/hooks/useAdminDashboard";
 import type { DashboardSignupRequest } from "../../features/manage/types/manage-dashboard.type";
+import { approveUser } from "../../features/manage/api/manage.api";
 
 const Manage = () => {
   const navigate = useNavigate();
   const { data: dashboard, loading, error } = useAdminDashboard();
   const [pendingUsers, setPendingUsers] = useState<DashboardSignupRequest[]>([]);
   const [pendingCount, setPendingCount] = useState(0);
+  const [processingUserId, setProcessingUserId] = useState<number | null>(null);
 
   useEffect(() => {
     if (!dashboard) return;
@@ -28,11 +30,22 @@ const Manage = () => {
     setPendingCount(dashboard.pendingUserCount);
   }, [dashboard]);
 
-  const handleApprove = (userId: number) => {
-    setPendingUsers((currentUsers) =>
-      currentUsers.filter((user) => user.id !== userId),
-    );
-    setPendingCount((count) => Math.max(0, count - 1));
+  const handleApprove = async (userId: number) => {
+    if (processingUserId !== null) return;
+
+    setProcessingUserId(userId);
+    try {
+      await approveUser(userId);
+      setPendingUsers((currentUsers) =>
+        currentUsers.filter((user) => user.id !== userId),
+      );
+      setPendingCount((count) => Math.max(0, count - 1));
+    } catch (error) {
+      console.error("회원 승인 실패:", error);
+      window.alert("회원 승인에 실패했습니다.");
+    } finally {
+      setProcessingUserId(null);
+    }
   };
 
   const handleReject = (userId: number) => {
@@ -108,13 +121,15 @@ const Manage = () => {
                             <Button
                               className="flex-1 px-0"
                               variant="third"
-                              onClick={() => handleApprove(user.id)}
+                              disabled={processingUserId !== null}
+                              onClick={() => void handleApprove(user.id)}
                             >
-                              승인
+                              {processingUserId === user.id ? "처리 중" : "승인"}
                             </Button>
                             <Button
                               className="flex-1 px-0"
                               variant="refusal"
+                              disabled={processingUserId !== null}
                               onClick={() => handleReject(user.id)}
                             >
                               거절

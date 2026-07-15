@@ -9,7 +9,17 @@ export const getAdminDashboard = async () => {
     "/api/admin/dashboard",
   );
 
+  console.log(response.data)
   return toAdminDashboard(response.data.data);
+};
+
+export const approveUser = async (userId: number) => {
+  const response = await api.patch(
+    `/api/admin/users/${userId}/approve`,
+  );
+
+  console.log(userId, '가 승인되었습니다.')
+  return response.data;
 };
 
 // 나중에 axios로 바뀔 파일
