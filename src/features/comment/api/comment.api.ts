@@ -67,9 +67,15 @@ const infoSharingCommentApi: CommentApi = {
   },
   // 댓글 삭제
   delete: async (postId, commentId) => {
-    await api.delete(
+    const response = await api.delete(
       `/api/info-posts/${postId}/comments/${commentId}`,
     );
+
+    console.log("정보공유 댓글 삭제 응답:", {
+      postId,
+      commentId,
+      data: response.data,
+    });
 
     infoComments = infoComments.filter((comment) => comment.id !== commentId);
   },
@@ -115,8 +121,18 @@ const photoPostsCommentApi: CommentApi = {
     );
     return updatedComment;
   },
-  // 삭제 API 연결 전 임시 로컬 처리
-  delete: async (_albumId, commentId) => {
+  // 댓글 삭제 
+  delete: async (albumId, commentId) => {
+    const response = await api.delete(
+      `/api/photo-posts/${albumId}/comments/${commentId}`,
+    );
+
+    console.log("활동사진 댓글 삭제 응답:", {
+      albumId,
+      commentId,
+      data: response.data,
+    });
+
     photoPostComments = photoPostComments.filter(
       (comment) => comment.id !== commentId,
     );

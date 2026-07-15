@@ -54,6 +54,7 @@ export const useComments = (postId: number, target: CommentTarget) => {
 
     const deleteComment = async (commentId: number) => {
         await deleteCommentApi(postId, commentId, target);
+        console.log("댓글 삭제 완료:", { target, postId, commentId });
         setData((comments) =>
             comments.filter((comment) => comment.id !== commentId),
         );
