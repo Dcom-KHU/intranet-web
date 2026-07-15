@@ -91,6 +91,7 @@ export const infoPostDetail: InfoPostDetail[] = [
       "big-o-summary.pdf",
       "algorithm-cheatsheet.png",
     ],
+    attachmentItems: [],
   },
   {
     id: 2,
@@ -112,6 +113,7 @@ FIN / ACK 교환 후 TIME_WAIT 상태 유지
     },
     createdAt: "2026-06-21T10:00:00",
     attachments: [],
+    attachmentItems: [],
   },
   {
     id: 3,
@@ -136,6 +138,7 @@ FIN / ACK 교환 후 TIME_WAIT 상태 유지
     attachments: [
       "process-thread-diagram.png",
     ],
+    attachmentItems: [],
   },
   {
     id: 4,
@@ -157,6 +160,7 @@ B-Tree 인덱스는 균형 트리 구조로 데이터 검색을 최적화한다.
     },
     createdAt: "2026-06-23T10:00:00",
     attachments: [],
+    attachmentItems: [],
   },
   {
     id: 5,
@@ -183,5 +187,6 @@ Blocking/Non-blocking:
     },
     createdAt: "2026-06-24T10:00:00",
     attachments: [],
+    attachmentItems: [],
   },
 ];

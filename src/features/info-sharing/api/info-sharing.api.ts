@@ -1,20 +1,15 @@
 import { api } from "@/api/client";
 import { type UploadPostDraft } from "../../upload/types/upload.type";
-import { infoPostList, infoPostDetail } from "../../../mocks/info-sharing.mock";
 import type {
   InfoPostDetailResponse,
   InfosResponse,
 } from "../types/info-sharing.type";
-import { toInfoPostDetail } from "../mapper/info.mapper";
-
-
-const htmlToText = (html: string) =>
-  html
-    .replace(/<\/(p|div|li|h[1-6])>/gi, "\n")
-    .replace(/<br\s*\/?>/gi, "\n")
-    .replace(/<[^>]*>/g, "")
-    .replace(/&nbsp;/g, " ")
-    .trim();
+import {
+  toInfoPostDetail,
+  toUpdatedInfoPost,
+  toUpdateInfoPostRequest,
+} from "../mapper/info.mapper";
+import type { UpdateInfoPostResponseDto } from "../dto/update-info-post.dto";
 
 
 export interface InfosRequest {
@@ -54,22 +49,23 @@ export const getInfoDetailById = async (id: number) => {
   return toInfoPostDetail(response.data.data);
 };
 
+// 정보공유 게시글 수정
 export const updateInfoPost = async (id: number, post: UploadPostDraft) => {
-  const detail = infoPostDetail.find((item) => item.id === id);
-  const listItem = infoPostList.find((item) => item.id === id);
+  const formData = new FormData();
 
-  if (!detail || !listItem) throw new Error("게시글을 찾을 수 없습니다.");
+  formData.append(
+    "request",
+    JSON.stringify(toUpdateInfoPostRequest(post)),
+  );
+  post.files.forEach((file) => formData.append("files", file));
 
-  detail.title = post.title;
-  detail.description = htmlToText(post.descriptionHtml);
-  detail.attachments = [
-    ...post.existingFiles,
-    ...post.files.map((file) => file.name),
-  ];
+  const response = await api.put<UpdateInfoPostResponseDto>(
+    `/api/info-posts/${id}`,
+    formData,
+  );
 
-  listItem.title = detail.title;
-  listItem.hasAttachment = detail.attachments.length > 0;
-  listItem.fileCount = detail.attachments.length;
-  return detail;
+  console.log('수정완료');
+
+  return toUpdatedInfoPost(response.data.data);
 };
 

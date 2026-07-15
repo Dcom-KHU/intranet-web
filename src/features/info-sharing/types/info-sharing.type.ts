@@ -39,6 +39,8 @@ export interface InfoPostFileResponse {
   fileId: number;
   originalFileName: string;
   fileUrl: string;
+  fileSize?: number;
+  contentType?: string;
 }
 
 export interface InfoPostDetailResponse {
@@ -60,4 +62,19 @@ export interface InfoPostDetail {
   author: postAuthor;
   createdAt: string;
   attachments: string[];
+  attachmentItems: InfoPostFile[];
+}
+
+export interface InfoPostFile {
+  id: number;
+  name: string;
+  url: string;
+}
+
+export interface UpdatedInfoPost {
+  id: number;
+  title: string;
+  description: string;
+  updatedAt: string;
+  attachments: InfoPostFile[];
 }

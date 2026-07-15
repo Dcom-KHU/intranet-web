@@ -27,7 +27,9 @@ const InfoSharingEdit = () => {
       initialPost={{
         title: info.title,
         descriptionHtml: info.description,
-        existingFiles: info.attachments,
+        existingFiles: [],
+        existingFileItems: info.attachmentItems,
+        deleteFileIds: [],
       }}
       onSubmit={async (post) => {
         await updateInfoPost(postId, post);
