@@ -1,4 +1,4 @@
-import { usersApi } from "../api/manage-users.api";
+import { usersApi } from "../api/manage.api";
 import type { User } from "../../auth/types/user.type";
 
 export const userService = {

@@ -13,37 +13,40 @@ import {
 import Loading from "../../components/Loading";
 import { Button } from "../../components/ui/Button";
 import Container from "../../components/ui/Container";
-import type { User } from "../../features/auth/types/user.type";
-import { useUsers } from "../../features/manage/hooks/useUsers";
+import { useAdminDashboard } from "../../features/manage/hooks/useAdminDashboard";
+import type { DashboardSignupRequest } from "../../features/manage/types/manage-dashboard.type";
 
 const Manage = () => {
   const navigate = useNavigate();
-  const { users, loading } = useUsers();
-  const [pendingUsers, setPendingUsers] = useState<User[]>([]);
+  const { data: dashboard, loading, error } = useAdminDashboard();
+  const [pendingUsers, setPendingUsers] = useState<DashboardSignupRequest[]>([]);
+  const [pendingCount, setPendingCount] = useState(0);
 
   useEffect(() => {
-    setPendingUsers(
-      users.filter((user) => user.status === "PENDING"),
-    );
-  }, [users]);
-
-  const approvedUsers = users.filter(
-    (user) => (user.status ?? "APPROVED") === "APPROVED",
-  );
+    if (!dashboard) return;
+    setPendingUsers(dashboard.recentSignupRequests);
+    setPendingCount(dashboard.pendingUserCount);
+  }, [dashboard]);
 
   const handleApprove = (userId: number) => {
     setPendingUsers((currentUsers) =>
       currentUsers.filter((user) => user.id !== userId),
     );
+    setPendingCount((count) => Math.max(0, count - 1));
   };
 
   const handleReject = (userId: number) => {
     setPendingUsers((currentUsers) =>
       currentUsers.filter((user) => user.id !== userId),
     );
+    setPendingCount((count) => Math.max(0, count - 1));
   };
 
   if (loading) return <Loading />;
+
+  if (error || !dashboard) {
+    return <p className="px-4 py-16 text-center text-sm text-red-500">{error}</p>;
+  }
 
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-20">
@@ -63,7 +66,7 @@ const Manage = () => {
               icon={IoCheckmarkOutline}
               showViewAll={false}
             >
-              <p className="text-4xl font-bold">{pendingUsers.length}</p>
+              <p className="text-4xl font-bold">{pendingCount}</p>
             </Container>
 
             <Container
@@ -72,7 +75,7 @@ const Manage = () => {
               icon={IoPeopleOutline}
               showViewAll={false}
             >
-              <p className="text-4xl font-bold">{approvedUsers.length}</p>
+              <p className="text-4xl font-bold">{dashboard.totalUserCount}</p>
             </Container>
           </div>
 
@@ -136,25 +139,25 @@ const Manage = () => {
               <PostManageCard
                 icon={<IoNotificationsOutline className="h-6 w-6 text-gray-400" />}
                 title="공지사항"
-                description="게시글 23개"
+                description={`게시글 ${dashboard.postCounts.notices}개`}
                 onClick={() => navigate("/notice")}
               />
               <PostManageCard
                 icon={<IoChatbubbleOutline className="h-6 w-6 text-gray-400" />}
                 title="정보 공유"
-                description="게시글 15개"
-                onClick={() => navigate("/info-sharing")}
+                description={`게시글 ${dashboard.postCounts.infoPosts}개`}
+                onClick={() => navigate("/info")}
               />
               <PostManageCard
                 icon={<IoPencilOutline className="h-6 w-6 text-gray-400" />}
                 title="족보"
-                description="게시글 42개"
+                description={`게시글 ${dashboard.postCounts.archives}개`}
                 onClick={() => navigate("/exam-archive")}
               />
               <PostManageCard
                 icon={<IoImageOutline className="h-6 w-6 text-gray-400" />}
                 title="활동사진"
-                description="게시글 15개"
+                description={`게시글 ${dashboard.postCounts.photoPosts}개`}
                 onClick={() => navigate("/gallery")}
               />
             </div>
@@ -170,13 +173,12 @@ const Manage = () => {
                 <tr className="border-b">
                   <th className="px-4 py-3 text-sm font-medium">이름</th>
                   <th className="px-4 py-3 text-sm font-medium">학번</th>
-                  <th className="px-4 py-3 text-sm font-medium">아이디</th>
                   <th className="px-4 py-3 text-sm font-medium">최신접속일</th>
                 </tr>
               </thead>
 
               <tbody>
-                {approvedUsers.slice(0, 3).map((user) => (
+                {dashboard.recentActiveMembers.slice(0, 3).map((user) => (
                   <tr
                     key={user.id}
                     className="border-b text-center text-sm hover:bg-gray-50"
@@ -185,9 +187,8 @@ const Manage = () => {
                     <td className="px-4 py-3 text-gray-500">
                       {user.studentNumber}
                     </td>
-                    <td className="px-4 py-3 text-gray-500">{user.userID}</td>
                     <td className="px-4 py-3 text-gray-500">
-                      {user.lastLoginAt ?? "-"}
+                      {user.lastLoginAt}
                     </td>
                   </tr>
                 ))}
