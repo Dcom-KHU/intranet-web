@@ -47,7 +47,7 @@ const InfoSharingDetail = () => {
                             <UserDisplayName user={info.author} />
                         </div>
                         <time className="shrink-0 text-sm text-gray-500">
-                            {info.date.replaceAll("-", ".")}
+                            {info.createdAt.slice(0, 10).replaceAll("-", ".")}
                         </time>
                         </div>
         

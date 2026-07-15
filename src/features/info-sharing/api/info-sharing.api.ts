@@ -1,7 +1,11 @@
 import { api } from "@/api/client";
 import { type UploadPostDraft } from "../../upload/types/upload.type";
 import { infoPostList, infoPostDetail } from "../../../mocks/info-sharing.mock";
-import type { InfosResponse } from "../types/info-sharing.type";
+import type {
+  InfoPostDetailResponse,
+  InfosResponse,
+} from "../types/info-sharing.type";
+import { toInfoPostDetail } from "../mapper/info.mapper";
 
 
 const htmlToText = (html: string) =>
@@ -39,14 +43,15 @@ export const getInfos = async ({
     return response.data.data;
 };
 
+// 정보공유 게시글 상세 조회
 export const getInfoDetailById = async (id: number) => {
-  const info = infoPostDetail.find((item) => item.id === id);
+  const response = await api.get<{ data: InfoPostDetailResponse }>(
+    `/api/info-posts/${id}`
+  );
 
-  if (!info) {
-    return null;
-  }
+  console.log("상세:", response.data)
 
-  return Promise.resolve(info);
+  return toInfoPostDetail(response.data.data);
 };
 
 export const updateInfoPost = async (id: number, post: UploadPostDraft) => {
@@ -67,3 +72,4 @@ export const updateInfoPost = async (id: number, post: UploadPostDraft) => {
   listItem.fileCount = detail.attachments.length;
   return detail;
 };
+

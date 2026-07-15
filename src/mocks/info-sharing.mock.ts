@@ -86,7 +86,7 @@ export const infoPostDetail: InfoPostDetail[] = [
       studentNumber: "20201234",
       name: "표지훈",
     },
-    date: "2026.06.20.",
+    createdAt: "2026-06-20T10:00:00",
     attachments: [
       "big-o-summary.pdf",
       "algorithm-cheatsheet.png",
@@ -110,7 +110,7 @@ FIN / ACK 교환 후 TIME_WAIT 상태 유지
       studentNumber: "20201111",
       name: "허남준",
     },
-    date: "2026.06.21.",
+    createdAt: "2026-06-21T10:00:00",
     attachments: [],
   },
   {
@@ -132,7 +132,7 @@ FIN / ACK 교환 후 TIME_WAIT 상태 유지
       studentNumber: "20201333",
       name: "안유진",
     },
-    date: "2026.06.22.",
+    createdAt: "2026-06-22T10:00:00",
     attachments: [
       "process-thread-diagram.png",
     ],
@@ -155,7 +155,7 @@ B-Tree 인덱스는 균형 트리 구조로 데이터 검색을 최적화한다.
       studentNumber: "20201444",
       name: "김선호",
     },
-    date: "2026.06.23.",
+    createdAt: "2026-06-23T10:00:00",
     attachments: [],
   },
   {
@@ -181,7 +181,7 @@ Blocking/Non-blocking:
       studentNumber: "20201555",
       name: "지창욱",
     },
-    date: "2026.06.24.",
+    createdAt: "2026-06-24T10:00:00",
     attachments: [],
   },
 ];

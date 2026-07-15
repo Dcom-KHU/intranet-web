@@ -35,6 +35,21 @@ export interface InfosResponse {
   pageInfo: InfoPostPageInfo;
 }
 
+export interface InfoPostFileResponse {
+  fileId: number;
+  originalFileName: string;
+  fileUrl: string;
+}
+
+export interface InfoPostDetailResponse {
+  postId: number;
+  title: string;
+  content: string;
+  author: postAuthor;
+  createdAt: string;
+  files: Array<InfoPostFileResponse | string>;
+}
+
 /**
  * 게시글 상세용
  */
@@ -43,6 +58,6 @@ export interface InfoPostDetail {
   title: string;
   description: string;
   author: postAuthor;
-  date: string;
+  createdAt: string;
   attachments: string[];
 }
