@@ -19,7 +19,7 @@ type CommentApi = {
     content: string,
   ) => Promise<Comment>;
   update: (commentId: number, content: string) => Promise<Comment>;
-  delete: (commentId: number) => Promise<void>;
+  delete: (postId: number, commentId: number) => Promise<void>;
 };
 
 /**
@@ -63,7 +63,7 @@ const createMockCommentApi = (initialComments: Comment[]): CommentApi => {
       return updatedComment;
     },
 
-    delete: async (commentId) => {
+    delete: async (_postId, commentId) => {
       comments = comments.filter((comment) => comment.id !== commentId);
     },
   };
@@ -102,7 +102,11 @@ const infoSharingCommentApi: CommentApi = {
     );
     return updatedComment;
   },
-  delete: async (commentId) => {
+  delete: async (postId, commentId) => {
+    await api.delete(
+      `/api/info-posts/${postId}/comments/${commentId}`,
+    );
+
     infoComments = infoComments.filter((comment) => comment.id !== commentId);
   },
 };
@@ -133,6 +137,7 @@ export const updateComment = (
 ) => getCommentApi(target).update(commentId, content);
 
 export const deleteComment = (
+  postId: number,
   commentId: number,
   target: CommentTarget,
-) => getCommentApi(target).delete(commentId);
+) => getCommentApi(target).delete(postId, commentId);

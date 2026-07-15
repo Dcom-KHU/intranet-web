@@ -48,7 +48,7 @@ export const useComments = (postId: number, target: CommentTarget) => {
     };
 
     const deleteComment = async (commentId: number) => {
-        await deleteCommentApi(commentId, target);
+        await deleteCommentApi(postId, commentId, target);
         setData((comments) =>
             comments.filter((comment) => comment.id !== commentId),
         );
