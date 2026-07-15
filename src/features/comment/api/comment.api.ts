@@ -1,8 +1,11 @@
 import { GalleryComments, InfoComments } from "../../../mocks/comments.mock";
 import type { postAuthor } from "../../auth/types/post-author.type";
 import type { Comment } from "../types/comment.type";
+import { api } from "@/api/client";
+import type { CommentsResponseDto } from "../dto/comment.dto";
+import { toComment } from "../mapper/comment.mapper";
 
-export type CommentTarget = "gallery" | "info-sharing";
+export type CommentTarget = "photo-posts" | "info-sharing";
 
 type CommentApi = {
   getAll: () => Promise<Comment[]>;
@@ -66,8 +69,17 @@ const createMockCommentApi = (initialComments: Comment[]): CommentApi => {
 };
 
 const commentApiByTarget: Record<CommentTarget, CommentApi> = {
-  gallery: createMockCommentApi(GalleryComments),
-  "info-sharing": createMockCommentApi(InfoComments),
+  "photo-posts": createMockCommentApi(GalleryComments),
+  "info-sharing": {
+    ...createMockCommentApi(InfoComments),
+    getByPostId: async (postId) => {
+      const response = await api.get<CommentsResponseDto>(
+        `/api/info-posts/${postId}/comments`,
+      );
+
+      return response.data.data.comments.map(toComment);
+    },
+  },
 };
 
 const getCommentApi = (target: CommentTarget) => commentApiByTarget[target];
@@ -100,7 +112,7 @@ export type CommentWithTarget = Comment & { target: CommentTarget };
 export const getCommentsByAuthor = async (
   studentNumber: string,
 ): Promise<CommentWithTarget[]> => {
-  const targets: CommentTarget[] = ["gallery", "info-sharing"];
+  const targets: CommentTarget[] = ["photo-posts", "info-sharing"];
   const commentsByTarget = await Promise.all(
     targets.map(async (target) => {
       const comments = await getCommentApi(target).getAll();

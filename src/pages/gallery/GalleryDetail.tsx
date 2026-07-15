@@ -109,7 +109,7 @@ const GalleryDetail = () => {
         </div>
       </Card>
 
-      <CommentSection postId={postId} target="gallery" />
+      <CommentSection postId={postId} target="photo-posts" />
     </div>
   );
 };

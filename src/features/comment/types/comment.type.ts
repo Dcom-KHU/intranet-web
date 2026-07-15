@@ -6,4 +6,5 @@ export type Comment = {
     author: postAuthor;
     content: string;
     createdAt: string;
+    updatedAt?: string | null;
 };
