@@ -10,7 +10,6 @@ export interface InfoPostList {
   createdAt: string;
   hasAttachment: boolean;
   fileCount: number;
-  views: number;
 }
 
 export interface InfoPostListResponse {
@@ -20,7 +19,6 @@ export interface InfoPostListResponse {
   createdAt: string;
   hasFiles: boolean;
   fileCount: number;
-  views: number;
 }
 
 export interface InfoPostPageInfo {

@@ -21,7 +21,6 @@ export const toInfoPostList = (
   createdAt: response.createdAt,
   hasAttachment: response.hasFiles,
   fileCount: response.fileCount,
-  views: response.views,
 });
 
 export const toInfoPostDetail = (
