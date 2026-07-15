@@ -7,7 +7,6 @@ import {
     type CommentTarget,
 } from "../api/comment.api";
 import { type Comment } from "../types/comment.type";
-import type { postAuthor } from "../../auth/types/post-author.type";
 
 // 게시글에 해당하는 댓글 전체 조회
 export const useComments = (postId: number, target: CommentTarget) => {
@@ -28,11 +27,10 @@ export const useComments = (postId: number, target: CommentTarget) => {
         };
     }, [postId, target]);
 
-    const createComment = async (author: postAuthor, content: string) => {
+    const createComment = async (content: string) => {
         const createdComment = await createCommentApi(
             postId,
             target,
-            author,
             content,
         );
         setData((comments) => [...comments, createdComment]);
@@ -54,7 +52,6 @@ export const useComments = (postId: number, target: CommentTarget) => {
 
     const deleteComment = async (commentId: number) => {
         await deleteCommentApi(postId, commentId, target);
-        console.log("댓글 삭제 완료:", { target, postId, commentId });
         setData((comments) =>
             comments.filter((comment) => comment.id !== commentId),
         );

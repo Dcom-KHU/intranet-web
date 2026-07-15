@@ -1,4 +1,3 @@
-import type { postAuthor } from "../../auth/types/post-author.type";
 import type { Comment } from "../types/comment.type";
 import { api } from "@/api/client";
 import type {
@@ -13,11 +12,7 @@ export type CommentTarget = "photo-posts" | "info-sharing";
 
 type CommentApi = {
   getByPostId: (postId: number) => Promise<Comment[]>;
-  create: (
-    postId: number,
-    author: postAuthor,
-    content: string,
-  ) => Promise<Comment>;
+  create: (postId: number, content: string) => Promise<Comment>;
   update: (
     postId: number,
     commentId: number,
@@ -25,8 +20,6 @@ type CommentApi = {
   ) => Promise<Comment>;
   delete: (postId: number, commentId: number) => Promise<void>;
 };
-
-let infoComments: Comment[] = [];
 
 // 정보공유 게시글
 const infoSharingCommentApi: CommentApi = {
@@ -36,20 +29,16 @@ const infoSharingCommentApi: CommentApi = {
       `/api/info-posts/${postId}/comments`,
     );
 
-    infoComments = response.data.data.comments.map(toComment);
-    return infoComments;
+    return response.data.data.comments.map(toComment);
   },
   // 댓글 작성
-  create: async (postId, _author, content) => {
+  create: async (postId, content) => {
     const request: CreateCommentRequestDto = { content };
     const response = await api.post<CommentResponseDto>(
       `/api/info-posts/${postId}/comments`,
       request,
     );
-    const comment = toComment(response.data.data);
-
-    infoComments = [...infoComments, comment];
-    return comment;
+    return toComment(response.data.data);
   },
   // 댓글 수정
   update: async (postId, commentId, content) => {
@@ -58,30 +47,15 @@ const infoSharingCommentApi: CommentApi = {
       `/api/info-posts/${postId}/comments/${commentId}`,
       request,
     );
-    const updatedComment = toComment(response.data.data);
-
-    infoComments = infoComments.map((item) =>
-      item.id === commentId ? updatedComment : item,
-    );
-    return updatedComment;
+    return toComment(response.data.data);
   },
   // 댓글 삭제
   delete: async (postId, commentId) => {
-    const response = await api.delete(
+    await api.delete(
       `/api/info-posts/${postId}/comments/${commentId}`,
     );
-
-    console.log("정보공유 댓글 삭제 응답:", {
-      postId,
-      commentId,
-      data: response.data,
-    });
-
-    infoComments = infoComments.filter((comment) => comment.id !== commentId);
   },
 };
-
-let photoPostComments: Comment[] = [];
 
 // 활동사진 게시글
 const photoPostsCommentApi: CommentApi = {
@@ -91,21 +65,17 @@ const photoPostsCommentApi: CommentApi = {
       `/api/photo-posts/${albumId}/comments`,
     );
 
-    photoPostComments = response.data.data.comments.map(toComment);
-    return photoPostComments;
+    return response.data.data.comments.map(toComment);
   },
   // 댓글 생성
-  create: async (albumId, _author, content) => {
+  create: async (albumId, content) => {
     const request: CreateCommentRequestDto = { content };
     const response = await api.post<CommentResponseDto>(
       `/api/photo-posts/${albumId}/comments`,
       request,
     );
 
-    const comment = toComment(response.data.data);
-
-    photoPostComments = [...photoPostComments, comment];
-    return comment;
+    return toComment(response.data.data);
   },
   // 댓글 수정
   update: async (albumId, commentId, content) => {
@@ -114,27 +84,12 @@ const photoPostsCommentApi: CommentApi = {
       `/api/photo-posts/${albumId}/comments/${commentId}`,
       request,
     );
-    const updatedComment = toComment(response.data.data);
-
-    photoPostComments = photoPostComments.map((item) =>
-      item.id === commentId ? updatedComment : item,
-    );
-    return updatedComment;
+    return toComment(response.data.data);
   },
   // 댓글 삭제 
   delete: async (albumId, commentId) => {
-    const response = await api.delete(
+    await api.delete(
       `/api/photo-posts/${albumId}/comments/${commentId}`,
-    );
-
-    console.log("활동사진 댓글 삭제 응답:", {
-      albumId,
-      commentId,
-      data: response.data,
-    });
-
-    photoPostComments = photoPostComments.filter(
-      (comment) => comment.id !== commentId,
     );
   },
 };
@@ -154,9 +109,8 @@ export const getCommentsByPostId = (
 export const createComment = (
   postId: number,
   target: CommentTarget,
-  author: postAuthor,
   content: string,
-) => getCommentApi(target).create(postId, author, content);
+) => getCommentApi(target).create(postId, content);
 
 export const updateComment = (
   postId: number,
