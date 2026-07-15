@@ -122,8 +122,23 @@ const infoSharingCommentApi: CommentApi = {
   },
 };
 
+const photoPostsMockApi = createMockCommentApi(GalleryComments);
+const photoPostsCommentApi: CommentApi = {
+  ...photoPostsMockApi,
+  // 댓글 목록 조회
+  create: async (albumId, _author, content) => {
+    const request: CreateCommentRequestDto = { content };
+    const response = await api.post<CommentResponseDto>(
+      `/api/photo-posts/${albumId}/comments`,
+      request,
+    );
+
+    return toComment(response.data.data);
+  },
+};
+
 const commentApiByTarget: Record<CommentTarget, CommentApi> = {
-  "photo-posts": createMockCommentApi(GalleryComments),
+  "photo-posts": photoPostsCommentApi,
   "info-sharing": infoSharingCommentApi,
 };
 
