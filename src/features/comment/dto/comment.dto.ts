@@ -22,6 +22,10 @@ export interface CreateCommentRequestDto {
   content: string;
 }
 
+export interface UpdateCommentRequestDto {
+  content: string;
+}
+
 export interface CommentResponseDto {
   success: boolean;
   status: number;

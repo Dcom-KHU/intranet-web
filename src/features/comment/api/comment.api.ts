@@ -6,6 +6,7 @@ import type {
   CommentResponseDto,
   CommentsResponseDto,
   CreateCommentRequestDto,
+  UpdateCommentRequestDto,
 } from "../dto/comment.dto";
 import { toComment } from "../mapper/comment.mapper";
 
@@ -18,7 +19,11 @@ type CommentApi = {
     author: postAuthor,
     content: string,
   ) => Promise<Comment>;
-  update: (commentId: number, content: string) => Promise<Comment>;
+  update: (
+    postId: number,
+    commentId: number,
+    content: string,
+  ) => Promise<Comment>;
   delete: (postId: number, commentId: number) => Promise<void>;
 };
 
@@ -48,7 +53,7 @@ const createMockCommentApi = (initialComments: Comment[]): CommentApi => {
       return comment;
     },
 
-    update: async (commentId, content) => {
+    update: async (_postId, commentId, content) => {
       const existingComment = comments.find(
         (comment) => comment.id === commentId,
       );
@@ -91,12 +96,14 @@ const infoSharingCommentApi: CommentApi = {
     infoComments = [...infoComments, comment];
     return comment;
   },
-  update: async (commentId, content) => {
-    const comment = infoComments.find((item) => item.id === commentId);
+  update: async (postId, commentId, content) => {
+    const request: UpdateCommentRequestDto = { content };
+    const response = await api.put<CommentResponseDto>(
+      `/api/info-posts/${postId}/comments/${commentId}`,
+      request,
+    );
+    const updatedComment = toComment(response.data.data);
 
-    if (!comment) throw new Error("댓글을 찾을 수 없습니다.");
-
-    const updatedComment = { ...comment, content };
     infoComments = infoComments.map((item) =>
       item.id === commentId ? updatedComment : item,
     );
@@ -131,10 +138,11 @@ export const createComment = (
 ) => getCommentApi(target).create(postId, author, content);
 
 export const updateComment = (
+  postId: number,
   commentId: number,
   target: CommentTarget,
   content: string,
-) => getCommentApi(target).update(commentId, content);
+) => getCommentApi(target).update(postId, commentId, content);
 
 export const deleteComment = (
   postId: number,
