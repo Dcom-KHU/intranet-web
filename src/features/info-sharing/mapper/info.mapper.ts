@@ -10,6 +10,7 @@ import type {
   UpdateInfoPostRequestDto,
   UpdateInfoPostResponseDataDto,
 } from "../dto/update-info-post.dto";
+import type { CreateInfoPostRequestDto } from "../dto/create-info-post.dto";
 
 export const toInfoPostList = (
   response: InfoPostListResponse,
@@ -50,6 +51,13 @@ const htmlToText = (html: string) =>
     .replace(/<[^>]*>/g, "")
     .replace(/&nbsp;/g, " ")
     .trim();
+
+export const toCreateInfoPostRequest = (
+  post: UploadPostDraft,
+): CreateInfoPostRequestDto => ({
+  title: post.title,
+  content: htmlToText(post.descriptionHtml),
+});
 
 export const toUpdateInfoPostRequest = (
   post: UploadPostDraft,

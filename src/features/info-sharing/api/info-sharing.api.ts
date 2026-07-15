@@ -5,6 +5,7 @@ import type {
   InfosResponse,
 } from "../types/info-sharing.type";
 import {
+  toCreateInfoPostRequest,
   toInfoPostDetail,
   toUpdatedInfoPost,
   toUpdateInfoPostRequest,
@@ -47,6 +48,23 @@ export const getInfoDetailById = async (id: number) => {
   console.log("상세:", response.data)
 
   return toInfoPostDetail(response.data.data);
+};
+
+// 정보공유 게시글 등록
+export const createInfoPosts = async (posts: UploadPostDraft[]) => {
+  await Promise.all(
+    posts.map((post) => {
+      const formData = new FormData();
+
+      formData.append(
+        "request",
+        JSON.stringify(toCreateInfoPostRequest(post)),
+      );
+      post.files.forEach((file) => formData.append("files", file));
+
+      return api.post("/api/info-posts", formData);
+    }),
+  );
 };
 
 // 정보공유 게시글 수정
