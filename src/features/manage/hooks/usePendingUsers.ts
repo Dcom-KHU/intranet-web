@@ -13,7 +13,7 @@ export const usePendingUsers = (page: number, size: number) => {
       const response = await getPendingUsers({
         page,
         size,
-        sort: ["createdAt,desc"],
+        sort: "createdAt,desc",
       });
       setData(response);
       setError("");
