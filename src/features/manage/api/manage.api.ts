@@ -10,7 +10,7 @@ export interface ManageUsersRequest {
   keyword?: string;
   page?: number;
   size?: number;
-  sort?: string[];
+  sort?: string;
 }
 
 export const getManageUsers = async ({
@@ -37,7 +37,7 @@ export const getManageUsers = async ({
 export interface PendingUsersRequest {
   page?: number;
   size?: number;
-  sort?: string[];
+  sort?: string;
 }
 
 // 승인 대기 목록 조회

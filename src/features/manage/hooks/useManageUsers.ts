@@ -19,7 +19,7 @@ export const useManageUsers = (
         page,
         size,
         keyword: keyword || undefined,
-        sort: [sort],
+        sort,
       });
       setData(response);
       setError("");
