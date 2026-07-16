@@ -21,11 +21,19 @@ const GalleryDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const postId = Number(id);
-  const { data: gallery, loading } = useGalleryDetail(postId);
+  const { data: gallery, loading, error } = useGalleryDetail(postId);
   const { currentUser } = useAuth();
   const [activeIndex, setActiveIndex] = useState(0);
 
   if (loading) return <Loading />;
+
+  if (error) {
+    return (
+      <p className="px-4 py-16 text-center text-sm text-red-500">
+        사진첩 상세 정보를 불러오지 못했습니다.
+      </p>
+    );
+  }
 
   if (!gallery) {
     return (

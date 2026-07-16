@@ -1,8 +1,14 @@
 import { galleryPosts, galleryPostDetails } from "../../../mocks/gallery.mock";
 import type { UploadPostDraft } from "../../upload/types/upload.type";
 import { api } from "@/api/client";
-import type { GalleryAlbumsResponseDto } from "../dto/gallery.dto";
-import { toGalleryPostsPage } from "../mapper/gallery.mapper";
+import type {
+  GalleryAlbumDetailResponseDto,
+  GalleryAlbumsResponseDto,
+} from "../dto/gallery.dto";
+import {
+  toGalleryPostDetail,
+  toGalleryPostsPage,
+} from "../mapper/gallery.mapper";
 
 const htmlToText = (html: string) =>
   html
@@ -19,19 +25,16 @@ export const getGalleryPosts = async (page = 0, size = 8) => {
     { params: { page, size } },
   );
 
-  console.log(response.data)
   return toGalleryPostsPage(response.data.data);
 };
 
 // 활동사진 상세 조회
 export const getGalleryById = async (id: number) => {
-  const gallery = galleryPostDetails.find((item) => item.id === id);
+  const response = await api.get<GalleryAlbumDetailResponseDto>(
+    `/api/photo-posts/${id}`,
+  );
 
-  if (!gallery) {
-    return null;
-  }
-
-  return Promise.resolve(gallery);
+  return toGalleryPostDetail(response.data.data);
 };
 
 // 활동사진 게시글 수정

@@ -1,5 +1,11 @@
-import type { GalleryAlbumsResponseDto } from "../dto/gallery.dto";
-import type { GalleryPostsPage } from "../types/gallery-post.type";
+import type {
+  GalleryAlbumDetailDto,
+  GalleryAlbumsResponseDto,
+} from "../dto/gallery.dto";
+import type {
+  GalleryPostDetail,
+  GalleryPostsPage,
+} from "../types/gallery-post.type";
 
 const apiOrigin = new URL(import.meta.env.VITE_API_BASE_URL).origin;
 
@@ -23,4 +29,14 @@ export const toGalleryPostsPage = (
     date: album.activityDate,
   })),
   ...response.pageInfo,
+});
+
+export const toGalleryPostDetail = (
+  response: GalleryAlbumDetailDto,
+): GalleryPostDetail => ({
+  id: response.albumId,
+  title: response.eventName,
+  date: response.activityDate,
+  description: response.description,
+  images: response.imageList.map(toGalleryImageUrl),
 });
