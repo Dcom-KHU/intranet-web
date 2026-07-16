@@ -1,14 +1,30 @@
 import { useEffect, useState } from "react";
 import { getGalleryPosts } from "../api/gallery.api";
-import { type GalleryPost } from "../types/gallery-post.type";
+import { type GalleryPost, type GalleryPostsPage } from "../types/gallery-post.type";
 
 // 활동사진 전체 조회
-export const useGallery = () => {
+export const useGallery = (page = 0, size = 8) => {
     const [data, setData] = useState<GalleryPost[]>([]);
+    const [pageInfo, setPageInfo] = useState<Omit<GalleryPostsPage, "posts">>({
+        page: 0,
+        size,
+        totalElements: 0,
+        totalPages: 0,
+    });
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
-        getGalleryPosts().then(setData);
-    }, []);
+        setLoading(true);
+        getGalleryPosts(page, size)
+            .then(({ posts, ...nextPageInfo }) => {
+                setData(posts);
+                setPageInfo(nextPageInfo);
+                setError("");
+            })
+            .catch(() => setError("활동 사진을 불러오지 못했습니다."))
+            .finally(() => setLoading(false));
+    }, [page, size]);
 
-    return { data };
+    return { data, pageInfo, loading, error };
 };

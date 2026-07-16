@@ -1,5 +1,8 @@
 import { galleryPosts, galleryPostDetails } from "../../../mocks/gallery.mock";
 import type { UploadPostDraft } from "../../upload/types/upload.type";
+import { api } from "@/api/client";
+import type { GalleryAlbumsResponseDto } from "../dto/gallery.dto";
+import { toGalleryPostsPage } from "../mapper/gallery.mapper";
 
 const htmlToText = (html: string) =>
   html
@@ -9,10 +12,18 @@ const htmlToText = (html: string) =>
     .replace(/&nbsp;/g, " ")
     .trim();
 
-export const getGalleryPosts = async () => {
-  return Promise.resolve(galleryPosts);
+// 활동사진 목록 조회
+export const getGalleryPosts = async (page = 0, size = 8) => {
+  const response = await api.get<GalleryAlbumsResponseDto>(
+    "/api/photo-posts",
+    { params: { page, size } },
+  );
+
+  console.log(response.data)
+  return toGalleryPostsPage(response.data.data);
 };
 
+// 활동사진 상세 조회
 export const getGalleryById = async (id: number) => {
   const gallery = galleryPostDetails.find((item) => item.id === id);
 
@@ -23,6 +34,7 @@ export const getGalleryById = async (id: number) => {
   return Promise.resolve(gallery);
 };
 
+// 활동사진 게시글 수정
 export const updateGalleryPost = async (id: number, post: UploadPostDraft) => {
   const detail = galleryPostDetails.find((item) => item.id === id);
   const listItem = galleryPosts.find((item) => item.id === id);
