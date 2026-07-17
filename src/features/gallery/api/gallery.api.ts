@@ -1,4 +1,3 @@
-import { galleryPosts, galleryPostDetails } from "../../../mocks/gallery.mock";
 import type { UploadPostDraft } from "../../upload/types/upload.type";
 import { api } from "@/api/client";
 import type {
@@ -9,15 +8,8 @@ import {
   toGalleryPostDetail,
   toGalleryPostsPage,
   toCreateGalleryRequest,
+  toUpdateGalleryRequest,
 } from "../mapper/gallery.mapper";
-
-const htmlToText = (html: string) =>
-  html
-    .replace(/<\/(p|div|li|h[1-6])>/gi, "\n")
-    .replace(/<br\s*\/?>/gi, "\n")
-    .replace(/<[^>]*>/g, "")
-    .replace(/&nbsp;/g, " ")
-    .trim();
 
 // 활동사진 목록 조회
 export const getGalleryPosts = async (page = 0, size = 8) => {
@@ -57,24 +49,21 @@ export const createGalleryPosts = async (posts: UploadPostDraft[]) => {
 
 // 활동사진 게시글 수정
 export const updateGalleryPost = async (id: number, post: UploadPostDraft) => {
-  const detail = galleryPostDetails.find((item) => item.id === id);
-  const listItem = galleryPosts.find((item) => item.id === id);
+  const formData = new FormData();
 
-  if (!detail || !listItem) throw new Error("활동 사진을 찾을 수 없습니다.");
+  formData.append(
+    "request",
+    JSON.stringify(toUpdateGalleryRequest(post)),
+  );
 
-  const images = [
-    ...post.existingFiles,
-    ...post.files.map((file) => URL.createObjectURL(file)),
-  ];
+  // 새 사진이 있으면 기존 사진 전체를 교체하고,
+  // 없으면 files 파트를 생략해 기존 사진을 유지합니다.
+  post.files.forEach((file) => formData.append("files", file));
 
-  detail.title = post.title;
-  detail.description = htmlToText(post.descriptionHtml);
-  detail.date = post.date;
-  detail.images = images;
+  const response = await api.put(
+    `/api/photo-posts/${id}`,
+    formData,
+  );
 
-  listItem.title = detail.title;
-  listItem.date = detail.date;
-  listItem.imageCount = images.length;
-  listItem.imageUrl = images[0];
-  return detail;
+  return response.data;
 };

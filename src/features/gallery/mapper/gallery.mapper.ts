@@ -8,6 +8,7 @@ import type {
 } from "../types/gallery-post.type";
 import type { UploadPostDraft } from "../../upload/types/upload.type";
 import type { CreateGalleryRequestDto } from "../dto/create-gallery.dto";
+import type { UpdateGalleryRequestDto } from "../dto/update-gallery.dto";
 
 const apiOrigin = new URL(import.meta.env.VITE_API_BASE_URL).origin;
 
@@ -32,6 +33,14 @@ const htmlToText = (html: string) =>
 export const toCreateGalleryRequest = (
   post: UploadPostDraft,
 ): CreateGalleryRequestDto => ({
+  eventName: post.title,
+  activityDate: post.date,
+  description: htmlToText(post.descriptionHtml),
+});
+
+export const toUpdateGalleryRequest = (
+  post: UploadPostDraft,
+): UpdateGalleryRequestDto => ({
   eventName: post.title,
   activityDate: post.date,
   description: htmlToText(post.descriptionHtml),
