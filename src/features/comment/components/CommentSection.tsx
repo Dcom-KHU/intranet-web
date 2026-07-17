@@ -35,13 +35,7 @@ const CommentSection = ({ postId, target }: CommentSectionProps) => {
 
     setIsSubmitting(true);
     try {
-      await createComment(
-        {
-          studentNumber: currentUser.studentNumber,
-          name: currentUser.name,
-        },
-        content,
-      );
+      await createComment(content);
       setCommentText("");
       setIsCommenting(false);
     } finally {

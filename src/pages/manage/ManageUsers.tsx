@@ -7,6 +7,7 @@ import SearchBar from "../../components/ui/SearchBar";
 import PageBackButton from "../../components/ui/PageBackButton";
 import Pagination from "../../components/ui/Pagination";
 import { useManageUsers } from "../../features/manage/hooks/useManageUsers";
+import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 
 type SortType = "lastLogin" | "studentNumber";
 
@@ -27,6 +28,7 @@ const ManageUsers = () => {
   const [appliedKeyword, setAppliedKeyword] = useState("");
   const [page, setPage] = useState(0);
   const [hiddenUserIds, setHiddenUserIds] = useState<number[]>([]);
+  const [deleteUserId, setDeleteUserId] = useState<number | null>(null);
 
   const { data, loading, error } = useManageUsers(
     page,
@@ -39,8 +41,10 @@ const ManageUsers = () => {
     (user) => !hiddenUserIds.includes(user.id),
   );
 
-  const deleteUser = (userId: number) => {
-    setHiddenUserIds((ids) => [...ids, userId]);
+  const deleteUser = () => {
+    if (deleteUserId === null) return;
+    setHiddenUserIds((ids) => [...ids, deleteUserId]);
+    setDeleteUserId(null);
   };
 
   if (loading) return <Loading />;
@@ -174,7 +178,7 @@ const ManageUsers = () => {
                     <Button
                       variant="refusal"
                       className="px-4"
-                      onClick={() => deleteUser(user.id)}
+                      onClick={() => setDeleteUserId(user.id)}
                     >
                       삭제
                     </Button>
@@ -192,6 +196,12 @@ const ManageUsers = () => {
         totalPages={data.totalPages}
         onPageChange={(nextPage) => setPage(nextPage - 1)}
         ariaLabel="전체 회원 페이지"
+      />
+      <ConfirmDeleteModal
+        isOpen={deleteUserId !== null}
+        description="삭제한 회원은 목록에서 복구할 수 없습니다."
+        onConfirm={deleteUser}
+        onCancel={() => setDeleteUserId(null)}
       />
     </div>
   );

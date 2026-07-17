@@ -7,11 +7,13 @@ import PageBackButton from "../../components/ui/PageBackButton";
 import Pagination from "../../components/ui/Pagination";
 import { usePendingUsers } from "../../features/manage/hooks/usePendingUsers";
 import { approveUser, rejectUser } from "../../features/manage/api/manage.api";
+import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 
 const ManagePendingUsers = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const [processingUserId, setProcessingUserId] = useState<number | null>(null);
+  const [rejectUserId, setRejectUserId] = useState<number | null>(null);
   const { data, loading, error, refetch } = usePendingUsers(page, 10);
 
   const handleUser = async (userId: number, action: "approve" | "reject") => {
@@ -36,6 +38,7 @@ const ManagePendingUsers = () => {
       );
     } finally {
       setProcessingUserId(null);
+      if (action === "reject") setRejectUserId(null);
     }
   };
 
@@ -145,7 +148,7 @@ const ManagePendingUsers = () => {
                         variant="refusal"
                         className="flex-1 rounded-lg px-0 py-1.5 text-xs"
                         disabled={processingUserId !== null}
-                        onClick={() => void handleUser(user.id, "reject")}
+                        onClick={() => setRejectUserId(user.id)}
                       >
                         거절
                       </Button>
@@ -164,6 +167,16 @@ const ManagePendingUsers = () => {
         totalPages={data.totalPages}
         onPageChange={(nextPage) => setPage(nextPage - 1)}
         ariaLabel="승인 대기 회원 페이지"
+      />
+      <ConfirmDeleteModal
+        isOpen={rejectUserId !== null}
+        title="가입 요청을 거절하시겠습니까?"
+        description="거절된 회원 정보는 데이터베이스에서 영구 삭제됩니다."
+        isDeleting={processingUserId !== null}
+        onConfirm={() => {
+          if (rejectUserId !== null) void handleUser(rejectUserId, "reject");
+        }}
+        onCancel={() => setRejectUserId(null)}
       />
     </div>
   );
