@@ -43,7 +43,7 @@ const Gallery = () => {
             <Button
               type="button"
               variant="third"
-              className="flex w-40 items-center justify-center gap-2 text-xs"
+              className="flex w-40 items-center justify-center gap-2 text-sm"
               onClick={() => navigate("/gallery/upload")}
             >
               <HiUpload />
