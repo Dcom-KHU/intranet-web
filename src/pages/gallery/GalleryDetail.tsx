@@ -15,6 +15,7 @@ import useAuth from "../../features/auth/hooks/useAuth";
 import CommentSection from "../../features/comment/components/CommentSection";
 import { useGalleryDetail } from "../../features/gallery/hooks/useGalleryDetail";
 import PageBackButton from "../../components/ui/PageBackButton";
+import { deleteGalleryPost } from "../../features/gallery/api/gallery.api";
 
 
 const GalleryDetail = () => {
@@ -24,6 +25,21 @@ const GalleryDetail = () => {
   const { data: gallery, loading, error } = useGalleryDetail(postId);
   const { currentUser } = useAuth();
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    if (isDeleting || !window.confirm("활동 사진을 삭제하시겠습니까?")) return;
+
+    setIsDeleting(true);
+    try {
+      await deleteGalleryPost(postId);
+      navigate("/gallery");
+    } catch (deleteError) {
+      console.error("활동 사진 삭제 실패:", deleteError);
+      window.alert("활동 사진 삭제에 실패했습니다.");
+      setIsDeleting(false);
+    }
+  };
 
   if (loading) return <Loading />;
 
@@ -121,7 +137,9 @@ const GalleryDetail = () => {
             <button
               type="button"
               aria-label="활동 사진 삭제"
-              className="text-gray-400 hover:text-red-400"
+              disabled={isDeleting}
+              className="text-gray-400 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50"
+              onClick={() => void handleDelete()}
             >
               <GoTrash size={16} />
             </button>

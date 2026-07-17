@@ -67,3 +67,10 @@ export const updateGalleryPost = async (id: number, post: UploadPostDraft) => {
 
   return response.data;
 };
+
+// 활동사진 게시글 삭제
+export const deleteGalleryPost = async (id: number) => {
+  const response = await api.delete(`/api/photo-posts/${id}`);
+
+  return response.data;
+};
