@@ -135,6 +135,14 @@ export default function UploadForm({
     }
 
     if (
+      config.showGalleryFields &&
+      entries.some((entry) => !entry.date)
+    ) {
+      showMessage("활동 날짜를 입력해주세요.");
+      return false;
+    }
+
+    if (
       config.requireImage &&
       entries.some(
         (entry) =>

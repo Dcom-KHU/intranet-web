@@ -6,6 +6,8 @@ import type {
   GalleryPostDetail,
   GalleryPostsPage,
 } from "../types/gallery-post.type";
+import type { UploadPostDraft } from "../../upload/types/upload.type";
+import type { CreateGalleryRequestDto } from "../dto/create-gallery.dto";
 
 const apiOrigin = new URL(import.meta.env.VITE_API_BASE_URL).origin;
 
@@ -18,6 +20,22 @@ const toGalleryImageUrl = (url: string) => {
     return url;
   }
 };
+
+const htmlToText = (html: string) =>
+  html
+    .replace(/<\/(p|div|li|h[1-6])>/gi, "\n")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<[^>]*>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .trim();
+
+export const toCreateGalleryRequest = (
+  post: UploadPostDraft,
+): CreateGalleryRequestDto => ({
+  eventName: post.title,
+  activityDate: post.date,
+  description: htmlToText(post.descriptionHtml),
+});
 
 export const toGalleryPostsPage = (
   response: GalleryAlbumsResponseDto["data"],

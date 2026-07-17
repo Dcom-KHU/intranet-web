@@ -8,6 +8,7 @@ import type {
 import {
   toGalleryPostDetail,
   toGalleryPostsPage,
+  toCreateGalleryRequest,
 } from "../mapper/gallery.mapper";
 
 const htmlToText = (html: string) =>
@@ -35,6 +36,23 @@ export const getGalleryById = async (id: number) => {
   );
 
   return toGalleryPostDetail(response.data.data);
+};
+
+// 활동사진 게시글 등록
+export const createGalleryPosts = async (posts: UploadPostDraft[]) => {
+  await Promise.all(
+    posts.map((post) => {
+      const formData = new FormData();
+
+      formData.append(
+        "request",
+        JSON.stringify(toCreateGalleryRequest(post)),
+      );
+      post.files.forEach((file) => formData.append("files", file));
+
+      return api.post("/api/photo-posts", formData);
+    }),
+  );
 };
 
 // 활동사진 게시글 수정
