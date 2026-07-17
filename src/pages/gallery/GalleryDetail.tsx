@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { HiChevronLeft, HiChevronRight, HiOutlinePencil } from "react-icons/hi";
+import { GoTrash } from "react-icons/go";
 import { Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -9,7 +10,6 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 import Card from "../../components/ui/Card";
-import { Button } from "../../components/ui/Button";
 import Loading from "../../components/Loading";
 import useAuth from "../../features/auth/hooks/useAuth";
 import CommentSection from "../../features/comment/components/CommentSection";
@@ -54,25 +54,16 @@ const GalleryDetail = () => {
 
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-xl font-bold text-[#4988C4]">활동 사진</h1>
-        {currentUser?.role === "ADMIN" && (
-          <Button
-            type="button"
-            variant="third"
-            className="flex w-20 items-center justify-center gap-1"
-            onClick={() => navigate(`/gallery/${postId}/edit`)}
-          >
-            <HiOutlinePencil size={15} /> 수정
-          </Button>
-        )}
       </div>
 
-      <Card
-        variant="detail"
-        title={gallery.title}
-        date={gallery.date}
-        description={gallery.description}
-      >
-        <div className="relative">
+      <div className="relative">
+        <Card
+          variant="detail"
+          title={gallery.title}
+          date={gallery.date}
+          description={gallery.description}
+        >
+          <div className="relative">
           <button
             type="button"
             aria-label="이전 사진"
@@ -114,8 +105,29 @@ const GalleryDetail = () => {
           <span className="absolute bottom-4 right-4 rounded-full bg-black/40 px-3 py-1 text-xs text-white">
             {activeIndex + 1} / {gallery.images.length}
           </span>
-        </div>
-      </Card>
+          </div>
+        </Card>
+
+        {currentUser?.role === "ADMIN" && (
+          <div className="absolute bottom-6 right-6 flex items-center gap-3">
+            <button
+              type="button"
+              aria-label="활동 사진 수정"
+              className="text-gray-400 hover:text-[#4988C4]"
+              onClick={() => navigate(`/gallery/${postId}/edit`)}
+            >
+              <HiOutlinePencil size={16} />
+            </button>
+            <button
+              type="button"
+              aria-label="활동 사진 삭제"
+              className="text-gray-400 hover:text-red-400"
+            >
+              <GoTrash size={16} />
+            </button>
+          </div>
+        )}
+      </div>
 
       <CommentSection postId={postId} target="photo-posts" />
     </div>
