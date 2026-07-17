@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useExamArchiveDetail } from "../../features/exam-archive/hooks/useExamArchiveDetail";
 import useAuth from "../../features/auth/hooks/useAuth";
@@ -11,6 +12,7 @@ import Loading from "../../components/Loading";
 import UserDisplayName from "../../components/ui/UserDisplay";
 import PageBackButton from "../../components/ui/PageBackButton";
 import { deleteExamPost, downloadExamArchiveFile } from "../../features/exam-archive/api/exam-archive.api";
+import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 
 
 const ExamArchiveDetail = () => {
@@ -19,20 +21,24 @@ const ExamArchiveDetail = () => {
   const archiveId = Number(id);
   const { data } = useExamArchiveDetail(archiveId);
   const { currentUser } = useAuth();
+  const [deleteRecordId, setDeleteRecordId] = useState<number | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   if (!data) {
     return <Loading />;
   }
 
-  const handleDeletePost = async (archiveId: number, recordId: number) => {
-    if (window.confirm("정말로 이 포스트를 삭제하시겠습니까?")) {
+  const handleDeletePost = async () => {
+    if (deleteRecordId === null) return;
 
-      await deleteExamPost(archiveId, recordId);
-
-      setTimeout(() => {
-        navigate(`/exam-archive`);
-      }, 500);
-
+    setIsDeleting(true);
+    try {
+      await deleteExamPost(archiveId, deleteRecordId);
+      navigate("/exam-archive");
+    } catch (error) {
+      console.error("족보 게시글 삭제 실패:", error);
+      window.alert("족보 게시글 삭제에 실패했습니다.");
+      setIsDeleting(false);
     }
   };
 
@@ -133,9 +139,7 @@ const ExamArchiveDetail = () => {
                     type="button"
                     aria-label="삭제"
                     className="text-gray-400 hover:text-red-400"
-                    onClick={() =>
-                      handleDeletePost(archiveId, post.id)
-                    }
+                    onClick={() => setDeleteRecordId(post.id)}
                   >
                     <GoTrash size={16} />
                   </button>
@@ -145,6 +149,13 @@ const ExamArchiveDetail = () => {
           ))}
         </div>
       </section>
+      <ConfirmDeleteModal
+        isOpen={deleteRecordId !== null}
+        description="삭제한 족보 게시글은 복구할 수 없습니다."
+        isDeleting={isDeleting}
+        onConfirm={() => void handleDeletePost()}
+        onCancel={() => setDeleteRecordId(null)}
+      />
     </div>
   );
 };

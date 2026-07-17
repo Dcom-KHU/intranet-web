@@ -4,6 +4,7 @@ import { HiOutlinePencil, HiOutlineTrash } from "react-icons/hi";
 
 import UserDisplayName from "../../../components/ui/UserDisplay";
 import type { Comment } from "../types/comment.type";
+import ConfirmDeleteModal from "../../../components/ui/ConfirmDeleteModal";
 
 type CommentItemProps = {
   comment: Comment;
@@ -26,6 +27,18 @@ const CommentItem = ({
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState(comment.content);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      await onDelete(comment.id);
+      setIsDeleteModalOpen(false);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   const handleUpdate = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -80,7 +93,7 @@ const CommentItem = ({
           {canDelete && (
             <button
               type="button"
-              onClick={() => void onDelete(comment.id)}
+              onClick={() => setIsDeleteModalOpen(true)}
               className="text-black/25 transition-colors hover:text-red-400"
               aria-label="댓글 삭제"
             >
@@ -121,6 +134,14 @@ const CommentItem = ({
           {comment.content}
         </p>
       )}
+
+      <ConfirmDeleteModal
+        isOpen={isDeleteModalOpen}
+        description="삭제한 댓글은 복구할 수 없습니다."
+        isDeleting={isDeleting}
+        onConfirm={() => void handleDelete()}
+        onCancel={() => setIsDeleteModalOpen(false)}
+      />
     </motion.article>
   );
 };

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { GoTrash } from "react-icons/go";
@@ -10,6 +11,7 @@ import CommentSection from "../../features/comment/components/CommentSection";
 import UserDisplayName from "../../components/ui/UserDisplay";
 import PageBackButton from "../../components/ui/PageBackButton";
 import { deleteInfoPost } from "@/features/info-sharing/api/info-sharing.api";
+import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 
 
 const InfoSharingDetail = () => {
@@ -18,6 +20,8 @@ const InfoSharingDetail = () => {
     const postId = Number(id);
     const { data: info } = useInfoDetail(postId);
     const { currentUser } = useAuth();
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
 
     if (!info) {
@@ -25,17 +29,17 @@ const InfoSharingDetail = () => {
         return <Loading />
     }   
 
-    const handleDeletePost = async (postId: number) => {
-        if (window.confirm("정말로 이 포스트를 삭제하시겠습니까?")) {
-    
+    const handleDeletePost = async () => {
+        setIsDeleting(true);
+        try {
           await deleteInfoPost(postId);
-    
-          setTimeout(() => {
-            navigate(`/info`);
-          }, 500);
-    
+          navigate("/info");
+        } catch (error) {
+          console.error("정보공유 게시글 삭제 실패:", error);
+          window.alert("게시글 삭제에 실패했습니다.");
+          setIsDeleting(false);
         }
-      };
+    };
     
     return(
         <div className="px-4 py-8 sm:px-6 lg:px-20">
@@ -98,7 +102,7 @@ const InfoSharingDetail = () => {
                                     type="button"
                                     aria-label="삭제"
                                     className="text-gray-400 hover:text-red-400"
-                                    onClick={() => handleDeletePost(postId)}
+                                    onClick={() => setIsDeleteModalOpen(true)}
                                 >
                                     <GoTrash size={16} />
                                 </button>
@@ -110,6 +114,13 @@ const InfoSharingDetail = () => {
             </section>
 
             <CommentSection postId={postId} target="info-sharing" />
+            <ConfirmDeleteModal
+              isOpen={isDeleteModalOpen}
+              description="삭제한 정보공유 게시글은 복구할 수 없습니다."
+              isDeleting={isDeleting}
+              onConfirm={() => void handleDeletePost()}
+              onCancel={() => setIsDeleteModalOpen(false)}
+            />
         </div>
     );
 }

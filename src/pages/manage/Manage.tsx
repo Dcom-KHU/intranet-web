@@ -16,6 +16,7 @@ import Container from "../../components/ui/Container";
 import { useAdminDashboard } from "../../features/manage/hooks/useAdminDashboard";
 import type { DashboardSignupRequest } from "../../features/manage/types/manage-dashboard.type";
 import { approveUser, rejectUser } from "../../features/manage/api/manage.api";
+import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 
 const Manage = () => {
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ const Manage = () => {
   const [pendingCount, setPendingCount] = useState(0);
   const [totalUserCount, setTotalUserCount] = useState(0);
   const [processingUserId, setProcessingUserId] = useState<number | null>(null);
+  const [rejectUserId, setRejectUserId] = useState<number | null>(null);
 
   useEffect(() => {
     if (!dashboard) return;
@@ -68,6 +70,7 @@ const Manage = () => {
       window.alert("회원 거절에 실패했습니다.");
     } finally {
       setProcessingUserId(null);
+      setRejectUserId(null);
     }
   };
 
@@ -146,7 +149,7 @@ const Manage = () => {
                               className="flex-1 px-0"
                               variant="refusal"
                               disabled={processingUserId !== null}
-                              onClick={() => void handleReject(user.id)}
+                              onClick={() => setRejectUserId(user.id)}
                             >
                               거절
                             </Button>
@@ -228,6 +231,16 @@ const Manage = () => {
           </Container>
         </div>
       </div>
+      <ConfirmDeleteModal
+        isOpen={rejectUserId !== null}
+        title="가입 요청을 거절하시겠습니까?"
+        description="거절된 회원 정보는 데이터베이스에서 영구 삭제됩니다."
+        isDeleting={processingUserId !== null}
+        onConfirm={() => {
+          if (rejectUserId !== null) void handleReject(rejectUserId);
+        }}
+        onCancel={() => setRejectUserId(null)}
+      />
     </div>
   );
 };
