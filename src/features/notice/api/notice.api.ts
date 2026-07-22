@@ -5,6 +5,7 @@ import type {
   NoticeDetailResponseDto,
   NoticesResponseDto,
 } from "../dto/notice.dto";
+import { toCreateNoticeRequest } from "../mapper/notice.mapper";
 
 export interface NoticesRequest {
   keyword?: string;
@@ -52,6 +53,23 @@ export const getNoticeDetail = async (noticeId: number) => {
 
   console.log(response.data)
   return response.data.data;
+};
+
+// 공지사항 작성
+export const createNotices = async (posts: UploadPostDraft[]) => {
+  await Promise.all(
+    posts.map((post) => {
+      const formData = new FormData();
+
+      formData.append(
+        "request",
+        JSON.stringify(toCreateNoticeRequest(post)),
+      );
+      post.files.forEach((file) => formData.append("files", file));
+
+      return api.post("/api/notice", formData);
+    }),
+  );
 };
 
 export const updateNoticePost = async (id: number, post: UploadPostDraft) => {
