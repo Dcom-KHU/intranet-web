@@ -7,6 +7,28 @@ export interface NoticeListItemDto {
   createdAt: string;
 }
 
+export interface NoticeFileDto {
+  fileId: number;
+  originalFileName: string;
+  fileUrl: string;
+}
+
+export interface NoticeDetailDto {
+  noticeId: number;
+  title: string;
+  content: string;
+  author: postAuthor;
+  createdAt: string;
+  files: NoticeFileDto[];
+}
+
+export interface NoticeDetailResponseDto {
+  success: boolean;
+  status: number;
+  message: string;
+  data: NoticeDetailDto;
+}
+
 export interface NoticesResponseDto {
   success: boolean;
   status: number;

@@ -24,4 +24,11 @@ export interface NoticeDetailType {
   author: postAuthor;
   date: string;
   files?: string[];
+  fileItems?: NoticeFile[];
+}
+
+export interface NoticeFile {
+  id: number;
+  name: string;
+  url: string;
 }

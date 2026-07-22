@@ -1,7 +1,10 @@
 import { notice_detail_mock, notice_mock } from "../../../mocks/notice.mock";
 import type { UploadPostDraft } from "../../upload/types/upload.type";
 import { api } from "@/api/client";
-import type { NoticesResponseDto } from "../dto/notice.dto";
+import type {
+  NoticeDetailResponseDto,
+  NoticesResponseDto,
+} from "../dto/notice.dto";
 
 export interface NoticesRequest {
   keyword?: string;
@@ -42,9 +45,14 @@ export const getNotices = async ({
 };
 
 // 공지사항 상세 조회
-export const getNoticeDetail = async () => {
-  return Promise.resolve(notice_detail_mock)
-}
+export const getNoticeDetail = async (noticeId: number) => {
+  const response = await api.get<NoticeDetailResponseDto>(
+    `/api/notice/${noticeId}`,
+  );
+
+  console.log(response.data)
+  return response.data.data;
+};
 
 export const updateNoticePost = async (id: number, post: UploadPostDraft) => {
   const detail = notice_detail_mock.find((item) => item.id === id);

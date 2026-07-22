@@ -12,12 +12,15 @@ import PageBackButton from "../../components/ui/PageBackButton";
 
 const NoticeDetail = () => {
   const { id } = useParams();
-  const { data: notice } = useNoticeDetail(Number(id));
+  const { data: notice, loading, error } = useNoticeDetail(Number(id));
   const navigate = useNavigate();
   const { currentUser } = useAuth();
   const isAdmin = currentUser?.role === "ADMIN";
 
-  if (!notice) return <Loading /> 
+  if (loading) return <Loading />;
+  if (error || !notice) {
+    return <p className="px-4 py-8 text-center text-sm text-red-500">{error}</p>;
+  }
   
   return(
     <div className="px-4 py-8 sm:px-6 lg:px-20">
@@ -48,16 +51,17 @@ const NoticeDetail = () => {
                           {notice.description}
                         </p>
         
-                      {notice.files?.length ? (
+                      {notice.fileItems?.length ? (
                         <ul className="space-y-3">
-                            {notice.files.map((file) => (
-                            <li key={file}>
+                            {notice.fileItems.map((file) => (
+                            <li key={file.id}>
                                 <a
-                                href={`/${file}`}
+                                href={file.url}
+                                target="_blank"
+                                rel="noreferrer"
                                 className="text-sm text-[#4988C4] underline underline-offset-2 hover:text-[#0F2854]"
-                                onClick={(event) => event.preventDefault()}
                                 >
-                                {file}
+                                {file.name}
                                 </a>
                             </li>
                             ))}
