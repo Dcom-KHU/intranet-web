@@ -25,6 +25,7 @@ const NoticeEdit = () => {
         title: notice.title,
         descriptionHtml: notice.description,
         existingFiles: notice.files ?? [],
+        existingFileItems: notice.fileItems ?? [],
       }}
       onSubmit={async (post) => {
         await updateNoticePost(postId, post);

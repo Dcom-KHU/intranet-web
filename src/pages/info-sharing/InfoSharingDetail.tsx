@@ -12,6 +12,7 @@ import UserDisplayName from "../../components/ui/UserDisplay";
 import PageBackButton from "../../components/ui/PageBackButton";
 import { deleteInfoPost } from "@/features/info-sharing/api/info-sharing.api";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
+import ConvertTime from "../../components/ConvertTime";
 
 
 const InfoSharingDetail = () => {
@@ -64,7 +65,7 @@ const InfoSharingDetail = () => {
                             <UserDisplayName user={info.author} />
                         </div>
                         <time className="shrink-0 text-sm text-gray-500">
-                            {info.createdAt.slice(0, 10).replaceAll("-", ".")}
+                            <ConvertTime date={info.createdAt} />
                         </time>
                         </div>
         
