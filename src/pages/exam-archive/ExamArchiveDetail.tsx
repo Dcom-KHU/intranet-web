@@ -13,6 +13,7 @@ import UserDisplayName from "../../components/ui/UserDisplay";
 import PageBackButton from "../../components/ui/PageBackButton";
 import { deleteExamPost, downloadExamArchiveFile } from "../../features/exam-archive/api/exam-archive.api";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
+import ConvertTime from "../../components/ConvertTime";
 
 
 const ExamArchiveDetail = () => {
@@ -81,7 +82,7 @@ const ExamArchiveDetail = () => {
                   <span className="text-sm font-medium">{post.semester}</span>
                 </div>
                 <time className="shrink-0 text-sm text-gray-500">
-                  {post.date.replaceAll("-", ".")}
+                  <ConvertTime date={post.date} />
                 </time>
               </div>
 

@@ -11,6 +11,7 @@ import UserDisplayName from "../../components/ui/UserDisplay";
 import PageBackButton from "../../components/ui/PageBackButton";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import { deleteNotice } from "../../features/notice/api/notice.api";
+import ConvertTime from "../../components/ConvertTime";
 
 
 const NoticeDetail = () => {
@@ -62,7 +63,7 @@ const NoticeDetail = () => {
                       <div className="mb-8 flex items-start justify-between gap-4">
                         <UserDisplayName user={notice.author} />
                         <time className="shrink-0 text-sm text-gray-500">
-                          {notice.date.replaceAll("-", ".")}
+                          <ConvertTime date={notice.date} />
                         </time>
                       </div>
         
