@@ -2,6 +2,7 @@ import type { NoticeDetailDto, NoticeListItemDto } from "../dto/notice.dto";
 import type { NoticeDetailType, NoticeType } from "../types/notice.type";
 import type { UploadPostDraft } from "../../upload/types/upload.type";
 import type { CreateNoticeRequestDto } from "../dto/create-notice.dto";
+import type { UpdateNoticeRequestDto } from "../dto/update-notice.dto";
 
 export const toNotice = (dto: NoticeListItemDto): NoticeType => ({
   id: dto.noticeId,
@@ -37,4 +38,12 @@ export const toCreateNoticeRequest = (
 ): CreateNoticeRequestDto => ({
   title: post.title,
   content: htmlToText(post.descriptionHtml),
+});
+
+export const toUpdateNoticeRequest = (
+  post: UploadPostDraft,
+): UpdateNoticeRequestDto => ({
+  title: post.title,
+  content: htmlToText(post.descriptionHtml),
+  deleteFileIds: post.deleteFileIds,
 });
