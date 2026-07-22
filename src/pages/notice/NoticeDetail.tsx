@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useNoticeDetail } from "../../features/notice/hooks/useNoticeDetail";
 
@@ -8,14 +9,32 @@ import Loading from "../../components/Loading";
 import useAuth from "../../features/auth/hooks/useAuth";
 import UserDisplayName from "../../components/ui/UserDisplay";
 import PageBackButton from "../../components/ui/PageBackButton";
+import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
+import { deleteNotice } from "../../features/notice/api/notice.api";
 
 
 const NoticeDetail = () => {
   const { id } = useParams();
-  const { data: notice, loading, error } = useNoticeDetail(Number(id));
+  const noticeId = Number(id);
+  const { data: notice, loading, error } = useNoticeDetail(noticeId);
   const navigate = useNavigate();
   const { currentUser } = useAuth();
   const isAdmin = currentUser?.role === "ADMIN";
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+
+    try {
+      await deleteNotice(noticeId);
+      navigate("/notice");
+    } catch (deleteError) {
+      console.error("공지사항 삭제 실패:", deleteError);
+      window.alert("공지사항 삭제에 실패했습니다.");
+      setIsDeleting(false);
+    }
+  };
 
   if (loading) return <Loading />;
   if (error || !notice) {
@@ -80,8 +99,10 @@ const NoticeDetail = () => {
                           </button>
                           <button
                             type="button"
-                            aria-label="삭제"
-                            className="text-gray-400 hover:text-red-400"
+                            aria-label="공지사항 삭제"
+                            disabled={isDeleting}
+                            className="text-gray-400 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50"
+                            onClick={() => setIsDeleteModalOpen(true)}
                           >
                             <GoTrash size={16} />
                           </button>
@@ -91,6 +112,13 @@ const NoticeDetail = () => {
                   
                 </div>
               </section>
+        <ConfirmDeleteModal
+          isOpen={isDeleteModalOpen}
+          description="삭제한 공지사항은 복구할 수 없습니다."
+          isDeleting={isDeleting}
+          onConfirm={() => void handleDelete()}
+          onCancel={() => setIsDeleteModalOpen(false)}
+        />
     </div>
 
   );

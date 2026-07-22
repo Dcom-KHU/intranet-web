@@ -86,3 +86,10 @@ export const updateNoticePost = async (
 
   return response.data;
 };
+
+// 공지사항 삭제
+export const deleteNotice = async (noticeId: number) => {
+  const response = await api.delete(`/api/notice/${noticeId}`);
+
+  return response.data;
+};
