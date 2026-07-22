@@ -6,7 +6,14 @@ export interface NoticeType {
   title: string;
   author: postAuthor;
   date: string;
-  hasAttachment: boolean;
+  hasAttachment?: boolean;
+}
+
+export interface NoticePageInfo {
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
 }
 
 // 공지사항 상세 조회

@@ -1,5 +1,14 @@
 import { notice_detail_mock, notice_mock } from "../../../mocks/notice.mock";
 import type { UploadPostDraft } from "../../upload/types/upload.type";
+import { api } from "@/api/client";
+import type { NoticesResponseDto } from "../dto/notice.dto";
+
+export interface NoticesRequest {
+  keyword?: string;
+  page?: number;
+  size?: number;
+  sort?: string;
+}
 
 const htmlToText = (html: string) =>
   html
@@ -10,8 +19,26 @@ const htmlToText = (html: string) =>
     .trim();
 
 // 공지사항 전체 목록 조회
-export const getNotices = async () => {
-  return Promise.resolve(notice_mock);
+export const getNotices = async ({
+  keyword,
+  page = 0,
+  size = 10,
+  sort,
+}: NoticesRequest = {}) => {
+  const response = await api.get<NoticesResponseDto>(
+    "/api/notice",
+    {
+      params: {
+        ...(keyword ? { keyword } : {}),
+        page,
+        size,
+        ...(sort ? { sort } : {}),
+      },
+    },
+  );
+
+  console.log(response.data)
+  return response.data.data;
 };
 
 // 공지사항 상세 조회

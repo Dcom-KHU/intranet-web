@@ -1,12 +1,12 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { HiUpload } from "react-icons/hi";
-import { MdAttachFile } from "react-icons/md";
 
 import { Button } from "../../components/ui/Button";
 import DataTable, { type DataTableColumn } from "../../components/ui/DataTable";
 import SearchBar from "../../components/ui/SearchBar";
+import Pagination from "../../components/ui/Pagination";
 import useAuth from "../../features/auth/hooks/useAuth";
 import { useNotices } from "../../features/notice/hooks/useNotices";
 import type { NoticeType } from "../../features/notice/types/notice.type";
@@ -24,33 +24,26 @@ const NOTICE_TEXT = {
 
 const Notice = () => {
   const navigate = useNavigate();
-  const { data: notices } = useNotices();
   const { currentUser } = useAuth();
   const isAdmin = currentUser?.role === "ADMIN";
   const [searchKeyword, setSearchKeyword] = useState("");
   const [appliedKeyword, setAppliedKeyword] = useState("");
-
-  const filteredNotices = useMemo(() => {
-    const keyword = appliedKeyword.trim().toLowerCase();
-
-    if (!keyword) {
-      return notices ?? [];
-    }
-
-    return (notices ?? []).filter(
-      (notice) =>
-        notice.title.toLowerCase().includes(keyword) ||
-        notice.author.name.toLowerCase().includes(keyword),
-    );
-  }, [notices, appliedKeyword]);
+  const [page, setPage] = useState(0);
+  const size = 10;
+  const { data: notices, pageInfo, loading, error } = useNotices(
+    page,
+    size,
+    appliedKeyword,
+  );
 
   const columns: DataTableColumn<NoticeType>[] = [
     {
-      key: "id",
+      key: "number",
       header: NOTICE_TEXT.number,
       width: "w-[8%]",
       cellClassName: "text-sm text-gray-500",
-      render: (notice) => notice.id,
+      render: (notice) =>
+        pageInfo.page * pageInfo.size + notices.indexOf(notice) + 1,
     },
     {
       key: "title",
@@ -64,9 +57,6 @@ const Notice = () => {
             {notice.title}
           </span>
 
-          {notice.hasAttachment && (
-            <MdAttachFile className="text-gray-400" />
-          )}
         </div>
       ),
     },
@@ -101,7 +91,10 @@ const Notice = () => {
         <SearchBar
           value={searchKeyword}
           onChange={setSearchKeyword}
-          onSearch={() => setAppliedKeyword(searchKeyword)}
+          onSearch={() => {
+            setPage(0);
+            setAppliedKeyword(searchKeyword.trim());
+          }}
           placeholder={NOTICE_TEXT.searchPlaceholder}
         />
 
@@ -120,10 +113,20 @@ const Notice = () => {
       <section>
         <DataTable
           columns={columns}
-          data={filteredNotices}
+          data={notices}
           rowKey={(notice) => notice.id}
           emptyMessage={NOTICE_TEXT.empty}
+          isLoading={loading}
           onRowClick={(notice) => navigate(`/notice/${notice.id}`)}
+        />
+
+        {error && <p className="mt-4 text-center text-sm text-red-500">{error}</p>}
+
+        <Pagination
+          className="mt-6"
+          currentPage={pageInfo.page + 1}
+          totalPages={pageInfo.totalPages}
+          onPageChange={(nextPage) => setPage(nextPage - 1)}
         />
       </section>
     </div>
