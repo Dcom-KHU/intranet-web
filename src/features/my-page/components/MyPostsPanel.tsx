@@ -8,6 +8,9 @@ import Pagination from "../../../components/ui/Pagination";
 import { useMyPosts } from "../hooks/useMyPosts";
 import type { MyPostDto, MyPostType } from "../types/my.types";
 import ActivityBoardBadge from "./ActivityBoardBadge";
+import { GoTrash } from "react-icons/go";
+import ConfirmDeleteModal from "../../../components/ui/ConfirmDeleteModal";
+import { deleteMyPost } from "../api/my-activity.api";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -36,30 +39,6 @@ const getPostTypeMeta = (type: string) =>
     path: "",
   };
 
-const columns: DataTableColumn<MyPostDto>[] = [
-  {
-    key: "type",
-    header: "게시판",
-    width: "w-28",
-    render: (post) => (
-      <ActivityBoardBadge label={getPostTypeMeta(post.type).label} />
-    ),
-  },
-  {
-    key: "title",
-    header: "제목",
-    cellClassName: "truncate text-left text-sm text-gray-700",
-    render: (post) => post.title,
-  },
-  {
-    key: "createdAt",
-    header: "작성일",
-    width: "w-28",
-    cellClassName: "text-xs text-gray-400",
-    render: (post) => post.createdAt.slice(0, 10),
-  },
-];
-
 interface MyPostsPanelProps {
   studentNumber: string;
   isAdmin: boolean;
@@ -71,11 +50,77 @@ export default function MyPostsPanel({
 }: MyPostsPanelProps) {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
-  const { data, total, loading, error } = useMyPosts(
+  const [deleteTarget, setDeleteTarget] = useState<MyPostDto | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const { data, total, loading, error, refetch } = useMyPosts(
     currentPage - 1,
     ITEMS_PER_PAGE,
   );
   const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
+
+  const handleDelete = async () => {
+    if (!deleteTarget || isDeleting) return;
+
+    setIsDeleting(true);
+    try {
+      await deleteMyPost(deleteTarget.id, deleteTarget.type);
+      setDeleteTarget(null);
+
+      if (data.length === 1 && currentPage > 1) {
+        setCurrentPage((page) => page - 1);
+      } else {
+        refetch();
+      }
+    } catch (requestError) {
+      console.error("내가 쓴 글 삭제 실패:", requestError);
+      window.alert("게시글 삭제에 실패했습니다.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const columns: DataTableColumn<MyPostDto>[] = [
+    {
+      key: "type",
+      header: "게시판",
+      width: "w-28",
+      render: (post) => (
+        <ActivityBoardBadge label={getPostTypeMeta(post.type).label} />
+      ),
+    },
+    {
+      key: "title",
+      header: "제목",
+      cellClassName: "truncate text-left text-sm text-gray-700",
+      render: (post) => post.title,
+    },
+    {
+      key: "createdAt",
+      header: "작성일",
+      width: "w-28",
+      cellClassName: "text-xs text-gray-400",
+      render: (post) => post.createdAt.slice(0, 10),
+    },
+    {
+      key: "delete",
+      header: "",
+      width: "w-12",
+      cellClassName: "text-gray-400",
+      render: (post) => (
+        <button
+          type="button"
+          aria-label={`${post.title} 삭제`}
+          className="rounded-full p-1 transition-colors hover:bg-red-50 hover:text-red-400"
+          onClick={(event) => {
+            event.stopPropagation();
+            setDeleteTarget(post);
+          }}
+        >
+          <GoTrash size={16} />
+        </button>
+      ),
+    },
+  ];
 
   return (
     <section className="px-10 pt-10 pb-5">
@@ -115,6 +160,13 @@ export default function MyPostsPanel({
           className="mt-8"
         />
       )}
+      <ConfirmDeleteModal
+        isOpen={deleteTarget !== null}
+        description="삭제한 게시글은 복구할 수 없습니다."
+        isDeleting={isDeleting}
+        onConfirm={() => void handleDelete()}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </section>
   );
 }

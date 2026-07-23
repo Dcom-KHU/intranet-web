@@ -11,6 +11,7 @@ type MyPostsState = {
 };
 
 export const useMyPosts = (page: number, size: number) => {
+  const [refreshKey, setRefreshKey] = useState(0);
   const [state, setState] = useState<MyPostsState>({
     data: [],
     total: 0,
@@ -54,7 +55,10 @@ export const useMyPosts = (page: number, size: number) => {
     return () => {
       cancelled = true;
     };
-  }, [page, size]);
+  }, [page, refreshKey, size]);
 
-  return state;
+  return {
+    ...state,
+    refetch: () => setRefreshKey((key) => key + 1),
+  };
 };

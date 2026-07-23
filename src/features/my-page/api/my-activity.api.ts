@@ -3,6 +3,7 @@ import { api } from "@/api/client";
 import type {
   MyCommentsResponseDto,
   MyPostsResponseDto,
+  MyPostType,
 } from "../types/my.types";
 
 type ApiResponse<T> = {
@@ -48,6 +49,20 @@ export const getMyComments = async (
   console.log("getMyComments response:", response.data);
 
   return response.data.data;
+};
+
+export const deleteMyPost = async (
+  postId: number,
+  type: MyPostType,
+) => {
+  const response = await api.delete(
+    `/api/users/me/posts/${postId}`,
+    {
+      params: { type },
+    },
+  );
+
+  return response.data;
 };
 
 export const withdrawMe = async () => {
