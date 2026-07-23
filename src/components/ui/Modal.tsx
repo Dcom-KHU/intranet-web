@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import dcomLogo from "../../assets/dcom-logo-black.png";
 
 type ModalProps = {
@@ -10,6 +10,7 @@ type ModalProps = {
   onAction?: () => void;
   secondaryActionLabel?: string;
   onSecondaryAction?: () => void;
+  onClose?: () => void;
   labelledById?: string;
 };
 
@@ -22,9 +23,29 @@ export default function Modal({
   onAction,
   secondaryActionLabel,
   onSecondaryAction,
+  onClose,
   labelledById = "modal-title",
 }: ModalProps) {
+  useEffect(() => {
+    if (!isOpen || !onAction) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Enter" || event.repeat) return;
+
+      event.preventDefault();
+      onAction();
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onAction]);
+
   if (!isOpen) return null;
+
+  const handleBackdropClick = () => {
+    const closeModal = onClose ?? onSecondaryAction ?? onAction;
+    closeModal?.();
+  };
 
   return (
     <div
@@ -32,6 +53,9 @@ export default function Modal({
       role="dialog"
       aria-modal="true"
       aria-labelledby={labelledById}
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) handleBackdropClick();
+      }}
     >
       <div className="w-full max-w-sm rounded-[28px] bg-white px-9 py-10 text-center shadow-xl">
         <img
