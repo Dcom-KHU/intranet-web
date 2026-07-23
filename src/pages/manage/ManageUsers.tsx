@@ -201,25 +201,25 @@ const ManageUsers = () => {
                     {user.name}
                   </td>
 
-                  <td className="px-5 py-4 text-center text-gray-500">
+                  <td className="px-5 py-4 text-center text-xs text-gray-500">
                     {user.studentNumber}
                   </td>
 
                   <td
-                    className="max-w-0 truncate px-5 py-4 text-center text-gray-500"
+                    className="max-w-0 truncate px-5 py-4 text-center text-xs text-gray-500"
                     title={user.userID}
                   >
                     {user.userID}
                   </td>
 
                   <td
-                    className="max-w-0 truncate px-5 py-4 text-center text-gray-500"
+                    className="max-w-0 truncate px-5 py-4 text-center text-xs text-gray-500"
                     title={user.email}
                   >
                     {user.email}
                   </td>
 
-                  <td className="px-5 py-4 text-center text-gray-500">
+                  <td className="px-5 py-4 text-center text-xs text-gray-500">
                     {user.lastLoginAt ?? "-"}
                   </td>
 

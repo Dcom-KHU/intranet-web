@@ -14,7 +14,9 @@ export const toManageUsersPage = (
     email: user.email,
     role: user.role,
     status: user.status,
-    lastLoginAt: user.lastLoginAt?.slice(0, 10) ?? "-",
+    lastLoginAt: user.lastLoginAt
+      ? user.lastLoginAt.slice(0, 16).replace("T", " ")
+      : "-",
   })),
   ...response.pageInfo,
 });
@@ -29,5 +31,7 @@ export const toManageUserDetail = (
   email: user.email,
   phoneNumber: user.phoneNumber,
   role: user.role,
-  lastLoginAt: user.lastLoginAt?.slice(0, 10) ?? "-",
+  lastLoginAt: user.lastLoginAt
+    ? user.lastLoginAt.slice(0, 16).replace("T", " ")
+    : "-",
 });
