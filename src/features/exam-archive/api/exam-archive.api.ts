@@ -44,7 +44,7 @@ export const getSearchExamArchives = async ({
   size: number;
 }) => {
   const response = await api.get<{ data: ExamArchivesPageDto }>(
-    "/api/archives/search",
+    "/api/archives",
     { params: { searchKeyword, page, size } },
   );
 
