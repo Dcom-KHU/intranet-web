@@ -15,7 +15,7 @@ export default function Pagination({
   ariaLabel = "페이지 이동",
   className = "",
 }: PaginationProps) {
-  if (totalPages <= 1) return null;
+  if (totalPages <= 0) return null;
 
   const currentGroup = Math.floor((currentPage - 1) / PAGES_PER_GROUP);
   const startPage = currentGroup * PAGES_PER_GROUP + 1;
