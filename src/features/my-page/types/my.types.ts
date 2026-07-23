@@ -18,10 +18,12 @@ export type MyPostsResponseDto = {
   posts: MyPostDto[];
 };
 
+export type MyCommentType = "info-posts" | "photo-posts";
+
 export type MyCommentDto = {
   id: number;
   number: number;
-  type: string;
+  type: MyCommentType;
   targetId: number;
   targetTitle: string;
   content: string;
