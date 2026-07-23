@@ -11,6 +11,7 @@ type MyCommentsState = {
 };
 
 export const useMyComments = (page: number, size: number) => {
+  const [refreshKey, setRefreshKey] = useState(0);
   const [state, setState] = useState<MyCommentsState>({
     data: [],
     total: 0,
@@ -54,7 +55,10 @@ export const useMyComments = (page: number, size: number) => {
     return () => {
       cancelled = true;
     };
-  }, [page, size]);
+  }, [page, refreshKey, size]);
 
-  return state;
+  return {
+    ...state,
+    refetch: () => setRefreshKey((key) => key + 1),
+  };
 };
