@@ -96,14 +96,14 @@ const Home = () => {
                                 <p className="min-w-0 truncate">
                                     {item.author.name}
                                     {" | "}
+                                    
+                                    {item.professor}
+                                    {" - "}
                                     <span className="inline">
                                     {item.subject.length > 8
                                         ? `${item.subject.slice(0, 8)}...`
                                         : item.subject}
                                     </span>
-
-                                    {" - "}
-                                    {item.professor}
                                 </p>
 
                                 <p className="text-gray-400 text-xs flex-shrink-0 ml-2">
