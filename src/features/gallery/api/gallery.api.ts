@@ -12,10 +12,20 @@ import {
 } from "../mapper/gallery.mapper";
 
 // 활동사진 목록 조회
-export const getGalleryPosts = async (page = 0, size = 8) => {
+export const getGalleryPosts = async (
+  page = 0,
+  size = 8,
+  keyword?: string,
+) => {
   const response = await api.get<GalleryAlbumsResponseDto>(
     "/api/photo-posts",
-    { params: { page, size } },
+    {
+      params: {
+        page,
+        size,
+        ...(keyword ? { keyword } : {}),
+      },
+    },
   );
 
   return toGalleryPostsPage(response.data.data);
