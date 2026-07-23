@@ -8,12 +8,14 @@ import Pagination from "../../components/ui/Pagination";
 import { usePendingUsers } from "../../features/manage/hooks/usePendingUsers";
 import { approveUser, rejectUser } from "../../features/manage/api/manage.api";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
+import ManageUserDetailModal from "../../features/manage/components/ManageUserDetailModal";
 
 const ManagePendingUsers = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const [processingUserId, setProcessingUserId] = useState<number | null>(null);
   const [rejectUserId, setRejectUserId] = useState<number | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const { data, loading, error, refetch } = usePendingUsers(page, 10);
 
   const handleUser = async (userId: number, action: "approve" | "reject") => {
@@ -107,7 +109,18 @@ const ManagePendingUsers = () => {
               data.users.map((user) => (
                 <tr
                   key={user.id}
-                  className="border-b text-xs hover:bg-gray-50"
+                  className="cursor-pointer border-b text-xs transition-colors hover:bg-[#4988C4]/5"
+                  tabIndex={0}
+                  onClick={() => setSelectedUserId(user.id)}
+                  onKeyDown={(event) => {
+                    if (
+                      event.target === event.currentTarget &&
+                      (event.key === "Enter" || event.key === " ")
+                    ) {
+                      event.preventDefault();
+                      setSelectedUserId(user.id);
+                    }
+                  }}
                 >
                   <td className="px-5 py-4 text-center font-medium text-[#0F2854]">
                     {user.name}
@@ -117,15 +130,24 @@ const ManagePendingUsers = () => {
                     {user.studentNumber}
                   </td>
 
-                  <td className="px-5 py-4 text-center text-gray-500">
+                  <td
+                    className="max-w-0 truncate px-5 py-4 text-center text-gray-500"
+                    title={user.userID}
+                  >
                     {user.userID}
                   </td>
 
-                  <td className="truncate px-5 py-4 text-center text-gray-500">
+                  <td
+                    className="max-w-0 truncate px-5 py-4 text-center text-gray-500"
+                    title={user.email}
+                  >
                     {user.email}
                   </td>
 
-                  <td className="px-5 py-4 text-center text-gray-500">
+                  <td
+                    className="max-w-0 truncate px-5 py-4 text-center text-gray-500"
+                    title={user.phoneNumber}
+                  >
                     {user.phoneNumber}
                   </td>
 
@@ -139,7 +161,10 @@ const ManagePendingUsers = () => {
                         variant="third"
                         className="flex-1 rounded-lg px-0 py-1.5 text-xs"
                         disabled={processingUserId !== null}
-                        onClick={() => void handleUser(user.id, "approve")}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          void handleUser(user.id, "approve");
+                        }}
                       >
                         승인
                       </Button>
@@ -148,7 +173,10 @@ const ManagePendingUsers = () => {
                         variant="refusal"
                         className="flex-1 rounded-lg px-0 py-1.5 text-xs"
                         disabled={processingUserId !== null}
-                        onClick={() => setRejectUserId(user.id)}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          setRejectUserId(user.id);
+                        }}
                       >
                         거절
                       </Button>
@@ -177,6 +205,10 @@ const ManagePendingUsers = () => {
           if (rejectUserId !== null) void handleUser(rejectUserId, "reject");
         }}
         onCancel={() => setRejectUserId(null)}
+      />
+      <ManageUserDetailModal
+        userId={selectedUserId}
+        onClose={() => setSelectedUserId(null)}
       />
     </div>
   );

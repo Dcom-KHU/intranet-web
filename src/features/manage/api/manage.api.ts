@@ -5,6 +5,9 @@ import type { PendingUsersResponseDto } from "../dto/pending-users.dto";
 import { toPendingUsersPage } from "../mapper/pending-users.mapper";
 import type { ManageUsersResponseDto } from "../dto/manage-users.dto";
 import { toManageUsersPage } from "../mapper/manage-users.mapper";
+import type { ManageUserDetailResponseDto } from "../dto/manage-user-detail.dto";
+import { toManageUserDetail } from "../mapper/manage-users.mapper";
+import type { TransferAdminRequestDto } from "../dto/transfer-admin.dto";
 
 export interface ManageUsersRequest {
   keyword?: string;
@@ -13,6 +16,7 @@ export interface ManageUsersRequest {
   sort?: string;
 }
 
+// 회원 전체 조회
 export const getManageUsers = async ({
   keyword,
   page = 0,
@@ -34,6 +38,15 @@ export const getManageUsers = async ({
   return toManageUsersPage(response.data.data);
 };
 
+// 회원 상세 조회
+export const getManageUserDetail = async (userId: number) => {
+  const response = await api.get<ManageUserDetailResponseDto>(
+    `/api/admin/users/${userId}`,
+  );
+
+  return toManageUserDetail(response.data.data);
+};
+
 export interface PendingUsersRequest {
   page?: number;
   size?: number;
@@ -51,6 +64,7 @@ export const getPendingUsers = async ({
     { params: { page, size, ...(sort ? { sort } : {}) } },
   );
 
+  console.log(response.data)
   return toPendingUsersPage(response.data.data);
 };
 
@@ -81,5 +95,22 @@ export const rejectUser = async (userId: number) => {
   );
 
   console.log(userId, '가 거부되었습니다.')
+  return response.data;
+};
+
+// 관리자 권한 이양
+export const transferAdmin = async (
+  userId: number,
+  targetUserId: number,
+) => {
+  const request: TransferAdminRequestDto = {
+    confirm: true,
+    targetUserId,
+  };
+  const response = await api.patch(
+    `/api/admin/users/${userId}/transfer-admin`,
+    request,
+  );
+
   return response.data;
 };
