@@ -7,6 +7,7 @@ import type { ManageUsersResponseDto } from "../dto/manage-users.dto";
 import { toManageUsersPage } from "../mapper/manage-users.mapper";
 import type { ManageUserDetailResponseDto } from "../dto/manage-user-detail.dto";
 import { toManageUserDetail } from "../mapper/manage-users.mapper";
+import type { TransferAdminRequestDto } from "../dto/transfer-admin.dto";
 
 export interface ManageUsersRequest {
   keyword?: string;
@@ -94,5 +95,22 @@ export const rejectUser = async (userId: number) => {
   );
 
   console.log(userId, '가 거부되었습니다.')
+  return response.data;
+};
+
+// 관리자 권한 이양
+export const transferAdmin = async (
+  userId: number,
+  targetUserId: number,
+) => {
+  const request: TransferAdminRequestDto = {
+    confirm: true,
+    targetUserId,
+  };
+  const response = await api.patch(
+    `/api/admin/users/${userId}/transfer-admin`,
+    request,
+  );
+
   return response.data;
 };
