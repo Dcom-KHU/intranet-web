@@ -5,6 +5,7 @@ export interface NoticeListItemDto {
   title: string;
   author: postAuthor;
   createdAt: string;
+  hasFiles: boolean;
 }
 
 export interface NoticeFileDto {

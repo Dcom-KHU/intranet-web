@@ -9,6 +9,7 @@ export const toNotice = (dto: NoticeListItemDto): NoticeType => ({
   title: dto.title,
   author: dto.author,
   date: dto.createdAt.slice(0, 10),
+  hasAttachment: dto.hasFiles,
 });
 
 export const toNoticeDetail = (dto: NoticeDetailDto): NoticeDetailType => ({
