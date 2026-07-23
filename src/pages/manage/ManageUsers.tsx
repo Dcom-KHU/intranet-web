@@ -56,7 +56,7 @@ const ManageUsers = () => {
   );
 
   const deleteUser = () => {
-    if (deleteUserId === null) return;
+    if (deleteUserId === null || deleteUserId === currentUser?.id) return;
     setHiddenUserIds((ids) => [...ids, deleteUserId]);
     setDeleteUserId(null);
   };
@@ -237,16 +237,18 @@ const ManageUsers = () => {
                           관리자 지정
                         </Button>
                       )}
-                      <Button
-                        variant="refusal"
-                        className="whitespace-nowrap px-2.5 py-1.5 text-xs"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          setDeleteUserId(user.id);
-                        }}
-                      >
-                        삭제
-                      </Button>
+                      {user.id !== currentUser?.id && (
+                        <Button
+                          variant="refusal"
+                          className="whitespace-nowrap px-2.5 py-1.5 text-xs"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setDeleteUserId(user.id);
+                          }}
+                        >
+                          삭제
+                        </Button>
+                      )}
                     </div>
                   </td>
                 </tr>
