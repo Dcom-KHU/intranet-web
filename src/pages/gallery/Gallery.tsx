@@ -10,6 +10,7 @@ import Card from "../../components/ui/Card";
 import { Button } from "../../components/ui/Button";
 import Pagination from "../../components/ui/Pagination";
 import Loading from "../../components/Loading";
+import SearchBar from "../../components/ui/SearchBar";
 
 
 const ITEMS_PER_PAGE = 8;
@@ -20,9 +21,12 @@ const Gallery = () => {
   const isAdmin = currentUser?.role === "ADMIN";
 
   const [page, setPage] = useState(0);
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [appliedKeyword, setAppliedKeyword] = useState("");
   const { data: gallery, pageInfo, loading, error } = useGallery(
     page,
     ITEMS_PER_PAGE,
+    appliedKeyword,
   );
 
   if (loading) return <Loading />;
@@ -38,7 +42,17 @@ const Gallery = () => {
         </p>
       </section>
 
-      <section className="mb-12 flex items-center justify-end gap-4">
+      <section className="mb-12 flex items-center justify-between gap-4">
+        <SearchBar
+          value={searchKeyword}
+          onChange={setSearchKeyword}
+          onSearch={() => {
+            setPage(0);
+            setAppliedKeyword(searchKeyword.trim());
+          }}
+          placeholder="활동사진 제목을 검색하세요"
+        />
+
         {isAdmin && (
             <Button
               type="button"
