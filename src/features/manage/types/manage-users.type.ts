@@ -16,3 +16,14 @@ export interface ManageUsersPage {
   totalElements: number;
   totalPages: number;
 }
+
+export interface ManageUserDetail {
+  id: number;
+  userID: string;
+  name: string;
+  studentNumber: string;
+  email: string;
+  phoneNumber: string;
+  role: "USER" | "ADMIN";
+  lastLoginAt: string;
+}

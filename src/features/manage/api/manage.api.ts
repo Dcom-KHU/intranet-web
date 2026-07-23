@@ -5,6 +5,8 @@ import type { PendingUsersResponseDto } from "../dto/pending-users.dto";
 import { toPendingUsersPage } from "../mapper/pending-users.mapper";
 import type { ManageUsersResponseDto } from "../dto/manage-users.dto";
 import { toManageUsersPage } from "../mapper/manage-users.mapper";
+import type { ManageUserDetailResponseDto } from "../dto/manage-user-detail.dto";
+import { toManageUserDetail } from "../mapper/manage-users.mapper";
 
 export interface ManageUsersRequest {
   keyword?: string;
@@ -32,6 +34,14 @@ export const getManageUsers = async ({
   );
 
   return toManageUsersPage(response.data.data);
+};
+
+export const getManageUserDetail = async (userId: number) => {
+  const response = await api.get<ManageUserDetailResponseDto>(
+    `/api/admin/users/${userId}`,
+  );
+
+  return toManageUserDetail(response.data.data);
 };
 
 export interface PendingUsersRequest {

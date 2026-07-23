@@ -8,6 +8,7 @@ import PageBackButton from "../../components/ui/PageBackButton";
 import Pagination from "../../components/ui/Pagination";
 import { useManageUsers } from "../../features/manage/hooks/useManageUsers";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
+import ManageUserDetailModal from "../../features/manage/components/ManageUserDetailModal";
 
 type SortType = "lastLogin" | "studentNumber";
 
@@ -29,6 +30,7 @@ const ManageUsers = () => {
   const [page, setPage] = useState(0);
   const [hiddenUserIds, setHiddenUserIds] = useState<number[]>([]);
   const [deleteUserId, setDeleteUserId] = useState<number | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
   const { data, loading, error } = useManageUsers(
     page,
@@ -152,7 +154,15 @@ const ManageUsers = () => {
               users.map((user) => (
                 <tr
                   key={user.id}
-                  className="border-b text-sm hover:bg-gray-50"
+                  className="cursor-pointer border-b text-sm transition-colors hover:bg-[#4988C4]/5"
+                  tabIndex={0}
+                  onClick={() => setSelectedUserId(user.id)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      setSelectedUserId(user.id);
+                    }
+                  }}
                 >
                   <td className="px-5 py-4 text-center font-medium text-[#0F2854]">
                     {user.name}
@@ -178,7 +188,10 @@ const ManageUsers = () => {
                     <Button
                       variant="refusal"
                       className="px-4"
-                      onClick={() => setDeleteUserId(user.id)}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        setDeleteUserId(user.id);
+                      }}
                     >
                       삭제
                     </Button>
@@ -202,6 +215,10 @@ const ManageUsers = () => {
         description="삭제한 회원은 목록에서 복구할 수 없습니다."
         onConfirm={deleteUser}
         onCancel={() => setDeleteUserId(null)}
+      />
+      <ManageUserDetailModal
+        userId={selectedUserId}
+        onClose={() => setSelectedUserId(null)}
       />
     </div>
   );
