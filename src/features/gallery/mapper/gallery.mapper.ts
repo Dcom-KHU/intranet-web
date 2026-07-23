@@ -12,7 +12,7 @@ import type { UpdateGalleryRequestDto } from "../dto/update-gallery.dto";
 
 const apiOrigin = new URL(import.meta.env.VITE_API_BASE_URL).origin;
 
-const toGalleryImageUrl = (url: string) => {
+export const toGalleryImageUrl = (url: string) => {
   if (!url) return "";
 
   try {
