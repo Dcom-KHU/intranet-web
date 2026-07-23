@@ -1,27 +1,25 @@
 import { useNavigate } from "react-router-dom";
 import Container from "../components/ui/Container";
-import { useExam } from "../features/exam-archive/hooks/useExam";
-import { useGallery } from "../features/gallery/hooks/useGallery";
 import RotatingBackgroundBanner from "../components/RotatingBackgroundBanner";
 import { IoNotificationsOutline, IoChatbubbleOutline, IoPencilOutline, IoImageOutline } from "react-icons/io5";
 import khuBg from "../assets/khu-bg-1.png";
 import khuBg2 from "../assets/khu-bg-2.jpg"
 import khuBg3 from "../assets/khu-bg-3.jpg"
-import { useNotices } from "../features/notice/hooks/useNotices";
-import { useInfos } from "../features/info-sharing/hooks/useInfos";
+import { useHomeDashboard } from "../features/home/hooks/useHomeDashboard";
+import Loading from "../components/Loading";
 
 const homeBackgroundImages = [khuBg, khuBg2, khuBg3];
 
 const Home = () => {
     const navigate = useNavigate();
-    // 족보 게시글 조회
-    const { data: exam } = useExam();
-    // 최근 활동 사진 조회
-    const { data: galleryPost } = useGallery();
-    // 공지사항 조회
-    const { data: notices } = useNotices();
-    // 정보공유 조회
-    const { data: infos } = useInfos();
+    const { data, loading, error } = useHomeDashboard();
+
+    if (loading) return <Loading />;
+
+    const notices = data?.recentNotices ?? [];
+    const infos = data?.recentInfoPosts ?? [];
+    const exam = data?.recentArchives ?? [];
+    const galleryPost = data?.recentPhotoAlbums ?? [];
 
     return (
         <>
@@ -59,7 +57,7 @@ const Home = () => {
                         ))}
                     </Container> 
 
-                    <Container title="정보공유" icon={IoChatbubbleOutline} onViewAllClick={() => navigate("/info-sharing")}>
+                    <Container title="정보공유" icon={IoChatbubbleOutline} onViewAllClick={() => navigate("/info")}>
                         {infos?.slice(0, 5).map(item => (
                             <div
                                 key={item.id}
@@ -77,11 +75,11 @@ const Home = () => {
                                 </p>
                                 <p className="text-gray-400 text-xs flex-shrink-0 ml-2">
                                     <span className="sm:hidden">
-                                        {item.createdAt.slice(5, 10)}
+                                        {item.date.slice(5)}
                                     </span>
 
                                     <span className="hidden sm:inline">
-                                        {item.createdAt.slice(0, 10)}
+                                        {item.date}
                                     </span>
                                 </p>
                             </div>
@@ -129,7 +127,7 @@ const Home = () => {
                                         src={item.imageUrl} 
                                         alt={item.title} 
                                         className="w-full h-40 object-cover rounded-lg cursor-pointer hover:opacity-80 transition"
-                                        onClick={() => navigate(`gallery/${item.id}`)}
+                                        onClick={() => navigate(`/gallery/${item.id}`)}
                                     />
                                 ))}
                             </div>
@@ -137,6 +135,9 @@ const Home = () => {
                         </Container>
                     </div>
                 </div>
+                {error && (
+                    <p className="mt-6 text-center text-sm text-red-500">{error}</p>
+                )}
             </div>
         </div>
         </>
