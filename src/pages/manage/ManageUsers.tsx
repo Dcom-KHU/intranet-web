@@ -15,16 +15,18 @@ import useAuth from "../../features/auth/hooks/useAuth";
 import { AUTH_QUERY_KEY } from "../../features/auth/constants/auth.constants";
 import { transferAdmin } from "../../features/manage/api/manage.api";
 
-type SortType = "lastLogin" | "studentNumber";
+type SortType = "lastLogin" | "studentNumber" | "name";
 
 const sortOptions: { label: string; value: SortType }[] = [
   { label: "최신접속일 순", value: "lastLogin" },
   { label: "학번 순", value: "studentNumber" },
+  { label: "이름 가나다순", value: "name" },
 ];
 
 const sortQuery: Record<SortType, string> = {
   lastLogin: "lastLoginAt,desc",
   studentNumber: "studentId,asc",
+  name: "name,asc",
 };
 
 const ManageUsers = () => {
@@ -224,7 +226,7 @@ const ManageUsers = () => {
                   </td>
 
                   <td className="px-5 py-4 text-center">
-                    <div className="flex items-center justify-center gap-1.5">
+                    <div className="flex min-h-8 items-center justify-center gap-1.5">
                       {user.role === "USER" && user.id !== currentUser?.id && (
                         <Button
                           variant="third"
