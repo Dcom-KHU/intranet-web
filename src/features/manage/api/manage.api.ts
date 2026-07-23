@@ -15,6 +15,7 @@ export interface ManageUsersRequest {
   sort?: string;
 }
 
+// 회원 전체 조회
 export const getManageUsers = async ({
   keyword,
   page = 0,
@@ -36,6 +37,7 @@ export const getManageUsers = async ({
   return toManageUsersPage(response.data.data);
 };
 
+// 회원 상세 조회
 export const getManageUserDetail = async (userId: number) => {
   const response = await api.get<ManageUserDetailResponseDto>(
     `/api/admin/users/${userId}`,
@@ -61,6 +63,7 @@ export const getPendingUsers = async ({
     { params: { page, size, ...(sort ? { sort } : {}) } },
   );
 
+  console.log(response.data)
   return toPendingUsersPage(response.data.data);
 };
 

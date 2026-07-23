@@ -119,22 +119,22 @@ const ManageUsers = () => {
         <table className="w-full table-fixed">
           <thead className="bg-[#F8F9FC]">
             <tr className="border-b">
-              <th className="px-5 py-4 text-center text-sm font-medium">
+              <th className="px-5 py-4 text-center text-xs font-medium">
                 이름
               </th>
-              <th className="px-5 py-4 text-center text-sm font-medium">
+              <th className="px-5 py-4 text-center text-xs font-medium">
                 학번
               </th>
-              <th className="px-5 py-4 text-center text-sm font-medium">
+              <th className="px-5 py-4 text-center text-xs font-medium">
                 아이디
               </th>
-              <th className="px-5 py-4 text-center text-sm font-medium">
+              <th className="px-5 py-4 text-center text-xs font-medium">
                 이메일
               </th>
-              <th className="px-5 py-4 text-center text-sm font-medium">
+              <th className="px-5 py-4 text-center text-xs font-medium">
                 최신접속일
               </th>
-              <th className="px-5 py-4 text-center text-sm font-medium">
+              <th className="px-5 py-4 text-center text-xs font-medium">
                 관리
               </th>
             </tr>
@@ -158,7 +158,10 @@ const ManageUsers = () => {
                   tabIndex={0}
                   onClick={() => setSelectedUserId(user.id)}
                   onKeyDown={(event) => {
-                    if (event.key === "Enter" || event.key === " ") {
+                    if (
+                      event.target === event.currentTarget &&
+                      (event.key === "Enter" || event.key === " ")
+                    ) {
                       event.preventDefault();
                       setSelectedUserId(user.id);
                     }
