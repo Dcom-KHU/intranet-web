@@ -130,15 +130,24 @@ const ManagePendingUsers = () => {
                     {user.studentNumber}
                   </td>
 
-                  <td className="px-5 py-4 text-center text-gray-500">
+                  <td
+                    className="max-w-0 truncate px-5 py-4 text-center text-gray-500"
+                    title={user.userID}
+                  >
                     {user.userID}
                   </td>
 
-                  <td className="truncate px-5 py-4 text-center text-gray-500">
+                  <td
+                    className="max-w-0 truncate px-5 py-4 text-center text-gray-500"
+                    title={user.email}
+                  >
                     {user.email}
                   </td>
 
-                  <td className="px-5 py-4 text-center text-gray-500">
+                  <td
+                    className="max-w-0 truncate px-5 py-4 text-center text-gray-500"
+                    title={user.phoneNumber}
+                  >
                     {user.phoneNumber}
                   </td>
 
