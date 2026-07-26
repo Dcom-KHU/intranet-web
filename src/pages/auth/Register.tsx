@@ -25,6 +25,8 @@ const Register = () => {
     emailCode,
     phoneNumber,
     errors,
+    hasValidationErrors,
+    invalidFieldLabels,
     isUserIDValid,
     isCheckingUserID,
     isPasswordValid,
@@ -35,6 +37,7 @@ const Register = () => {
     emailCodeRemainingSeconds,
     hasActiveEmailCode,
     registerModalType,
+    isSubmitting,
     handleNameChange,
     handleStudentNumberChange,
     handleUserIDChange,
@@ -60,7 +63,9 @@ const Register = () => {
               <>
                 입력값을 다시 확인해주세요.
                 <br />
-                이미 사용 중인 아이디일 수 있습니다.
+                아이디, 학번 또는 이메일이 이미 사용 중이거나
+                <br />
+                이메일 인증이 만료되었을 수 있습니다.
               </>
             ),
             actionLabel: "확인",
@@ -108,7 +113,7 @@ const Register = () => {
               <InputLabel>학번</InputLabel>
               <Input
                 type="text"
-                placeholder="202X123456"
+                placeholder="학번 8~10자리"
                 value={studentNumber}
                 onChange={(e) => handleStudentNumberChange(e.target.value)}
               />
@@ -235,7 +240,26 @@ const Register = () => {
           </div>
 
           <p className="mb-2 text-xs text-center text-gray-400">*위 정보들을 정확하게 입력해주세요. 승인 거절의 원인이 될 수 있습니다.</p>
-          <Button type="submit" className="w-full text-sm mb-10">회원가입</Button>
+          {hasValidationErrors && (
+            <p className="mb-2 text-center text-xs text-red-500">
+              확인 필요: {invalidFieldLabels.join(", ")}
+            </p>
+          )}
+          <Button
+            type="submit"
+            className="w-full text-sm mb-10"
+            disabled={isSubmitting}
+            aria-label={isSubmitting ? "회원가입 요청 중" : "회원가입"}
+          >
+            {isSubmitting ? (
+              <span
+                className="inline-block size-5 animate-spin rounded-full border-2 border-white/40 border-t-white"
+                aria-hidden="true"
+              />
+            ) : (
+              "회원가입"
+            )}
+          </Button>
         </form>
       </div>
 

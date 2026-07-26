@@ -4,6 +4,7 @@ import type {
   SendEmailCodeRequestDto,
   SendEmailCodeResponseDto,
 } from "../dto/send-email-code.dto";
+import type { SignupRequestDto } from "../dto/signup.dto";
 import type {
   VerifyEmailCodeRequestDto,
   VerifyEmailCodeResponseDto,
@@ -12,6 +13,8 @@ import type UserDto from "../dto/user.dto";
 import { toEmailCodeDelivery } from "../mapper/email-code.mapper";
 import { toEmailVerification } from "../mapper/email-verification.mapper";
 import { toLoginIdAvailability } from "../mapper/login-id.mapper";
+import { toSignupRequestDto } from "../mapper/signup.mapper";
+import type { SignupInput } from "../types/signup.type";
 import { type LoginRequest, type LoginResponse } from "../types/auth.type";
 
 // 로그인 아이디 중복 확인
@@ -48,10 +51,17 @@ export const verifyEmailVerificationCode = async (
   return toEmailVerification(response.data);
 };
 
+export const signup = async (input: SignupInput) => {
+  const request: SignupRequestDto = toSignupRequestDto(input);
+  console.log("request: ", request);
+  await api.post("/api/auth/signup", request);
+};
+
 export const authApi = {
   checkLoginId,
   sendEmailVerificationCode,
   verifyEmailVerificationCode,
+  signup,
 
   login: async (credentials: LoginRequest) => {
     const { data } = await api.post<LoginResponse>(

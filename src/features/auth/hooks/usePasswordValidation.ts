@@ -12,7 +12,7 @@ export default function usePasswordValidation() {
     !password
       ? "비밀번호를 입력해주세요."
       : !validatePassword(password)
-      ? "영문 + 숫자 조합 8자 이상이어야 합니다."
+      ? "영문과 숫자를 포함해 8자 이상이어야 합니다."
       : "";
 
   const confirmPasswordError =
