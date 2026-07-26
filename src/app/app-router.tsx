@@ -14,6 +14,7 @@ import PageTransition from "../components/PageTransition";
 import Login from "../pages/auth/Login";
 import ForgetPassword from "../pages/auth/ForgetPassword";
 import Register from "../pages/auth/Register";
+import SessionExpired from "../pages/auth/SessionExpired";
 import Home from "../pages/Home";
 import ExamArchive from "../pages/exam-archive/ExamArchive";
 import ExamArchiveDetail from "../pages/exam-archive/ExamArchiveDetail";
@@ -72,6 +73,10 @@ const publicRoutes: AppRoute[] = [
   {
     path: "/forgot-password",
     element: <ForgetPassword />,
+  },
+  {
+    path: "/session-expired",
+    element: <SessionExpired />,
   }
 ];
 
