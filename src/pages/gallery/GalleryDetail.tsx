@@ -54,9 +54,7 @@ const GalleryDetail = () => {
   if (!gallery) {
     return (
       <div>
-        <PageBackButton 
-          onClick={() => navigate('/gallery')}
-        />
+        <PageBackButton fallbackPath="/gallery" />
         <p className="text-sm text-gray-500">활동 사진을 찾을 수 없습니다.</p>
       </div>
     );
@@ -64,9 +62,7 @@ const GalleryDetail = () => {
 
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-20">
-      <PageBackButton 
-        onClick={() => navigate('/gallery')}
-      />
+      <PageBackButton fallbackPath="/gallery" />
 
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-xl font-bold text-[#4988C4]">활동 사진</h1>
