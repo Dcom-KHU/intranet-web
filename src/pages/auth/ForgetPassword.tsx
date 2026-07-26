@@ -8,6 +8,7 @@ import InputLabel from "../../components/ui/InputLabel";
 import Modal from "../../components/ui/Modal";
 import usePasswordResetSend from "../../features/auth/hooks/usePasswordResetSend";
 import { validateEmail } from "../../features/auth/utils/auth.utils";
+import PageBackButton from "@/components/ui/PageBackButton";
 
 export default function ForgetPassword() {
   const [email, setEmail] = useState("");
@@ -52,11 +53,17 @@ export default function ForgetPassword() {
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="w-full max-w-md bg-white p-8">
-        <h1 className="mb-3 text-center text-2xl font-bold text-gray-900">
+        <PageBackButton 
+          label="로그인 화면으로 돌아가기"
+          onClick={() => navigate('/')} 
+        />
+        <h1 className="mt-10 mb-3 text-center text-2xl font-bold text-gray-900">
           비밀번호 찾기
         </h1>
         <p className="mb-8 text-center text-sm leading-6 text-gray-500">
-          가입한 이메일로 일정 시간 동안 사용할 수 있는 임시 비밀번호를 보내드립니다.
+          가입한 이메일로 일정 시간 동안 사용할 수 있는
+          <br/>
+          임시 비밀번호를 보내드립니다.
         </p>
 
         <form onSubmit={requestPassword}>

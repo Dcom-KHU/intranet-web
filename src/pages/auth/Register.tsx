@@ -1,9 +1,11 @@
+import { useNavigate } from "react-router-dom";
 import Input from "../../components/ui/Input";
 import InputLabel from "../../components/ui/InputLabel";
 import { Button } from "../../components/ui/Button";
 import Modal from "../../components/ui/Modal";
 import dcomLogo from "../../assets/dcom-logo-black.png";
 import useRegisterForm from "../../features/auth/hooks/useRegisterForm";
+import PageBackButton from "@/components/ui/PageBackButton";
 
 const ErrorMessage = ({ message }: { message?: string }) =>
   message ? <p className="mt-1 text-xs text-red-500">{message}</p> : null;
@@ -54,6 +56,8 @@ const Register = () => {
     setEmailCode,
   } = useRegisterForm();
 
+  const navigate = useNavigate();
+
   const registerModalContent =
     registerModalType === "registerFailed"
         ? {
@@ -93,8 +97,13 @@ const Register = () => {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="w-full max-w-md rounded bg-white p-8">
-        {/* <h2 className="mb-8 text-center text-xl font-bold">회원가입</h2> */}
-        <img src={dcomLogo} alt="dcom-logo" className="mx-auto mb-3 h-16 w-auto "/>
+        <PageBackButton
+            label="로그인 화면으로 돌아가기"
+            onClick={() => navigate("/")}
+          />
+        <div className="relative mb-3 flex h-16 items-center justify-center">
+          <img src={dcomLogo} alt="dcom-logo" className="h-16 w-auto" />
+        </div>
 
         <form onSubmit={handleRegister}>
           <div className="mb-6 flex flex-row gap-3">

@@ -12,7 +12,7 @@ export default function PageBackButton({
   return (
     <button
       type="button"
-      className="mb-4 flex items-center gap-1 text-sm text-gray-400 transition-colors hover:text-[#4988C4]"
+      className="mb-4 flex items-center gap-1 text-xs text-gray-400 transition-colors hover:text-[#4988C4]"
       onClick={onClick}
     >
       <FiChevronLeft />
