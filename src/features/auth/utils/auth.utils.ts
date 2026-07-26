@@ -128,7 +128,6 @@ export const sendEmailCode = (email: string) => {
     }),
   );
 
-  console.info("Email verification code (mock):", code);
   return code;
 };
 
@@ -235,7 +234,6 @@ export const login = async (
       } satisfies LoginRequest);
 
     localStorage.setItem(TOKEN_STORAGE_KEY, data.accessToken);
-    console.log("로그인 성공", data);
     
     return {
       success: true,

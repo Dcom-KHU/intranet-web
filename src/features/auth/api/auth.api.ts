@@ -30,7 +30,6 @@ export const checkLoginId = async (loginId: string) => {
     "isAvailable" in result ? result.isAvailable : result.available;
 
   if (typeof isAvailable !== "boolean") {
-    console.error("아이디 중복 확인 응답에 사용 가능 여부가 없습니다.", payload);
     throw new Error("Invalid check-login-id response");
   }
 
@@ -68,7 +67,6 @@ export const verifyEmailVerificationCode = async (
 
 export const signup = async (input: SignupInput) => {
   const request: SignupRequestDto = toSignupRequestDto(input);
-  console.log("request: ", request);
   await api.post("/api/auth/signup", request);
 };
 
@@ -84,7 +82,6 @@ export const authApi = {
       credentials
     );
 
-    console.log("Login response data:", data); 
     return data;
   },
 
@@ -92,8 +89,6 @@ export const authApi = {
     const { data: response } = await api.get<UserDto>(
       "/api/auth/me"
     );
-
-    console.log("Me response data:", response);
 
     return response;
   },
@@ -105,6 +100,6 @@ export const authApi = {
       { refreshToken }
     );
 
-    console.log("logout response:", response);
+    return response.data;
   },
 };

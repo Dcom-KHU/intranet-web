@@ -22,8 +22,6 @@ export const passwordApi = {
   sendTemporaryPassword: async (
     request: PasswordResetSendRequest
   ) => {
-    console.log("sendTemporaryPassword request:", request);
-
     const { data } = await api.post<PasswordResetSendResponse>(
       "/api/auth/password/reset/send",
       request

@@ -190,7 +190,6 @@ export default function useRegisterForm() {
     setSubmitAttempted(true);
 
     if (invalidFields.length > 0) {
-      console.warn("회원가입 요청 전 검증 실패:", invalidFields);
       return;
     }
 
