@@ -3,10 +3,12 @@
 import {
   createBrowserRouter,
   createRoutesFromElements,
+  Outlet,
   Route,
   RouterProvider,
 } from "react-router-dom";
 import AppLayout from "./app-layout";
+import ScrollToTop from "../components/ScrollToTop";
 
 import Login from "../pages/auth/Login";
 import ForgetPassword from "../pages/auth/ForgetPassword";
@@ -39,6 +41,15 @@ import InfoSharingUpload from "../pages/info-sharing/InfoSharingUpload";
 
 export default function AppRouter() {
   return <RouterProvider router={router} />;
+}
+
+function RootLayout() {
+  return (
+    <>
+      <ScrollToTop />
+      <Outlet />
+    </>
+  );
 }
 
 interface AppRoute {
@@ -200,7 +211,7 @@ function renderRoute(route: AppRoute) {
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <>
+    <Route element={<RootLayout />}>
       {/* Public Routes */}
       {publicRoutes.map(renderRoute)}
 
@@ -208,7 +219,7 @@ const router = createBrowserRouter(
       <Route element={<AppLayout />}>
         {protectedRoutes.map(renderRoute)}
       </Route>
-    </>,
+    </Route>,
   ),
 );
 
