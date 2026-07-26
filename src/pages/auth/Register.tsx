@@ -31,6 +31,7 @@ const Register = () => {
     isConfirmPasswordValid,
     isEmailVerified,
     isSendingEmailCode,
+    isVerifyingEmailCode,
     emailCodeRemainingSeconds,
     hasActiveEmailCode,
     registerModalType,
@@ -206,8 +207,9 @@ const Register = () => {
                 variant="secondary"
                 className="w-16 shrink-0 whitespace-nowrap p-3 text-xs transition-colors"
                 onClick={handleVerifyEmailCode}
+                disabled={isVerifyingEmailCode}
               >
-                확인
+                {isVerifyingEmailCode ? "확인 중" : "확인"}
               </Button>
             </div>
             <ErrorMessage message={errors.emailCode} />

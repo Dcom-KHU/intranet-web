@@ -135,9 +135,9 @@ export default function useRegisterForm() {
     await emailVerification.sendCode(email);
   };
 
-  const handleVerifyEmailCode = () => {
+  const handleVerifyEmailCode = async () => {
     touch("emailCode");
-    emailVerification.verifyCode(email);
+    await emailVerification.verifyCode(email);
   };
 
   const setEmailCode = (value: string) => {
@@ -208,6 +208,7 @@ export default function useRegisterForm() {
       ),
     isEmailVerified: emailVerification.isVerified,
     isSendingEmailCode: emailVerification.isSending,
+    isVerifyingEmailCode: emailVerification.isVerifying,
     emailCodeRemainingSeconds: emailVerification.remainingSeconds,
     hasActiveEmailCode: emailVerification.hasActiveCode,
     registerModalType,

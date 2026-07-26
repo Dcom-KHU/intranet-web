@@ -17,6 +17,7 @@ api.interceptors.request.use((config) => {
     '/api/auth/login',
     '/api/auth/check-login-id',
     '/api/auth/email/send',
+    '/api/auth/email/verify',
     '/api/auth/password/reset/send',
   ].some((path) => config.url?.endsWith(path));
 

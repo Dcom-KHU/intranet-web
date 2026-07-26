@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 
-import { sendEmailVerificationCode } from "../api/auth.api";
 import {
-  validateEmail,
-  verifyEmailCode,
-} from "../utils/auth.utils";
+  sendEmailVerificationCode,
+  verifyEmailVerificationCode,
+} from "../api/auth.api";
+import { validateEmail } from "../utils/auth.utils";
 
 export default function useEmailVerification() {
   const [code, setCode] = useState("");
@@ -12,6 +12,7 @@ export default function useEmailVerification() {
   const [error, setError] = useState("");
   const [sendError, setSendError] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
   const [expiresAt, setExpiresAt] = useState<number | null>(null);
   const [remainingSeconds, setRemainingSeconds] = useState(0);
   const requestVersionRef = useRef(0);
@@ -37,7 +38,9 @@ export default function useEmailVerification() {
   }, [expiresAt]);
 
   const handleCodeChange = (value: string) => {
+    requestVersionRef.current += 1;
     setCode(value);
+    setIsVerified(false);
     setError("");
   };
 
@@ -69,13 +72,44 @@ export default function useEmailVerification() {
     }
   };
 
-  const verifyCode = (email: string) => {
-    const ok = verifyEmailCode(email, code);
+  const verifyCode = async (email: string) => {
+    if (!validateEmail(email) || code.length !== 6) {
+      setError("6자리 인증코드를 입력해 주세요.");
+      return false;
+    }
 
-    setIsVerified(ok);
-    setError(ok ? "" : "인증 코드가 일치하지 않습니다.");
+    const verificationEmail = email;
+    const verificationCode = code;
+    const requestVersion = requestVersionRef.current;
+    setIsVerifying(true);
+    setError("");
 
-    return ok;
+    try {
+      const result = await verifyEmailVerificationCode(
+        verificationEmail,
+        verificationCode,
+      );
+
+      if (
+        requestVersion !== requestVersionRef.current ||
+        result.email !== verificationEmail
+      ) {
+        return false;
+      }
+
+      setIsVerified(true);
+      setExpiresAt(null);
+      setRemainingSeconds(0);
+      return true;
+    } catch {
+      if (requestVersion === requestVersionRef.current) {
+        setIsVerified(false);
+        setError("인증코드가 올바르지 않거나 만료되었습니다.");
+      }
+      return false;
+    } finally {
+      setIsVerifying(false);
+    }
   };
 
   const reset = () => {
@@ -95,6 +129,7 @@ export default function useEmailVerification() {
     error,
     sendError,
     isSending,
+    isVerifying,
     remainingSeconds,
     hasActiveCode: remainingSeconds > 0,
     sendCode,
