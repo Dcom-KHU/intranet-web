@@ -1,9 +1,11 @@
+import { useNavigate } from "react-router-dom";
 import Input from "../../components/ui/Input";
 import InputLabel from "../../components/ui/InputLabel";
 import { Button } from "../../components/ui/Button";
 import Modal from "../../components/ui/Modal";
 import dcomLogo from "../../assets/dcom-logo-black.png";
 import useRegisterForm from "../../features/auth/hooks/useRegisterForm";
+import PageBackButton from "@/components/ui/PageBackButton";
 
 const ErrorMessage = ({ message }: { message?: string }) =>
   message ? <p className="mt-1 text-xs text-red-500">{message}</p> : null;
@@ -25,11 +27,19 @@ const Register = () => {
     emailCode,
     phoneNumber,
     errors,
+    hasValidationErrors,
+    invalidFieldLabels,
     isUserIDValid,
+    isCheckingUserID,
     isPasswordValid,
     isConfirmPasswordValid,
     isEmailVerified,
+    isSendingEmailCode,
+    isVerifyingEmailCode,
+    emailCodeRemainingSeconds,
+    hasActiveEmailCode,
     registerModalType,
+    isSubmitting,
     handleNameChange,
     handleStudentNumberChange,
     handleUserIDChange,
@@ -46,23 +56,10 @@ const Register = () => {
     setEmailCode,
   } = useRegisterForm();
 
+  const navigate = useNavigate();
+
   const registerModalContent =
-    registerModalType === "emailCodeSent"
-      ? {
-          badge: "인증 코드 발송",
-          title: "인증 코드가 발송되었습니다.",
-          description: (
-            <>
-              입력한 이메일로 인증 코드를 보냈습니다.
-              <br />
-              현재는 mock 인증이라 콘솔에서 코드를 확인해주세요.
-            </>
-          ),
-          actionLabel: "확인",
-          onAction: closeRegisterModal,
-          labelledById: "email-code-sent-title",
-        }
-      : registerModalType === "registerFailed"
+    registerModalType === "registerFailed"
         ? {
             badge: "가입 실패",
             title: "회원가입에 실패했습니다.",
@@ -70,7 +67,9 @@ const Register = () => {
               <>
                 입력값을 다시 확인해주세요.
                 <br />
-                이미 사용 중인 아이디일 수 있습니다.
+                학번 또는 이메일이 이미 사용 중이거나
+                <br />
+                이메일 인증이 만료되었을 수 있습니다.
               </>
             ),
             actionLabel: "확인",
@@ -98,8 +97,13 @@ const Register = () => {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="w-full max-w-md rounded bg-white p-8">
-        {/* <h2 className="mb-8 text-center text-xl font-bold">회원가입</h2> */}
-        <img src={dcomLogo} alt="dcom-logo" className="mx-auto mb-3 h-16 w-auto "/>
+        <PageBackButton
+            label="로그인 화면으로 돌아가기"
+            onClick={() => navigate("/")}
+          />
+        <div className="relative mb-3 flex h-16 items-center justify-center">
+          <img src={dcomLogo} alt="dcom-logo" className="h-16 w-auto" />
+        </div>
 
         <form onSubmit={handleRegister}>
           <div className="mb-6 flex flex-row gap-3">
@@ -118,7 +122,7 @@ const Register = () => {
               <InputLabel>학번</InputLabel>
               <Input
                 type="text"
-                placeholder="202X123456"
+                placeholder="학번 8~10자리"
                 value={studentNumber}
                 onChange={(e) => handleStudentNumberChange(e.target.value)}
               />
@@ -143,8 +147,9 @@ const Register = () => {
                 variant="secondary"
                 className="w-16 shrink-0 whitespace-nowrap p-3 text-xs"
                 onClick={handleCheckDuplicateId}
+                disabled={isCheckingUserID}
               >
-                중복확인
+                {isCheckingUserID ? "확인 중" : "중복확인"}
               </Button>
             </div>
             <ErrorMessage message={errors.userID} />
@@ -191,8 +196,9 @@ const Register = () => {
                 type="button"
                 className="w-16 shrink-0 whitespace-nowrap p-3 text-xs"
                 onClick={handleSendEmailCode}
+                disabled={isSendingEmailCode}
               >
-                인증
+                {isSendingEmailCode ? "발송 중" : "인증"}
               </Button>
             </div>
             <ErrorMessage message={errors.email} />
@@ -215,11 +221,20 @@ const Register = () => {
                 variant="secondary"
                 className="w-16 shrink-0 whitespace-nowrap p-3 text-xs transition-colors"
                 onClick={handleVerifyEmailCode}
+                disabled={isVerifyingEmailCode}
               >
-                확인
+                {isVerifyingEmailCode ? "확인 중" : "확인"}
               </Button>
             </div>
             <ErrorMessage message={errors.emailCode} />
+            {hasActiveEmailCode && (
+              <p className="mt-1 text-xs text-red-500">
+                인증코드 유효시간{" "}
+                {String(Math.floor(emailCodeRemainingSeconds / 60)).padStart(2, "0")}
+                :
+                {String(emailCodeRemainingSeconds % 60).padStart(2, "0")}
+              </p>
+            )}
           </div>
 
           <div className="mb-7">
@@ -234,7 +249,26 @@ const Register = () => {
           </div>
 
           <p className="mb-2 text-xs text-center text-gray-400">*위 정보들을 정확하게 입력해주세요. 승인 거절의 원인이 될 수 있습니다.</p>
-          <Button type="submit" className="w-full text-sm mb-10">회원가입</Button>
+          {hasValidationErrors && (
+            <p className="mb-2 text-center text-xs text-red-500">
+              확인 필요: {invalidFieldLabels.join(", ")}
+            </p>
+          )}
+          <Button
+            type="submit"
+            className="w-full text-sm mb-10"
+            disabled={isSubmitting}
+            aria-label={isSubmitting ? "회원가입 요청 중" : "회원가입"}
+          >
+            {isSubmitting ? (
+              <span
+                className="inline-block size-5 animate-spin rounded-full border-2 border-white/40 border-t-white"
+                aria-hidden="true"
+              />
+            ) : (
+              "회원가입"
+            )}
+          </Button>
         </form>
       </div>
 

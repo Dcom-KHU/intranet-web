@@ -138,25 +138,37 @@ const Login = () => {
             className="w-full"
             disabled={login.isPending}
           >
-            {login.isPending ? "Logging in..." : "Login"}
+            Login
           </Button>
 
-          <span className="mt-5 block text-center text-sm text-gray-500">
-            Don't have an account?
+          <div className="mt-5 flex justify-center items-center text-xs text-gray-500">
+            <span>Don't have an account?</span>
+
             <a
               href="/register"
-              className="ml-1 font-bold text-[#0F2854] hover:underline"
+              className="
+                ml-2
+                underline
+                text-blue-700
+                hover:font-bold
+              "
             >
               회원가입
             </a>
-            <span className="mx-1">|</span>
+
+            <span className="mx-2">|</span>
+
             <a
               href="/forgot-password"
-              className="font-bold text-[#0F2854] hover:underline"
+              className="
+                underline
+                text-blue-700
+                hover:font-bold
+              "
             >
               비밀번호 찾기
             </a>
-          </span>
+          </div>
         </form>
       </div>
 

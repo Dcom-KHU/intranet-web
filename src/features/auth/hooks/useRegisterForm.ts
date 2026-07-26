@@ -2,12 +2,12 @@ import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
-  register,
   validateEmail,
   validateId,
   validatePassword,
   validatePasswordMatch,
 } from "../utils/auth.utils";
+import { signup } from "../api/auth.api";
 import useEmailVerification from "./useEmailVerification";
 import usePasswordValidation from "./usePasswordValidation";
 import usePhoneValidation from "./usePhoneValidation";
@@ -25,8 +25,21 @@ type RegisterField =
 
 type TouchedFields = Partial<Record<RegisterField, boolean>>;
 
+const validateStudentNumber = (value: string) =>
+  value.length >= 8 && value.length <= 10;
+
+const validationLabels: Record<RegisterField, string> = {
+  name: "이름",
+  studentNumber: "학번",
+  userID: "아이디 중복 확인",
+  password: "비밀번호",
+  confirmPassword: "비밀번호 확인",
+  email: "이메일",
+  emailCode: "이메일 인증",
+  phoneNumber: "전화번호",
+};
+
 export type RegisterModalType =
-  | "emailCodeSent"
   | "registerFailed"
   | "registerComplete";
 
@@ -42,6 +55,7 @@ export default function useRegisterForm() {
   const [email, setEmail] = useState("");
   const [touched, setTouched] = useState<TouchedFields>({});
   const [submitAttempted, setSubmitAttempted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [registerModalType, setRegisterModalType] =
     useState<RegisterModalType | null>(null);
 
@@ -52,8 +66,8 @@ export default function useRegisterForm() {
     name:
       showError("name") && !name.trim() ? "이름을 입력해주세요." : undefined,
     studentNumber:
-      showError("studentNumber") && studentNumber.length !== 10
-        ? "전체 학번은 10자리 숫자여야 합니다."
+      showError("studentNumber") && !validateStudentNumber(studentNumber)
+        ? "학번은 8~10자리 숫자여야 합니다."
         : undefined,
     userID:
       showError("userID")
@@ -71,7 +85,7 @@ export default function useRegisterForm() {
         ? "이메일을 입력해주세요."
         : showError("email") && !validateEmail(email)
           ? "올바른 이메일 형식이 아닙니다."
-          : undefined,
+          : emailVerification.sendError || undefined,
     emailCode: showError("emailCode")
       ? emailVerification.error ||
         (!emailVerification.code
@@ -84,6 +98,29 @@ export default function useRegisterForm() {
       ? phoneValidation.phoneError
       : undefined,
   };
+
+  const validationStatus: Record<RegisterField, boolean> = {
+    name: Boolean(name.trim()),
+    studentNumber: validateStudentNumber(studentNumber),
+    userID:
+      validateId(userIdValidation.userID) && userIdValidation.checked,
+    password: validatePassword(passwordValidation.password),
+    confirmPassword:
+      Boolean(passwordValidation.confirmPassword) &&
+      validatePasswordMatch(
+        passwordValidation.password,
+        passwordValidation.confirmPassword,
+      ),
+    email: validateEmail(email),
+    emailCode: emailVerification.isVerified,
+    phoneNumber: phoneValidation.isValid,
+  };
+
+  const invalidFields = (
+    Object.entries(validationStatus) as [RegisterField, boolean][]
+  )
+    .filter(([, isValid]) => !isValid)
+    .map(([field]) => validationLabels[field]);
 
   const touch = (field: RegisterField) => {
     setTouched((previous) => ({ ...previous, [field]: true }));
@@ -126,21 +163,19 @@ export default function useRegisterForm() {
     touch("phoneNumber");
   };
 
-  const handleCheckDuplicateId = () => {
+  const handleCheckDuplicateId = async () => {
     touch("userID");
-    userIdValidation.checkDuplicate();
+    await userIdValidation.checkDuplicate();
   };
 
-  const handleSendEmailCode = () => {
+  const handleSendEmailCode = async () => {
     touch("email");
-    if (!emailVerification.sendCode(email)) return;
-
-    setRegisterModalType("emailCodeSent");
+    await emailVerification.sendCode(email);
   };
 
-  const handleVerifyEmailCode = () => {
+  const handleVerifyEmailCode = async () => {
     touch("emailCode");
-    emailVerification.verifyCode(email);
+    await emailVerification.verifyCode(email);
   };
 
   const setEmailCode = (value: string) => {
@@ -148,40 +183,33 @@ export default function useRegisterForm() {
     touch("emailCode");
   };
 
-  const handleRegister = (event: FormEvent<HTMLFormElement>) => {
+  const handleRegister = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (isSubmitting) return;
+
     setSubmitAttempted(true);
 
-    const isValid =
-      Boolean(name.trim()) &&
-      studentNumber.length === 10 &&
-      validateId(userIdValidation.userID) &&
-      userIdValidation.checked &&
-      validatePassword(passwordValidation.password) &&
-      validatePasswordMatch(
-        passwordValidation.password,
-        passwordValidation.confirmPassword
-      ) &&
-      validateEmail(email) &&
-      emailVerification.isVerified &&
-      phoneValidation.isValid;
+    if (invalidFields.length > 0) {
+      return;
+    }
 
-    if (!isValid) return;
+    setIsSubmitting(true);
 
-    const success = register({
-      id: Date.now(),
-      userID: userIdValidation.userID,
-      password: passwordValidation.password,
-      studentNumber,
-      email,
-      name: name.trim(),
-      phoneNumber: phoneValidation.phone,
-      role: "USER",
-      status: "PENDING",
-      requirePasswordChange: false,
-    });
-
-    setRegisterModalType(success ? "registerComplete" : "registerFailed");
+    try {
+      await signup({
+        userID: userIdValidation.userID,
+        password: passwordValidation.password,
+        studentNumber,
+        email,
+        name: name.trim(),
+        phoneNumber: phoneValidation.phone,
+      });
+      setRegisterModalType("registerComplete");
+    } catch {
+      setRegisterModalType("registerFailed");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleGoLogin = () => navigate("/");
@@ -197,8 +225,12 @@ export default function useRegisterForm() {
     emailCode: emailVerification.code,
     phoneNumber: phoneValidation.phone,
     errors,
+    hasValidationErrors:
+      submitAttempted && invalidFields.length > 0,
+    invalidFieldLabels: submitAttempted ? invalidFields : [],
     isUserIDValid:
       userIdValidation.checked && !userIdValidation.error,
+    isCheckingUserID: userIdValidation.isChecking,
     isPasswordValid:
       Boolean(passwordValidation.password) &&
       validatePassword(passwordValidation.password),
@@ -209,7 +241,12 @@ export default function useRegisterForm() {
         passwordValidation.confirmPassword
       ),
     isEmailVerified: emailVerification.isVerified,
+    isSendingEmailCode: emailVerification.isSending,
+    isVerifyingEmailCode: emailVerification.isVerifying,
+    emailCodeRemainingSeconds: emailVerification.remainingSeconds,
+    hasActiveEmailCode: emailVerification.hasActiveCode,
     registerModalType,
+    isSubmitting,
     handleNameChange,
     handleStudentNumberChange,
     handleUserIDChange,

@@ -72,7 +72,7 @@ export const validateId = (userID: string) => {
 
 // 비밀번호 유효성 검사 (영문 + 숫자 + 8자 이상)
 export const validatePassword = (pw: string) => {
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)\S{8,}$/;
   return passwordRegex.test(pw);
 };
 
@@ -128,7 +128,6 @@ export const sendEmailCode = (email: string) => {
     }),
   );
 
-  console.info("Email verification code (mock):", code);
   return code;
 };
 
@@ -235,7 +234,6 @@ export const login = async (
       } satisfies LoginRequest);
 
     localStorage.setItem(TOKEN_STORAGE_KEY, data.accessToken);
-    console.log("로그인 성공", data);
     
     return {
       success: true,
