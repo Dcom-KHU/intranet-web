@@ -1,4 +1,3 @@
-import { MdOutlineLockClock } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
 import dcomLogo from "../../assets/dcom-logo-black.png";
