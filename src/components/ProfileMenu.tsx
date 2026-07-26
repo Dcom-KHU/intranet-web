@@ -33,7 +33,7 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="flex items-center gap-2 rounded-md px-2 py-1 transition"
+        className="flex items-center gap-2 rounded-md py-1 transition md:px-2"
       >
         <UserDisplayName user={user} />
 

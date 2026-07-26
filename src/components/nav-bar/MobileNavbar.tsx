@@ -38,11 +38,11 @@ export default function MobileNavbar({
 
   return (
     <>
-        <nav className="fixed left-0 top-0 z-20 h-[80px] w-full bg-white/95 md:hidden">
+        <nav className="fixed left-0 top-0 z-20 flex h-[80px] w-full items-center justify-between bg-white/95 px-4 md:hidden">
           {!isOpen && (
           <motion.button
             whileTap={{ scale: 0.9 }}
-            className="ml-8 mt-6 md:hidden"
+            className="md:hidden"
             onClick={onOpen}
             aria-label="Open navigation menu"
           >
@@ -50,7 +50,7 @@ export default function MobileNavbar({
           </motion.button>
           )}
           {profileMenu && (
-            <div className="absolute right-8 top-5">{profileMenu}</div>
+            <div className="ml-auto">{profileMenu}</div>
           )}
         </nav>
 
@@ -85,13 +85,13 @@ export default function MobileNavbar({
                 </h2>
 
                 <div className="flex w-full flex-col gap-8">
-                  <ul className="flex flex-col gap-7">
+                  <ul className="flex flex-col gap-7 pl-3">
                     {navMenu.map((item) => (
                       <li
                         key={item.path}
                         onClick={() => handleNavigate(item.path)}
-                        className={`cursor-pointer font-bold transition-colors hover:text-blue-400 ${
-                          isActive(item.path) ? "text-white" : "text-gray-300"
+                        className={` cursor-pointer font-bold transition-colors hover:text-yellow-400 ${
+                          isActive(item.path) ? "text-yellow-500" : "text-gray-300"
                         }`}
                       >
                         {item.label}
