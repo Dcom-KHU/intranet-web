@@ -138,7 +138,7 @@ const Login = () => {
             className="w-full"
             disabled={login.isPending}
           >
-            {login.isPending ? "Logging in..." : "Login"}
+            Login
           </Button>
 
           <span className="mt-5 block text-center text-sm text-gray-500">
