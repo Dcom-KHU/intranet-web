@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import AppLayout from "./app-layout";
 import ScrollToTop from "../components/ScrollToTop";
+import PageTransition from "../components/PageTransition";
 
 import Login from "../pages/auth/Login";
 import ForgetPassword from "../pages/auth/ForgetPassword";
@@ -213,7 +214,9 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<RootLayout />}>
       {/* Public Routes */}
-      {publicRoutes.map(renderRoute)}
+      <Route element={<PageTransition />}>
+        {publicRoutes.map(renderRoute)}
+      </Route>
 
       {/* Layout Routes */}
       <Route element={<AppLayout />}>
