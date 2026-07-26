@@ -78,7 +78,7 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
             </button>
 
             <button
-              className="w-full rounded-md bg-[#4988C4] py-2 text-sm text-white hover:bg-[#3D79B2]"
+              className="w-full rounded-md bg-[#0F2854] py-2 text-sm text-white hover:bg-[#3D79B2]"
               disabled={logout.isPending}
               onClick={() => {
                 const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
