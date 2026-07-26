@@ -24,8 +24,23 @@ export const checkLoginId = async (loginId: string) => {
     { params: { loginId } },
   );
 
-  console.log(response.data)
-  return toLoginIdAvailability(response.data);
+  const payload = response.data;
+  const result = "data" in payload ? payload.data : payload;
+  const isAvailable =
+    "isAvailable" in result ? result.isAvailable : result.available;
+
+  if (typeof isAvailable !== "boolean") {
+    console.error("아이디 중복 확인 응답에 사용 가능 여부가 없습니다.", payload);
+    throw new Error("Invalid check-login-id response");
+  }
+
+  const dto = {
+    isAvailable,
+    message:
+      ("message" in result ? result.message : undefined) ?? payload.message,
+  };
+
+  return toLoginIdAvailability(dto);
 };
 
 export const sendEmailVerificationCode = async (email: string) => {
