@@ -122,7 +122,7 @@ const Login = () => {
                   }
                 }}
               >
-                {isPasswordVisible ? <IoEyeOffOutline /> : <IoEyeOutline />}
+                {isPasswordVisible ? <IoEyeOutline /> : <IoEyeOffOutline />}
               </button>
             </div>
           </div>
