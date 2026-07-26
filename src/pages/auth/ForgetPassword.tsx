@@ -97,13 +97,7 @@ export default function ForgetPassword() {
           </Button>
         </form>
 
-        <button
-          type="button"
-          className="mx-auto mt-8 block text-xs font-medium text-blue-600 underline underline-offset-2"
-          onClick={() => navigate("/")}
-        >
-          로그인 화면으로 돌아가기
-        </button>
+        
       </div>
 
       {isSuccessModalOpen && (
