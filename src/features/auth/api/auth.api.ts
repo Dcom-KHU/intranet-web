@@ -6,6 +6,10 @@ import type {
 } from "../dto/send-email-code.dto";
 import type { SignupRequestDto } from "../dto/signup.dto";
 import type {
+  RefreshTokenRequestDto,
+  RefreshTokenResponseDto,
+} from "../dto/refresh-token.dto";
+import type {
   VerifyEmailCodeRequestDto,
   VerifyEmailCodeResponseDto,
 } from "../dto/verify-email-code.dto";
@@ -14,6 +18,7 @@ import { toEmailCodeDelivery } from "../mapper/email-code.mapper";
 import { toEmailVerification } from "../mapper/email-verification.mapper";
 import { toLoginIdAvailability } from "../mapper/login-id.mapper";
 import { toSignupRequestDto } from "../mapper/signup.mapper";
+import { toTokenRefresh } from "../mapper/token-refresh.mapper";
 import type { SignupInput } from "../types/signup.type";
 import { type LoginRequest, type LoginResponse } from "../types/auth.type";
 
@@ -70,11 +75,22 @@ export const signup = async (input: SignupInput) => {
   await api.post("/api/auth/signup", request);
 };
 
+export const refreshTokens = async (refreshToken: string) => {
+  const request: RefreshTokenRequestDto = { refreshToken };
+  const response = await api.post<RefreshTokenResponseDto>(
+    "/api/auth/refresh",
+    request,
+  );
+
+  return toTokenRefresh(response.data);
+};
+
 export const authApi = {
   checkLoginId,
   sendEmailVerificationCode,
   verifyEmailVerificationCode,
   signup,
+  refreshTokens,
 
   login: async (credentials: LoginRequest) => {
     const { data } = await api.post<LoginResponse>(
