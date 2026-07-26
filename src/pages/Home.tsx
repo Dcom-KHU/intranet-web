@@ -118,15 +118,15 @@ const Home = () => {
                             </div>
                         ))}
                     </Container>
-                    <div className="sm:col-span-2 lg:col-span-3">
+                    <div className="lg:col-span-3 [&>div]:h-full">
                         <Container title="최근 활동 사진" icon={IoImageOutline} onViewAllClick={() => navigate("/gallery")}>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
                                 {galleryPost.slice(0,4).map((item) => (
                                     <img 
                                         key={item.id}
                                         src={item.imageUrl} 
                                         alt={item.title} 
-                                        className="w-full h-40 object-cover rounded-lg cursor-pointer hover:opacity-80 transition"
+                                        className="h-40 w-full cursor-pointer rounded-lg object-cover transition hover:opacity-80 sm:h-20 lg:h-40"
                                         onClick={() => navigate(`/gallery/${item.id}`)}
                                     />
                                 ))}
