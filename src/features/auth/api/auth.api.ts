@@ -1,6 +1,11 @@
 import { api } from "@/api/client";
 import type { CheckLoginIdResponseDto } from "../dto/check-login-id.dto";
+import type {
+  SendEmailCodeRequestDto,
+  SendEmailCodeResponseDto,
+} from "../dto/send-email-code.dto";
 import type UserDto from "../dto/user.dto";
+import { toEmailCodeDelivery } from "../mapper/email-code.mapper";
 import { toLoginIdAvailability } from "../mapper/login-id.mapper";
 import { type LoginRequest, type LoginResponse } from "../types/auth.type";
 
@@ -15,8 +20,19 @@ export const checkLoginId = async (loginId: string) => {
   return toLoginIdAvailability(response.data);
 };
 
+export const sendEmailVerificationCode = async (email: string) => {
+  const request: SendEmailCodeRequestDto = { email };
+  const response = await api.post<SendEmailCodeResponseDto>(
+    "/api/auth/email/send",
+    request,
+  );
+
+  return toEmailCodeDelivery(response.data);
+};
+
 export const authApi = {
   checkLoginId,
+  sendEmailVerificationCode,
 
   login: async (credentials: LoginRequest) => {
     const { data } = await api.post<LoginResponse>(

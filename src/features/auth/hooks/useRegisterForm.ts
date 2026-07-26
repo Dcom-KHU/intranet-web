@@ -26,7 +26,6 @@ type RegisterField =
 type TouchedFields = Partial<Record<RegisterField, boolean>>;
 
 export type RegisterModalType =
-  | "emailCodeSent"
   | "registerFailed"
   | "registerComplete";
 
@@ -71,7 +70,7 @@ export default function useRegisterForm() {
         ? "이메일을 입력해주세요."
         : showError("email") && !validateEmail(email)
           ? "올바른 이메일 형식이 아닙니다."
-          : undefined,
+          : emailVerification.sendError || undefined,
     emailCode: showError("emailCode")
       ? emailVerification.error ||
         (!emailVerification.code
@@ -131,11 +130,9 @@ export default function useRegisterForm() {
     await userIdValidation.checkDuplicate();
   };
 
-  const handleSendEmailCode = () => {
+  const handleSendEmailCode = async () => {
     touch("email");
-    if (!emailVerification.sendCode(email)) return;
-
-    setRegisterModalType("emailCodeSent");
+    await emailVerification.sendCode(email);
   };
 
   const handleVerifyEmailCode = () => {
@@ -210,6 +207,9 @@ export default function useRegisterForm() {
         passwordValidation.confirmPassword
       ),
     isEmailVerified: emailVerification.isVerified,
+    isSendingEmailCode: emailVerification.isSending,
+    emailCodeRemainingSeconds: emailVerification.remainingSeconds,
+    hasActiveEmailCode: emailVerification.hasActiveCode,
     registerModalType,
     handleNameChange,
     handleStudentNumberChange,

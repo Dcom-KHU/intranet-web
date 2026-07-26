@@ -30,6 +30,9 @@ const Register = () => {
     isPasswordValid,
     isConfirmPasswordValid,
     isEmailVerified,
+    isSendingEmailCode,
+    emailCodeRemainingSeconds,
+    hasActiveEmailCode,
     registerModalType,
     handleNameChange,
     handleStudentNumberChange,
@@ -48,22 +51,7 @@ const Register = () => {
   } = useRegisterForm();
 
   const registerModalContent =
-    registerModalType === "emailCodeSent"
-      ? {
-          badge: "인증 코드 발송",
-          title: "인증 코드가 발송되었습니다.",
-          description: (
-            <>
-              입력한 이메일로 인증 코드를 보냈습니다.
-              <br />
-              현재는 mock 인증이라 콘솔에서 코드를 확인해주세요.
-            </>
-          ),
-          actionLabel: "확인",
-          onAction: closeRegisterModal,
-          labelledById: "email-code-sent-title",
-        }
-      : registerModalType === "registerFailed"
+    registerModalType === "registerFailed"
         ? {
             badge: "가입 실패",
             title: "회원가입에 실패했습니다.",
@@ -193,8 +181,9 @@ const Register = () => {
                 type="button"
                 className="w-16 shrink-0 whitespace-nowrap p-3 text-xs"
                 onClick={handleSendEmailCode}
+                disabled={isSendingEmailCode}
               >
-                인증
+                {isSendingEmailCode ? "발송 중" : "인증"}
               </Button>
             </div>
             <ErrorMessage message={errors.email} />
@@ -222,6 +211,14 @@ const Register = () => {
               </Button>
             </div>
             <ErrorMessage message={errors.emailCode} />
+            {hasActiveEmailCode && (
+              <p className="mt-1 text-xs text-red-500">
+                인증코드 유효시간{" "}
+                {String(Math.floor(emailCodeRemainingSeconds / 60)).padStart(2, "0")}
+                :
+                {String(emailCodeRemainingSeconds % 60).padStart(2, "0")}
+              </p>
+            )}
           </div>
 
           <div className="mb-7">

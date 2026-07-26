@@ -16,6 +16,7 @@ api.interceptors.request.use((config) => {
   const isPublicAuthRequest = [
     '/api/auth/login',
     '/api/auth/check-login-id',
+    '/api/auth/email/send',
     '/api/auth/password/reset/send',
   ].some((path) => config.url?.endsWith(path));
 
