@@ -1,25 +1,23 @@
 import { api } from "@/api/client";
+import type { CheckLoginIdResponseDto } from "../dto/check-login-id.dto";
 import type UserDto from "../dto/user.dto";
+import { toLoginIdAvailability } from "../mapper/login-id.mapper";
+import { type LoginRequest, type LoginResponse } from "../types/auth.type";
 
-export interface LoginRequest {
-  loginId: string;
-  password: string;
-}
+// 로그인 아이디 중복 확인
+export const checkLoginId = async (loginId: string) => {
+  const response = await api.get<CheckLoginIdResponseDto>(
+    "/api/auth/check-login-id",
+    { params: { loginId } },
+  );
 
-export interface LoginResponse {
-  accessToken: string;
-  refreshToken: string;
-  userId: number;
-  role: string;
-  status: string;
-  requirePasswordChange: boolean;
-}
-
-export interface LogoutRequest {
-  refreshToken: string;
-}
+  console.log(response.data)
+  return toLoginIdAvailability(response.data);
+};
 
 export const authApi = {
+  checkLoginId,
+
   login: async (credentials: LoginRequest) => {
     const { data } = await api.post<LoginResponse>(
       "/api/auth/login", 

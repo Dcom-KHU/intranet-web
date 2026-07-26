@@ -26,6 +26,7 @@ const Register = () => {
     phoneNumber,
     errors,
     isUserIDValid,
+    isCheckingUserID,
     isPasswordValid,
     isConfirmPasswordValid,
     isEmailVerified,
@@ -143,8 +144,9 @@ const Register = () => {
                 variant="secondary"
                 className="w-16 shrink-0 whitespace-nowrap p-3 text-xs"
                 onClick={handleCheckDuplicateId}
+                disabled={isCheckingUserID}
               >
-                중복확인
+                {isCheckingUserID ? "확인 중" : "중복확인"}
               </Button>
             </div>
             <ErrorMessage message={errors.userID} />

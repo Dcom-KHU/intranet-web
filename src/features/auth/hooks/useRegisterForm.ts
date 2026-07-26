@@ -126,9 +126,9 @@ export default function useRegisterForm() {
     touch("phoneNumber");
   };
 
-  const handleCheckDuplicateId = () => {
+  const handleCheckDuplicateId = async () => {
     touch("userID");
-    userIdValidation.checkDuplicate();
+    await userIdValidation.checkDuplicate();
   };
 
   const handleSendEmailCode = () => {
@@ -199,6 +199,7 @@ export default function useRegisterForm() {
     errors,
     isUserIDValid:
       userIdValidation.checked && !userIdValidation.error,
+    isCheckingUserID: userIdValidation.isChecking,
     isPasswordValid:
       Boolean(passwordValidation.password) &&
       validatePassword(passwordValidation.password),
