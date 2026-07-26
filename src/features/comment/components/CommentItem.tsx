@@ -83,7 +83,7 @@ const CommentItem = ({
             <button
               type="button"
               onClick={() => setIsEditing(true)}
-              className="text-black/25 transition-colors hover:text-[#4988C4]"
+              className="text-black/25 transition-all hover:text-[#4988C4]"
               aria-label="댓글 수정"
             >
               <HiOutlinePencil size={16} />
@@ -94,7 +94,7 @@ const CommentItem = ({
             <button
               type="button"
               onClick={() => setIsDeleteModalOpen(true)}
-              className="text-black/25 transition-colors hover:text-red-400"
+              className="text-black/25 transition-all hover:text-red-400"
               aria-label="댓글 삭제"
             >
               <HiOutlineTrash size={16} />
@@ -108,7 +108,7 @@ const CommentItem = ({
           <textarea
             value={content}
             onChange={(event) => setContent(event.target.value)}
-            className="min-h-20 w-full resize-none rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition-colors focus:border-[#4988C4]"
+            className="min-h-20 w-full resize-none rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition-all focus:border-[#4988C4]"
             aria-label="댓글 수정 내용"
             autoFocus
           />
@@ -116,7 +116,7 @@ const CommentItem = ({
             <button
               type="button"
               onClick={cancelEditing}
-              className="rounded-lg px-3 py-1.5 text-xs text-gray-500 hover:bg-gray-100"
+              className="rounded-lg px-3 py-1.5 text-xs text-gray-500 transition-all gray-100"
             >
               취소
             </button>

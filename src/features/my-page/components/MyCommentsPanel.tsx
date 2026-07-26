@@ -107,7 +107,7 @@ export default function MyCommentsPanel({
         <button
           type="button"
           aria-label="댓글 삭제"
-          className="rounded-full p-1 transition-colors hover:bg-red-50 hover:text-red-400"
+          className="rounded-full p-1 transition-all hover:bg-red-50 hover:text-red-400"
           onClick={(event) => {
             event.stopPropagation();
             setDeleteTarget(comment);

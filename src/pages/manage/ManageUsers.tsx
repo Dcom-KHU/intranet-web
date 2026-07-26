@@ -129,10 +129,10 @@ const ManageUsers = () => {
             <button
               key={option.value}
               type="button"
-              className={`rounded-full border px-4 py-2 text-xs transition-colors ${
+              className={`rounded-full border px-4 py-2 text-xs transition-all ${
                 sortType === option.value
                   ? "border-[#4988C4] bg-[#4988C4] text-white"
-                  : "border-gray-200 bg-white text-gray-500 hover:bg-gray-50"
+                  : "border-gray-200 bg-white text-gray-500 transition-all gray-50"
               }`}
               onClick={() => {
                 setPage(0);
@@ -184,7 +184,7 @@ const ManageUsers = () => {
               users.map((user) => (
                 <tr
                   key={user.id}
-                  className="cursor-pointer border-b text-sm transition-colors hover:bg-[#4988C4]/5"
+                  className="cursor-pointer border-b text-sm transition-all hover:bg-[#4988C4]/5"
                   tabIndex={0}
                   onClick={() => setSelectedUserId(user.id)}
                   onKeyDown={(event) => {

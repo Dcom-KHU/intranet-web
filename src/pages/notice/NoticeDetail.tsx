@@ -77,7 +77,7 @@ const NoticeDetail = () => {
                                 href={file.url}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="text-sm text-[#4988C4] underline underline-offset-2 hover:text-[#0F2854]"
+                                className="text-sm text-[#4988C4] underline underline-offset-2 transition-all [#0F2854]"
                                 >
                                 {file.name}
                                 </a>
@@ -91,7 +91,7 @@ const NoticeDetail = () => {
                           <button
                             type="button"
                             aria-label="공지사항 수정"
-                            className="text-gray-400 hover:text-[#4988C4]"
+                            className="text-gray-400 transition-all [#4988C4]"
                             onClick={() => navigate(`/notice/${notice.id}/edit`)}
                           >
                             <HiOutlinePencil size={16} />
@@ -100,7 +100,7 @@ const NoticeDetail = () => {
                             type="button"
                             aria-label="공지사항 삭제"
                             disabled={isDeleting}
-                            className="text-gray-400 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50"
+                            className="text-gray-400 transition-all red-400 disabled:cursor-not-allowed disabled:opacity-50"
                             onClick={() => setIsDeleteModalOpen(true)}
                           >
                             <GoTrash size={16} />

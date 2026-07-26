@@ -114,7 +114,7 @@ export default function UploadEntryCard({
       <button
         type="button"
         aria-label={isOnlyEntry ? "닫기" : "작성 항목 삭제"}
-        className="absolute right-5 top-5 text-gray-300 transition-colors hover:text-gray-500"
+        className="absolute right-5 top-5 text-gray-300 transition-all hover:text-gray-500"
         onClick={onRemove}
       >
         <IoClose size={16} />
@@ -213,7 +213,7 @@ export default function UploadEntryCard({
               <button
                 type="button"
                 aria-label={`${file.name} 삭제`}
-                className="flex size-4 items-center justify-center rounded-full text-gray-300 transition-colors hover:bg-gray-100 hover:text-gray-500"
+                className="flex size-4 items-center justify-center rounded-full text-gray-300 transition-all hover:bg-gray-100 hover:text-gray-500"
                 onClick={() => removeFile(file)}
               >
                 <IoClose size={12} />
@@ -233,7 +233,7 @@ export default function UploadEntryCard({
               <button
                 type="button"
                 aria-label={`${file} 삭제`}
-                className="flex size-4 items-center justify-center rounded-full text-gray-300 transition-colors hover:bg-gray-100 hover:text-gray-500"
+                className="flex size-4 items-center justify-center rounded-full text-gray-300 transition-all hover:bg-gray-100 hover:text-gray-500"
                 onClick={() => removeExistingFile(file)}
               >
                 <IoClose size={12} />
@@ -253,7 +253,7 @@ export default function UploadEntryCard({
               <button
                 type="button"
                 aria-label={`${file.name} 삭제`}
-                className="flex size-4 items-center justify-center rounded-full text-gray-300 transition-colors hover:bg-gray-100 hover:text-gray-500"
+                className="flex size-4 items-center justify-center rounded-full text-gray-300 transition-all hover:bg-gray-100 hover:text-gray-500"
                 onClick={() => removeExistingFileItem(file.id)}
               >
                 <IoClose size={12} />

@@ -99,14 +99,14 @@ const CommentSection = ({ postId, target }: CommentSectionProps) => {
               <textarea
                 value={commentText}
                 placeholder="댓글을 입력하세요"
-                className="min-h-20 flex-1 resize-none rounded-xl border border-gray-200 px-4 py-3 pr-10 text-sm outline-none transition-colors placeholder:text-gray-300 focus:border-[#4988C4]"
+                className="min-h-20 flex-1 resize-none rounded-xl border border-gray-200 px-4 py-3 pr-10 text-sm outline-none transition-all placeholder:text-gray-300 focus:border-[#4988C4]"
                 onChange={(event) => setCommentText(event.target.value)}
                 autoFocus
               />
               <button
                 type="button"
                 onClick={cancelCommenting}
-                className="absolute right-4 top-4 cursor-pointer text-black/25 transition-colors hover:text-red-400"
+                className="absolute right-4 top-4 cursor-pointer text-black/25 transition-all hover:text-red-400"
                 aria-label="댓글 작성 취소"
               >
                 <HiOutlineTrash size={18} />

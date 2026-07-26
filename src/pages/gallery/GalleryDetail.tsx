@@ -79,7 +79,7 @@ const GalleryDetail = () => {
           <button
             type="button"
             aria-label="이전 사진"
-            className="gallery-prev absolute left-3 top-1/2 z-10 -translate-y-1/2 p-2 text-white/80 transition-colors hover:text-white"
+            className="gallery-prev absolute left-3 top-1/2 z-10 -translate-y-1/2 p-2 text-white/80 transition-all hover:text-white"
           >
             <HiChevronLeft size={36} />
           </button>
@@ -87,7 +87,7 @@ const GalleryDetail = () => {
           <button
             type="button"
             aria-label="다음 사진"
-            className="gallery-next absolute right-3 top-1/2 z-10 -translate-y-1/2 p-2 text-white/80 transition-colors hover:text-white"
+            className="gallery-next absolute right-3 top-1/2 z-10 -translate-y-1/2 p-2 text-white/80 transition-all hover:text-white"
           >
             <HiChevronRight size={36} />
           </button>
@@ -125,7 +125,7 @@ const GalleryDetail = () => {
             <button
               type="button"
               aria-label="활동 사진 수정"
-              className="text-gray-400 hover:text-[#4988C4]"
+              className="text-gray-400 transition-all [#4988C4]"
               onClick={() => navigate(`/gallery/${postId}/edit`)}
             >
               <HiOutlinePencil size={16} />
@@ -134,7 +134,7 @@ const GalleryDetail = () => {
               type="button"
               aria-label="활동 사진 삭제"
               disabled={isDeleting}
-              className="text-gray-400 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50"
+              className="text-gray-400 transition-all red-400 disabled:cursor-not-allowed disabled:opacity-50"
               onClick={() => setIsDeleteModalOpen(true)}
             >
               <GoTrash size={16} />

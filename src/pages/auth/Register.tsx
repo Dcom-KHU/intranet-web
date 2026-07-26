@@ -219,7 +219,7 @@ const Register = () => {
               <Button
                 type="button"
                 variant="secondary"
-                className="w-16 shrink-0 whitespace-nowrap p-3 text-xs transition-colors"
+                className="w-16 shrink-0 whitespace-nowrap p-3 text-xs transition-all"
                 onClick={handleVerifyEmailCode}
                 disabled={isVerifyingEmailCode}
               >

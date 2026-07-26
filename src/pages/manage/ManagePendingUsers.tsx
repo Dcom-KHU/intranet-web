@@ -107,7 +107,7 @@ const ManagePendingUsers = () => {
               data.users.map((user) => (
                 <tr
                   key={user.id}
-                  className="cursor-pointer border-b text-xs transition-colors hover:bg-[#4988C4]/5"
+                  className="cursor-pointer border-b text-xs transition-all hover:bg-[#4988C4]/5"
                   tabIndex={0}
                   onClick={() => setSelectedUserId(user.id)}
                   onKeyDown={(event) => {

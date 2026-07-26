@@ -40,7 +40,7 @@ export default function Pagination({
         type="button"
         onClick={() => moveTo(currentPage - 1)}
         disabled={currentPage === 1}
-        className="flex size-6 items-center justify-center rounded border border-gray-200 text-gray-500 transition hover:border-gray-400 disabled:cursor-not-allowed disabled:opacity-30"
+        className="flex size-6 items-center justify-center rounded border border-gray-200 text-gray-500 transition-all hover:border-gray-400 disabled:cursor-not-allowed disabled:opacity-30"
         aria-label="이전 페이지"
       >
         &lt;
@@ -59,7 +59,7 @@ export default function Pagination({
             className={`flex size-6 items-center justify-center rounded border transition ${
               isActive
                 ? "border-[#4988C4] bg-[#4988C4] text-white"
-                : "border-gray-200 text-gray-500 hover:border-gray-400"
+                : "border-gray-200 text-gray-500 transition-all gray-400"
             }`}
           >
             {page}
@@ -71,7 +71,7 @@ export default function Pagination({
         type="button"
         onClick={() => moveTo(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="flex size-6 items-center justify-center rounded border border-gray-200 text-gray-500 transition hover:border-gray-400 disabled:cursor-not-allowed disabled:opacity-30"
+        className="flex size-6 items-center justify-center rounded border border-gray-200 text-gray-500 transition-all hover:border-gray-400 disabled:cursor-not-allowed disabled:opacity-30"
         aria-label="다음 페이지"
       >
         &gt;

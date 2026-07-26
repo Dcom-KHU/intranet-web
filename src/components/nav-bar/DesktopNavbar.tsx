@@ -36,7 +36,7 @@ export default function DesktopNavbar({
               <li
                 key={item.path}
                 onClick={() => onNavigate(item.path)}
-                className={`cursor-pointer font-bold transition-colors hover:text-blue-400 ${
+                className={`cursor-pointer font-bold transition-all hover:text-blue-400 ${
                   isActive(item.path) ? "text-blue-500" : "text-black"
                 }`}
               >
@@ -47,7 +47,7 @@ export default function DesktopNavbar({
             {isAdmin && (
               <li
                 onClick={() => onNavigate("/manage")}
-                className={`cursor-pointer font-bold transition-colors hover:text-blue-400 ${
+                className={`cursor-pointer font-bold transition-all hover:text-blue-400 ${
                   isActive("/manage") ? "text-blue-500" : "text-black"
                 }`}
               >

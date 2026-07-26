@@ -110,7 +110,7 @@ export default function MyPostsPanel({
         <button
           type="button"
           aria-label={`${post.title} 삭제`}
-          className="rounded-full p-1 transition-colors hover:bg-red-50 hover:text-red-400"
+          className="rounded-full p-1 transition-all hover:bg-red-50 hover:text-red-400"
           onClick={(event) => {
             event.stopPropagation();
             setDeleteTarget(post);

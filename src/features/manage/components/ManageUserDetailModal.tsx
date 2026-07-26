@@ -50,7 +50,7 @@ export default function ManageUserDetailModal({
           <button
             type="button"
             aria-label="회원 상세 닫기"
-            className="rounded-full p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
+            className="rounded-full p-1 text-gray-400 transition-all hover:bg-gray-100 hover:text-gray-700"
             onClick={onClose}
           >
             <IoCloseOutline size={24} />
