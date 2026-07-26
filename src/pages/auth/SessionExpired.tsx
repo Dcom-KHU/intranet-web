@@ -16,10 +16,6 @@ export default function SessionExpired() {
           className="mx-auto mb-10 w-20"
         />
 
-        <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-full bg-[#F3F6FB] text-[#4988C4]">
-          <MdOutlineLockClock size={32} aria-hidden="true" />
-        </div>
-
         <p className="mb-3 text-sm font-semibold text-[#4988C4]">
           SESSION EXPIRED
         </p>
