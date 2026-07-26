@@ -45,9 +45,7 @@ const ExamArchiveDetail = () => {
 
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-20">
-      <PageBackButton 
-        onClick={() => navigate('/exam-archive')}
-      />
+      <PageBackButton fallbackPath="/exam-archive" />
 
       <div className="mb-8 flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold text-[#4988C4] whitespace-nowrap">족보</h1>

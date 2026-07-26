@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 import Loading from "../../components/Loading";
 import { Button } from "../../components/ui/Button";
@@ -11,7 +10,6 @@ import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import ManageUserDetailModal from "../../features/manage/components/ManageUserDetailModal";
 
 const ManagePendingUsers = () => {
-  const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const [processingUserId, setProcessingUserId] = useState<number | null>(null);
   const [rejectUserId, setRejectUserId] = useState<number | null>(null);
@@ -56,7 +54,7 @@ const ManagePendingUsers = () => {
 
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-20">
-      <PageBackButton onClick={() => navigate("/manage")} />
+      <PageBackButton fallbackPath="/manage" />
 
       <section className="mb-8">
         <h1 className="text-xl font-bold text-[#4988C4]">

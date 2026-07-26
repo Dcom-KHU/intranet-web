@@ -93,9 +93,7 @@ const ManageUsers = () => {
 
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-20">
-      <PageBackButton
-        onClick={() => navigate("/manage")}
-      />
+      <PageBackButton fallbackPath="/manage" />
 
       <section className="mb-8">
         <h1 className="text-xl font-bold text-[#4988C4]">
