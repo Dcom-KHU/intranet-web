@@ -61,7 +61,7 @@ const Card = (props: CardProps) => {
   return (
     <article
       onClick={onClick}
-      className="overflow-hidden rounded-xl border bg-white cursor-pointer transition hover:shadow-md"
+      className="overflow-hidden rounded-xl border bg-white cursor-pointer transition-all hover:shadow-md"
     >
       <div className="relative aspect-[4/2.5] overflow-hidden">
         <img src={imageUrl} alt={title} className="h-full w-full object-cover" />

@@ -101,7 +101,7 @@ const ExamArchiveDetail = () => {
                         {isApiFile ? (
                           <button
                             type="button"
-                            className="text-sm text-[#4988C4] underline underline-offset-2 hover:text-[#0F2854]"
+                            className="text-sm text-[#4988C4] underline underline-offset-2 transition-all [#0F2854]"
                             onClick={() =>
                               downloadExamArchiveFile(
                                 archiveId,
@@ -127,7 +127,7 @@ const ExamArchiveDetail = () => {
                   <button
                     type="button"
                     aria-label="족보 수정"
-                    className="text-gray-400 hover:text-[#4988C4]"
+                    className="text-gray-400 transition-all [#4988C4]"
                     onClick={() =>
                       navigate(`/exam-archive/${archiveId}/edit/${post.id}`)
                     }
@@ -137,7 +137,7 @@ const ExamArchiveDetail = () => {
                   <button
                     type="button"
                     aria-label="삭제"
-                    className="text-gray-400 hover:text-red-400"
+                    className="text-gray-400 transition-all red-400"
                     onClick={() => setDeleteRecordId(post.id)}
                   >
                     <GoTrash size={16} />

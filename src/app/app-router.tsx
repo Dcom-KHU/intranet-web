@@ -9,10 +9,12 @@ import {
 } from "react-router-dom";
 import AppLayout from "./app-layout";
 import ScrollToTop from "../components/ScrollToTop";
+import PageTransition from "../components/PageTransition";
 
 import Login from "../pages/auth/Login";
 import ForgetPassword from "../pages/auth/ForgetPassword";
 import Register from "../pages/auth/Register";
+import SessionExpired from "../pages/auth/SessionExpired";
 import Home from "../pages/Home";
 import ExamArchive from "../pages/exam-archive/ExamArchive";
 import ExamArchiveDetail from "../pages/exam-archive/ExamArchiveDetail";
@@ -71,6 +73,10 @@ const publicRoutes: AppRoute[] = [
   {
     path: "/forgot-password",
     element: <ForgetPassword />,
+  },
+  {
+    path: "/session-expired",
+    element: <SessionExpired />,
   }
 ];
 
@@ -213,7 +219,9 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<RootLayout />}>
       {/* Public Routes */}
-      {publicRoutes.map(renderRoute)}
+      <Route element={<PageTransition />}>
+        {publicRoutes.map(renderRoute)}
+      </Route>
 
       {/* Layout Routes */}
       <Route element={<AppLayout />}>

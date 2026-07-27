@@ -88,10 +88,10 @@ export default function MyPageSidebar({
                 key={item.id}
                 type="button"
                 onClick={() => onMenuSelect(item.id)}
-                className={`flex h-11 w-full items-center justify-between rounded-lg px-3 text-sm transition-colors ${
+                className={`flex h-11 w-full items-center justify-between rounded-lg px-3 text-sm transition-all ${
                   selected
                     ? "border border-[#9DC8FF] bg-[#EAF3FF] text-[#438DE3]"
-                    : "text-gray-700 hover:bg-gray-50"
+                    : "text-gray-700 transition-all gray-50"
                 }`}
               >
                 <span className="flex items-center gap-3">
@@ -111,7 +111,7 @@ export default function MyPageSidebar({
               setWithdrawError("");
               setIsWithdrawModalOpen(true);
             }}
-            className="flex h-11 w-full items-center gap-3 rounded-lg px-3 text-sm text-red-500 transition-colors hover:bg-red-50"
+            className="flex h-11 w-full items-center gap-3 rounded-lg px-3 text-sm text-red-500 transition-all hover:bg-red-50"
           >
             <LuLogOut />
             회원 탈퇴

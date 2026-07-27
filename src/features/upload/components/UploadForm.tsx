@@ -254,7 +254,7 @@ export default function UploadForm({
             <button
               type="button"
               aria-label="업로드 항목 추가"
-              className="mx-auto flex h-9 w-full max-w-[500px] items-center justify-center rounded-full bg-gray-200 text-[#0F2854] transition-colors hover:bg-gray-300"
+              className="mx-auto flex h-9 w-full max-w-[500px] items-center justify-center rounded-full bg-gray-200 text-[#0F2854] transition-all hover:bg-gray-300"
               onClick={addEntry}
             >
               <IoAdd size={14} />
@@ -266,7 +266,7 @@ export default function UploadForm({
             variant="primary"
             fullWidth={false}
             disabled={isSubmitting}
-            className={`h-9 min-w-[74px] rounded-full bg-[#4B7FF3] px-5 py-0 text-xs hover:bg-[#3767D7] disabled:cursor-not-allowed disabled:opacity-60 ${
+            className={`h-9 min-w-[74px] rounded-full bg-[#4B7FF3] px-5 py-0 text-xs transition-all [#3767D7] disabled:cursor-not-allowed disabled:opacity-60 ${
               !canAddMultiplePosts ? "ml-auto" : ""
             }`}
           >

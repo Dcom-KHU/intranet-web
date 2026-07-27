@@ -20,6 +20,14 @@ const clearTokens = () => {
   localStorage.removeItem(REFRESH_TOKEN_KEY);
 };
 
+const redirectToSessionExpired = () => {
+  clearTokens();
+
+  if (window.location.pathname !== "/session-expired") {
+    window.location.replace("/session-expired");
+  }
+};
+
 export const setupAuthResponseInterceptor = () => {
   if (interceptorId !== null) return;
 
@@ -56,7 +64,7 @@ export const setupAuthResponseInterceptor = () => {
 
       const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
       if (!refreshToken) {
-        clearTokens();
+        redirectToSessionExpired();
         return Promise.reject(error);
       }
 
@@ -72,7 +80,7 @@ export const setupAuthResponseInterceptor = () => {
 
         return api(originalRequest);
       } catch (refreshError) {
-        clearTokens();
+        redirectToSessionExpired();
         return Promise.reject(refreshError);
       } finally {
         refreshPromise = null;

@@ -104,7 +104,7 @@ const Login = () => {
               />
               <button
                 type="button"
-                className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-gray-400 hover:text-gray-600"
+                className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-gray-400 transition-all gray-600"
                 aria-label="누르는 동안 비밀번호 보기"
                 onPointerDown={() => setIsPasswordVisible(true)}
                 onPointerUp={() => setIsPasswordVisible(false)}
@@ -122,7 +122,7 @@ const Login = () => {
                   }
                 }}
               >
-                {isPasswordVisible ? <IoEyeOffOutline /> : <IoEyeOutline />}
+                {isPasswordVisible ? <IoEyeOutline /> : <IoEyeOffOutline />}
               </button>
             </div>
           </div>

@@ -68,7 +68,7 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
           {/* actions */}
           <div className="border-t p-2 flex flex-col gap-2">
             <button
-              className="w-full rounded-md bg-gray-100 py-2 text-sm hover:bg-gray-200"
+              className="w-full rounded-md bg-gray-100 py-2 text-sm transition-all gray-200"
               onClick={() => {
                 navigate("/my-page");
                 setIsOpen(false);
@@ -78,7 +78,7 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
             </button>
 
             <button
-              className="w-full rounded-md bg-[#0F2854] py-2 text-sm text-white hover:bg-[#1B3F7F]"
+              className="w-full rounded-md bg-[#0F2854] py-2 text-sm text-white transition-all [#1B3F7F]"
               disabled={logout.isPending}
               onClick={() => {
                 const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);

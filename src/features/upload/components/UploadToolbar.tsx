@@ -98,7 +98,7 @@ export default function UploadToolbar({
       <button
         type="button"
         aria-label={attachmentLabel}
-        className="rounded-full px-2 py-1 hover:bg-white"
+        className="rounded-full px-2 py-1 transition-all white"
         onClick={onAttach}
       >
         <IoAttach />
@@ -125,7 +125,7 @@ function ToolbarButton({
       type="button"
       aria-label={label}
       disabled={disabled}
-      className={`min-w-6 rounded-full px-1 py-1 font-medium transition-colors hover:bg-white disabled:cursor-not-allowed disabled:opacity-35 ${
+      className={`min-w-6 rounded-full px-1 py-1 font-medium transition-all hover:bg-white disabled:cursor-not-allowed disabled:opacity-35 ${
         isActive ? "bg-white text-[#4988C4] shadow-sm" : ""
       }`}
       onClick={onClick}

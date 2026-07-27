@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
 import type { ReactNode } from "react";
 import useAuth from "../features/auth/hooks/useAuth";
+import Loading from "./Loading";
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -14,7 +15,7 @@ export default function ProtectedRoute({
   const { currentUser, isLoggedIn, isAuthLoading } = useAuth();
 
   if (isAuthLoading) {
-    return <div className="flex min-h-screen items-center justify-center">Loading...</div>;
+    return <Loading />;
   }
 
   if (!isLoggedIn) {

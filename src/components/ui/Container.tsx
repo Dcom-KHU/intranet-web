@@ -56,10 +56,10 @@ const Container = ({
                 {showViewAll && (
                     <span 
                         onClick={onViewAllClick}
-                        className="flex items-center text-sm text-gray-400 hover:text-[#B5D4F4] ml-auto cursor-pointer "
+                        className="flex items-center text-sm text-gray-400 transition-all [#B5D4F4] ml-auto cursor-pointer "
                     >
                         View all
-                        <IoChevronForward className="ml-1 group-hover:text-[#B5D4F4]" />
+                        <IoChevronForward className="ml-1 transition-all [#B5D4F4]" />
                     </span>
                 )}
             </h2>

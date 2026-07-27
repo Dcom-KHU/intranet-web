@@ -215,7 +215,7 @@ const Manage = () => {
                 {dashboard.recentActiveMembers.slice(0, 3).map((user) => (
                   <tr
                     key={user.id}
-                    className="border-b text-center text-sm hover:bg-gray-50"
+                    className="border-b text-center text-sm transition-all gray-50"
                   >
                     <td className="px-4 py-3">{user.name}</td>
                     <td className="px-4 py-3 text-gray-500">

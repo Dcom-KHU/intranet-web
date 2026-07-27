@@ -90,7 +90,7 @@ export default function MobileNavbar({
                       <li
                         key={item.path}
                         onClick={() => handleNavigate(item.path)}
-                        className={` cursor-pointer font-bold transition-colors hover:text-yellow-400 ${
+                        className={` cursor-pointer font-bold transition-all hover:text-yellow-400 ${
                           isActive(item.path) ? "text-yellow-500" : "text-gray-300"
                         }`}
                       >
@@ -101,7 +101,7 @@ export default function MobileNavbar({
                     {isAdmin && (
                       <li
                         onClick={() => handleNavigate("/manage")}
-                        className={`cursor-pointer font-bold transition-colors hover:text-blue-400 ${
+                        className={`cursor-pointer font-bold transition-all hover:text-blue-400 ${
                           isActive("/manage") ? "text-white" : "text-gray-300"
                         }`}
                       >

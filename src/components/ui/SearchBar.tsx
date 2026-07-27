@@ -37,7 +37,7 @@ const SearchBar = ({
       <button
         type="submit"
         aria-label={ariaLabel}
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#4988C4]"
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 transition-all [#4988C4]"
       >
         <IoSearchOutline size={18} />
       </button>

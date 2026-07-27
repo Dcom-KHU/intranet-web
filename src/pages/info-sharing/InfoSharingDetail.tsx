@@ -77,7 +77,7 @@ const InfoSharingDetail = () => {
                             <li key={i}>
                                 <a
                                 href={`/${i}`}
-                                className="text-sm text-[#4988C4] underline underline-offset-2 hover:text-[#0F2854]"
+                                className="text-sm text-[#4988C4] underline underline-offset-2 transition-all [#0F2854]"
                                 onClick={(event) => event.preventDefault()}
                                 >
                                 {i}
@@ -92,7 +92,7 @@ const InfoSharingDetail = () => {
                                 <button
                                     type="button"
                                     aria-label="게시글 수정"
-                                    className="text-gray-400 hover:text-[#4988C4]"
+                                    className="text-gray-400 transition-all [#4988C4]"
                                     onClick={() => navigate(`/info/${postId}/edit`)}
                                 >
                                     <HiOutlinePencil size={16} />
@@ -100,7 +100,7 @@ const InfoSharingDetail = () => {
                                 <button
                                     type="button"
                                     aria-label="삭제"
-                                    className="text-gray-400 hover:text-red-400"
+                                    className="text-gray-400 transition-all red-400"
                                     onClick={() => setIsDeleteModalOpen(true)}
                                 >
                                     <GoTrash size={16} />

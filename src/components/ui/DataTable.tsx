@@ -68,7 +68,7 @@ const DataTable = <T,>({
             data.map((item) => (
               <tr
                 key={rowKey(item)}
-                className={`border-b text-center hover:bg-gray-50 ${
+                className={`border-b text-center transition-all gray-50 ${
                   onRowClick ? "cursor-pointer" : ""
                 }`}
                 onClick={() => onRowClick?.(item)}
