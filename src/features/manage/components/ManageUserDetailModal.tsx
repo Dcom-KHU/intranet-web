@@ -21,7 +21,6 @@ export default function ManageUserDetailModal({
         ["아이디", user.userID],
         ["이메일", user.email],
         ["전화번호", user.phoneNumber || "-"],
-        ["권한", user.role === "ADMIN" ? "관리자" : "일반 회원"],
         ["최근 접속일", user.lastLoginAt],
       ]
     : [];
