@@ -14,6 +14,7 @@ import Modal from "../../components/ui/Modal";
 import useAuth from "../../features/auth/hooks/useAuth";
 import { AUTH_QUERY_KEY } from "../../features/auth/constants/auth.constants";
 import { transferAdmin } from "../../features/manage/api/manage.api";
+import ManagedUserName from "../../features/manage/components/ManagedUserName";
 
 type SortType = "lastLogin" | "studentNumber" | "name";
 
@@ -198,7 +199,11 @@ const ManageUsers = () => {
                   }}
                 >
                   <td className="px-5 py-4 text-center font-medium text-[#0F2854]">
-                    {user.name}
+                    <ManagedUserName
+                      name={user.name}
+                      role={user.role}
+                      className="justify-center"
+                    />
                   </td>
 
                   <td className="px-5 py-4 text-center text-xs text-gray-500">
