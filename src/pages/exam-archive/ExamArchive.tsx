@@ -44,7 +44,7 @@ const ExamArchive = () => {
       header: "과목명",
       width: "w-[50%]",
       render: (item) => (
-        <div className="flex min-w-0 items-center gap-2 text-sm">
+        <div className="flex min-w-0 items-center gap-2 ml-5 text-sm">
           <span className="truncate">{item.subject}</span>
           <span className="shrink-0 text-[#4988C4]">
             [{item.count}]
