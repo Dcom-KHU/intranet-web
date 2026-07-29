@@ -1,15 +1,15 @@
 import { api } from "@/api/client";
 import { type UploadPostDraft } from "../../upload/types/upload.type";
-import { exam_mock } from "../../../mocks/exam-archive.mock";
 import type {
   ExamArchiveDetailDto,
   ExamArchivesPageDto,
 } from "../dto/exam-archives.dto";
 import { toExamArchiveDetail } from "../mapper/exam-archives.mapper";
 import {
-  htmlToText,
+  normalizeExamSubject,
   toCreateExamArchiveRequest,
 } from "../utils/exam-archive.utils";
+import { htmlToText } from "../../../utils/html";
 import type {
   ExamArchiveResponseDto,
   UpdateExamArchiveRequestDto,
@@ -29,10 +29,6 @@ export const getExamArchives = async (page = 0, size = 10) => {
 
 
 // 족보 포스트 조회
-export const getExam = async () => {
-  return Promise.resolve(exam_mock);
-};
-
 // 족보 검색
 export const getSearchExamArchives = async ({
   searchKeyword,
@@ -45,7 +41,13 @@ export const getSearchExamArchives = async ({
 }) => {
   const response = await api.get<{ data: ExamArchivesPageDto }>(
     "/api/archives",
-    { params: { searchKeyword, page, size } },
+    {
+      params: {
+        searchKeyword: normalizeExamSubject(searchKeyword),
+        page,
+        size,
+      },
+    },
   );
 
   return response.data.data;

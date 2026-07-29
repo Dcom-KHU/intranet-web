@@ -11,6 +11,7 @@ import DataTable, {
 import SearchBar from "../../components/ui/SearchBar";
 import ConvertTime from "@/components/ConvertTime";
 import Pagination from "@/components/ui/Pagination";
+import { normalizeExamSubject } from "../../features/exam-archive/utils/exam-archive.utils";
 
 const SEARCH_LOADING_TIME = 250;
 
@@ -44,7 +45,7 @@ const ExamArchive = () => {
       header: "과목명",
       width: "w-[50%]",
       render: (item) => (
-        <div className="flex min-w-0 items-center gap-2 text-sm">
+        <div className="flex min-w-0 items-center gap-2 ml-5 text-sm">
           <span className="truncate">{item.subject}</span>
           <span className="shrink-0 text-[#4988C4]">
             [{item.count}]
@@ -77,7 +78,7 @@ const ExamArchive = () => {
 
     searchTimerRef.current = window.setTimeout(() => {
       setPage(0);
-      setAppliedKeyword(searchKeyword.trim());
+      setAppliedKeyword(normalizeExamSubject(searchKeyword));
       setIsSearching(false);
     }, SEARCH_LOADING_TIME);
   };

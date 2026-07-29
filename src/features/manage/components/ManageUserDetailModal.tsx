@@ -1,5 +1,7 @@
+import type { ReactNode } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import { useManageUserDetail } from "../hooks/useManageUserDetail";
+import ManagedUserName from "./ManagedUserName";
 
 type ManageUserDetailModalProps = {
   userId: number | null;
@@ -14,14 +16,20 @@ export default function ManageUserDetailModal({
 
   if (userId === null) return null;
 
-  const fields = user
+  const fields: [string, ReactNode][] = user
     ? [
-        ["이름", user.name],
+        [
+          "이름",
+          <ManagedUserName
+            key="managed-user-name"
+            name={user.name}
+            role={user.role}
+          />,
+        ],
         ["학번", user.studentNumber],
         ["아이디", user.userID],
         ["이메일", user.email],
         ["전화번호", user.phoneNumber || "-"],
-        ["권한", user.role === "ADMIN" ? "관리자" : "일반 회원"],
         ["최근 접속일", user.lastLoginAt],
       ]
     : [];

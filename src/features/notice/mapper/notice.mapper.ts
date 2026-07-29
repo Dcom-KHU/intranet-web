@@ -3,6 +3,7 @@ import type { NoticeDetailType, NoticeType } from "../types/notice.type";
 import type { UploadPostDraft } from "../../upload/types/upload.type";
 import type { CreateNoticeRequestDto } from "../dto/create-notice.dto";
 import type { UpdateNoticeRequestDto } from "../dto/update-notice.dto";
+import { htmlToText } from "../../../utils/html";
 
 export const toNotice = (dto: NoticeListItemDto): NoticeType => ({
   id: dto.noticeId,
@@ -25,14 +26,6 @@ export const toNoticeDetail = (dto: NoticeDetailDto): NoticeDetailType => ({
     url: file.fileUrl,
   })),
 });
-
-const htmlToText = (html: string) =>
-  html
-    .replace(/<\/(p|div|li|h[1-6])>/gi, "\n")
-    .replace(/<br\s*\/?>/gi, "\n")
-    .replace(/<[^>]*>/g, "")
-    .replace(/&nbsp;/g, " ")
-    .trim();
 
 export const toCreateNoticeRequest = (
   post: UploadPostDraft,
