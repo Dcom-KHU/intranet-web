@@ -1,6 +1,5 @@
 import { api } from "@/api/client";
 import { type UploadPostDraft } from "../../upload/types/upload.type";
-import { exam_mock } from "../../../mocks/exam-archive.mock";
 import type {
   ExamArchiveDetailDto,
   ExamArchivesPageDto,
@@ -30,10 +29,6 @@ export const getExamArchives = async (page = 0, size = 10) => {
 
 
 // 족보 포스트 조회
-export const getExam = async () => {
-  return Promise.resolve(exam_mock);
-};
-
 // 족보 검색
 export const getSearchExamArchives = async ({
   searchKeyword,
