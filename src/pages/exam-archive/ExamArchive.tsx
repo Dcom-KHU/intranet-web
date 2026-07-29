@@ -11,6 +11,7 @@ import DataTable, {
 import SearchBar from "../../components/ui/SearchBar";
 import ConvertTime from "@/components/ConvertTime";
 import Pagination from "@/components/ui/Pagination";
+import { normalizeExamSubject } from "../../features/exam-archive/utils/exam-archive.utils";
 
 const SEARCH_LOADING_TIME = 250;
 
@@ -77,7 +78,7 @@ const ExamArchive = () => {
 
     searchTimerRef.current = window.setTimeout(() => {
       setPage(0);
-      setAppliedKeyword(searchKeyword.trim());
+      setAppliedKeyword(normalizeExamSubject(searchKeyword));
       setIsSearching(false);
     }, SEARCH_LOADING_TIME);
   };

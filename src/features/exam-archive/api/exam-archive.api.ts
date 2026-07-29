@@ -8,6 +8,7 @@ import type {
 import { toExamArchiveDetail } from "../mapper/exam-archives.mapper";
 import {
   htmlToText,
+  normalizeExamSubject,
   toCreateExamArchiveRequest,
 } from "../utils/exam-archive.utils";
 import type {
@@ -45,7 +46,13 @@ export const getSearchExamArchives = async ({
 }) => {
   const response = await api.get<{ data: ExamArchivesPageDto }>(
     "/api/archives",
-    { params: { searchKeyword, page, size } },
+    {
+      params: {
+        searchKeyword: normalizeExamSubject(searchKeyword),
+        page,
+        size,
+      },
+    },
   );
 
   return response.data.data;

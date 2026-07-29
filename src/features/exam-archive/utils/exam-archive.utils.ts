@@ -6,6 +6,8 @@ import type {
   CreateExamArchiveSemester,
 } from "../dto/create-exam-archive.dto";
 
+export const normalizeExamSubject = (subject: string) =>
+  subject.replace(/\s+/g, "");
 
 export const htmlToText = (html: string) =>
   html
@@ -44,7 +46,7 @@ const toCreateExamArchiveRecord = (
 export const toCreateExamArchiveRequest = (
   post: UploadPostDraft,
 ): CreateExamArchiveRequestDto => ({
-  subjectName: post.subject.trim(),
+  subjectName: normalizeExamSubject(post.subject),
   professorName: post.professor.trim(),
   records: [toCreateExamArchiveRecord(post)],
 });
