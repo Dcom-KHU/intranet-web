@@ -7,10 +7,10 @@ import type {
 } from "../dto/exam-archives.dto";
 import { toExamArchiveDetail } from "../mapper/exam-archives.mapper";
 import {
-  htmlToText,
   normalizeExamSubject,
   toCreateExamArchiveRequest,
 } from "../utils/exam-archive.utils";
+import { htmlToText } from "../../../utils/html";
 import type {
   ExamArchiveResponseDto,
   UpdateExamArchiveRequestDto,

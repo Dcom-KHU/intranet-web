@@ -1,4 +1,5 @@
 import { type UploadPostDraft } from "../../upload/types/upload.type";
+import { htmlToText } from "../../../utils/html";
 import type {
   CreateExamArchiveExamType,
   CreateExamArchiveRecordDto,
@@ -8,14 +9,6 @@ import type {
 
 export const normalizeExamSubject = (subject: string) =>
   subject.replace(/\s+/g, "");
-
-export const htmlToText = (html: string) =>
-  html
-    .replace(/<\/(p|div|li|h[1-6])>/gi, "\n")
-    .replace(/<br\s*\/?>/gi, "\n")
-    .replace(/<[^>]*>/g, "")
-    .replace(/&nbsp;/g, " ")
-    .trim();
 
 const toCreateSemester = (semester: string): CreateExamArchiveSemester => {
   const semesterNumber = semester.split("-")[1];

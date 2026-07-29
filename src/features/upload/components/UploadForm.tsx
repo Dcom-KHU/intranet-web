@@ -17,6 +17,7 @@ import {
 } from "../utils/uploadEntry";
 import UploadEntryCard from "./UploadEntryCard";
 import PageBackButton from "../../../components/ui/PageBackButton";
+import { htmlToText } from "../../../utils/html";
 
 type FormMessage = {
   type: "error" | "success";
@@ -122,10 +123,7 @@ export default function UploadForm({
     if (
       config.requireDescription &&
       entries.some((entry) => {
-        const text = entry.descriptionHtml
-          .replace(/<[^>]*>/g, "")
-          .replace(/&nbsp;/g, "")
-          .trim();
+        const text = htmlToText(entry.descriptionHtml);
 
         return !text;
       })

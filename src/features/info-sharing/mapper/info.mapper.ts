@@ -11,6 +11,7 @@ import type {
   UpdateInfoPostResponseDataDto,
 } from "../dto/update-info-post.dto";
 import type { CreateInfoPostRequestDto } from "../dto/create-info-post.dto";
+import { htmlToText } from "../../../utils/html";
 
 export const toInfoPostList = (
   response: InfoPostListResponse,
@@ -42,14 +43,6 @@ export const toInfoPostDetail = (
       url: file.fileUrl,
     })),
 });
-
-const htmlToText = (html: string) =>
-  html
-    .replace(/<\/(p|div|li|h[1-6])>/gi, "\n")
-    .replace(/<br\s*\/?>/gi, "\n")
-    .replace(/<[^>]*>/g, "")
-    .replace(/&nbsp;/g, " ")
-    .trim();
 
 export const toCreateInfoPostRequest = (
   post: UploadPostDraft,
