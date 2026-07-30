@@ -44,7 +44,11 @@ export default function UploadEntryCard({
     : "내용을 입력하세요";
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        undoRedo: {
+          newGroupDelay: 0,
+        },
+      }),
       Underline,
       Link.configure({
         autolink: true,
