@@ -35,6 +35,7 @@ import Gallery from "../pages/gallery/Gallery";
 import GalleryDetail from "../pages/gallery/GalleryDetail";
 import GalleryUpload from "../pages/gallery/GalleryUpload";
 import GalleryEdit from "../pages/gallery/GalleryEdit";
+import NotFound from "../pages/NotFound";
 
 import ProtectedRoute from "../components/ProtectedRoute";
 import InfoSharingUpload from "../pages/info-sharing/InfoSharingUpload";
@@ -77,6 +78,10 @@ const publicRoutes: AppRoute[] = [
   {
     path: "/session-expired",
     element: <SessionExpired />,
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   }
 ];
 
