@@ -14,8 +14,8 @@ export interface ExamArchiveType {
     subject: string;
     professor: string;
     semester: string;
-    examYear?: number;
-    semesterCode?: "FIRST" | "SECOND" | "SUMMER" | "WINTER";
+    examYear?: number | null;
+    semesterCode?: "FIRST" | "SECOND" | "SUMMER" | "WINTER" | "UNKNOWN";
     examType?: "MIDTERM" | "FINAL";
     author: ExamArchiveAuthorType;
     date: string;

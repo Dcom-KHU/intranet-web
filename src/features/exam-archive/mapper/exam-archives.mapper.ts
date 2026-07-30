@@ -24,6 +24,7 @@ const semesterLabels: Record<ExamSemesterDto, string> = {
   SECOND: "2학기",
   SUMMER: "여름학기",
   WINTER: "겨울학기",
+  UNKNOWN: "시기 미상",
 };
 
 const examTypeLabels: Record<ExamTypeDto, string> = {
@@ -38,7 +39,12 @@ const toExamArchiveRecord = (
   id: dto.recordId,
   subject: archive.subjectName,
   professor: archive.professorName,
-  semester: dto.label? `${dto.examYear}년 ${semesterLabels[dto.semester]} ${examTypeLabels[dto.examType]}` : "",
+  semester:
+    dto.semester === "UNKNOWN" || dto.examYear === null
+      ? ""
+      : dto.label
+        ? `${dto.examYear}년 ${semesterLabels[dto.semester]} ${examTypeLabels[dto.examType]}`
+        : "",
   examYear: dto.examYear,
   semesterCode: dto.semester,
   examType: dto.examType,

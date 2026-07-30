@@ -15,7 +15,12 @@ export interface ExamArchivesPageDto {
   totalElements: number;
 }
 
-export type ExamSemesterDto = "FIRST" | "SECOND" | "SUMMER" | "WINTER";
+export type ExamSemesterDto =
+  | "FIRST"
+  | "SECOND"
+  | "SUMMER"
+  | "WINTER"
+  | "UNKNOWN";
 export type ExamTypeDto = "MIDTERM" | "FINAL";
 
 export interface ExamArchiveFileDto {
@@ -26,7 +31,7 @@ export interface ExamArchiveFileDto {
 
 export interface ExamArchiveRecordDto {
   recordId: number;
-  examYear: number;
+  examYear: number | null;
   semester: ExamSemesterDto;
   examType: ExamTypeDto;
   label: string | null;

@@ -29,6 +29,7 @@ const ExamArchiveEdit = () => {
     SECOND: "2",
     SUMMER: "SUMMER",
     WINTER: "WINTER",
+    UNKNOWN: "UNKNOWN",
   }[post.semesterCode ?? "FIRST"];
   const existingFileItems = (post.files ?? []).filter(
     (file) => typeof file !== "string",
@@ -45,9 +46,12 @@ const ExamArchiveEdit = () => {
         subject: post.subject,
         professor: post.professor,
         examYear: post.examYear,
-        semester: post.examYear
-          ? `${post.examYear}-${semesterSuffix}`
-          : post.semester,
+        semester:
+          post.semesterCode === "UNKNOWN" || post.examYear === null
+            ? "Unknown"
+            : post.examYear
+              ? `${post.examYear}-${semesterSuffix}`
+              : post.semester,
         semesterCode: post.semesterCode,
         examType: examTypeLabel,
         examTypeCode: post.examType,

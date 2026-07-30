@@ -9,9 +9,9 @@ export type UploadExistingFile = {
 export type UploadPostDraft = {
   subject: string;
   professor: string;
-  examYear: number;
+  examYear: number | null;
   semester: string;
-  semesterCode: "FIRST" | "SECOND" | "SUMMER" | "WINTER";
+  semesterCode: "FIRST" | "SECOND" | "SUMMER" | "WINTER" | "UNKNOWN";
   examType: string;
   examTypeCode: "MIDTERM" | "FINAL";
   title: string;
