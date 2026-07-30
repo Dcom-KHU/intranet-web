@@ -48,8 +48,14 @@ export default function UploadEntryCard({
       Underline,
       Link.configure({
         autolink: true,
-        openOnClick: false,
+        openOnClick: true,
         defaultProtocol: "https",
+        HTMLAttributes: {
+          class:
+            "cursor-pointer text-blue-500 underline underline-offset-2",
+          rel: "noopener noreferrer nofollow",
+          target: "_blank",
+        },
       }),
       Placeholder.configure({ placeholder }),
     ],
@@ -57,7 +63,7 @@ export default function UploadEntryCard({
     editorProps: {
       attributes: {
         class:
-          "min-h-[210px] text-sm leading-6 text-gray-800 outline-none [&_.is-editor-empty:first-child::before]:float-left [&_.is-editor-empty:first-child::before]:h-0 [&_.is-editor-empty:first-child::before]:text-gray-300 [&_.is-editor-empty:first-child::before]:content-[attr(data-placeholder)]",
+          "upload-editor min-h-[210px] text-sm leading-6 text-gray-800 outline-none [&_ul]:list-disc [&_ul]:pl-6 [&_li]:my-1 [&_a]:cursor-pointer [&_a]:text-blue-500 [&_a]:underline [&_a]:underline-offset-2 [&_.is-editor-empty:first-child::before]:float-left [&_.is-editor-empty:first-child::before]:h-0 [&_.is-editor-empty:first-child::before]:text-gray-300 [&_.is-editor-empty:first-child::before]:content-[attr(data-placeholder)]",
       },
     },
     onUpdate: ({ editor: currentEditor }) => {

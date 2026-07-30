@@ -26,7 +26,17 @@ export default function UploadToolbar({
       return;
     }
 
-    editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+    const trimmedUrl = url.trim();
+    const normalizedUrl = /^(https?:\/\/|mailto:|tel:)/i.test(trimmedUrl)
+      ? trimmedUrl
+      : `https://${trimmedUrl}`;
+
+    editor
+      .chain()
+      .focus()
+      .extendMarkRange("link")
+      .setLink({ href: normalizedUrl })
+      .run();
   };
 
   return (
@@ -72,7 +82,7 @@ export default function UploadToolbar({
         isActive={editor?.isActive("strike")}
         onClick={() => editor?.chain().focus().toggleStrike().run()}
       >
-        S
+        <span className="line-through">S</span>
       </ToolbarButton>
       <ToolbarButton
         label="글머리 기호"
@@ -128,6 +138,7 @@ function ToolbarButton({
       className={`min-w-6 rounded-full px-1 py-1 font-medium transition-all hover:bg-white disabled:cursor-not-allowed disabled:opacity-35 ${
         isActive ? "bg-white text-[#4988C4] shadow-sm" : ""
       }`}
+      onMouseDown={(event) => event.preventDefault()}
       onClick={onClick}
     >
       {children}
