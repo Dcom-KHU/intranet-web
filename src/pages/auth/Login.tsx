@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { MdInfoOutline } from "react-icons/md";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
@@ -144,8 +144,8 @@ const Login = () => {
           <div className="mt-5 flex justify-center items-center text-xs text-gray-500">
             <span>Don't have an account?</span>
 
-            <a
-              href="/register"
+            <Link
+              to="/register"
               className="
                 ml-2
                 underline
@@ -154,12 +154,12 @@ const Login = () => {
               "
             >
               회원가입
-            </a>
+            </Link>
 
             <span className="mx-2">|</span>
 
-            <a
-              href="/forgot-password"
+            <Link
+              to="/forgot-password"
               className="
                 underline
                 text-blue-700
@@ -167,7 +167,7 @@ const Login = () => {
               "
             >
               비밀번호 찾기
-            </a>
+            </Link>
           </div>
         </form>
       </div>
