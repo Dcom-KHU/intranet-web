@@ -20,7 +20,7 @@ export default function Footer() {
             />
             <SiNotion 
                 size={18} 
-                onClick={() => window.open("https://www.notion.so", "_blank")} 
+                onClick={() => window.open("https://dcomclub.notion.site/2026-D-Com-Notion-1371e4f095334bca903ecdcff00b4452", "_blank")} 
                 className="cursor-pointer" 
             />
         </div>
