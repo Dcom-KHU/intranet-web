@@ -1,5 +1,11 @@
-import { useEffect, useState, type ImgHTMLAttributes } from "react";
+import {
+  useEffect,
+  useState,
+  type ImgHTMLAttributes,
+  type MouseEventHandler,
+} from "react";
 import { api } from "@/api/client";
+import dcomLogo from "../../assets/dcom-logo-black.png";
 
 type AuthenticatedImageProps = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
   src: string;
@@ -13,9 +19,15 @@ type AuthenticatedImageState = {
 const AuthenticatedImage = ({
   src,
   alt,
+  className = "",
   ...imageProps
 }: AuthenticatedImageProps) => {
   const [image, setImage] = useState<AuthenticatedImageState | null>(null);
+  const imageSrc = image?.source === src ? image.objectUrl : "";
+  const { onClick, ...restImageProps } = imageProps;
+  const handleClick = onClick as
+    | MouseEventHandler<HTMLSpanElement>
+    | undefined;
 
   useEffect(() => {
     if (!src) return;
@@ -46,11 +58,29 @@ const AuthenticatedImage = ({
   }, [src]);
 
   return (
-    <img
-      src={image?.source === src ? image.objectUrl : ""}
-      alt={alt}
-      {...imageProps}
-    />
+    <span
+      className={`relative block overflow-hidden bg-white ${className}`}
+      onClick={handleClick}
+    >
+      {!imageSrc && (
+        <span className="absolute inset-0 flex items-center justify-center">
+          <img
+            src={dcomLogo}
+            alt=""
+            aria-hidden="true"
+            className="w-1/3 max-w-28 object-contain opacity-50"
+          />
+        </span>
+      )}
+      {imageSrc && (
+        <img
+          src={imageSrc}
+          alt={alt}
+          className="h-full w-full object-cover"
+          {...restImageProps}
+        />
+      )}
+    </span>
   );
 };
 
