@@ -53,10 +53,15 @@ export const downloadNoticeFile = async (
   fileId: number,
   fileName: string,
 ) => {
+
+  console.log("다운로드 noticeId", noticeId);
+  console.log("다운로드 fileId", fileId);
+
   const response = await api.get<Blob>(
     `/api/notice/${noticeId}/files/${fileId}/download`,
     { responseType: "blob" },
   );
+  
   const objectUrl = URL.createObjectURL(response.data);
   const link = document.createElement("a");
 
@@ -65,7 +70,10 @@ export const downloadNoticeFile = async (
   document.body.appendChild(link);
   link.click();
   link.remove();
-  URL.revokeObjectURL(objectUrl);
+  // 일정 시간 후에 URL 객체를 해제하여 메모리 누수를 방지
+  setTimeout(() => {
+    URL.revokeObjectURL(objectUrl);
+  }, 100);
 };
 
 // 공지사항 작성
