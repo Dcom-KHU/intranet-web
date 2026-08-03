@@ -44,7 +44,9 @@ export default function ProfileEmailField({
             type="email"
             value={email}
             readOnly={!isEditing}
-            className={!isEditing ? "bg-[#F7F8FA]" : "bg-white"}
+            className={`h-9 px-4 text-sm ${
+              !isEditing ? "bg-[#F7F8FA]" : "bg-white"
+            }`}
             onChange={(event) => onEmailChange(event.target.value)}
           />
         </div>
@@ -53,7 +55,7 @@ export default function ProfileEmailField({
           <Button
             type="button"
             variant="secondary"
-            className="w-16 text-xs disabled:cursor-not-allowed disabled:opacity-60"
+            className="h-9 w-20 text-xs disabled:cursor-not-allowed disabled:opacity-60"
             onClick={onSendCode}
             disabled={isSendingCode}
           >
@@ -67,6 +69,7 @@ export default function ProfileEmailField({
           <div className="relative flex-1">
             <Input
               value={code}
+              className="h-9 px-4 text-sm"
               onChange={(event) => onCodeChange(event.target.value)}
               placeholder="인증 코드 입력"
             />
@@ -80,7 +83,7 @@ export default function ProfileEmailField({
           <Button
             type="button"
             variant="secondary"
-            className="w-16 text-xs"
+            className="h-9 w-20 text-xs"
             onClick={onVerifyCode}
           >
             확인

@@ -125,7 +125,7 @@ export default function PasswordPanel({
   };
 
   return (
-    <section className="px-10 pb-5 pt-10">
+    <section className="px-2 pb-5 pt-10 sm:px-10">
       <h2 className="mb-2 text-base font-bold text-[#0F2854]">비밀번호 변경</h2>
       <p className="mb-8 text-xs text-gray-500">
         영문과 숫자를 포함한 8자 이상의 비밀번호를 사용해 주세요.
@@ -134,6 +134,7 @@ export default function PasswordPanel({
       <div className="space-y-5">
         <LabeledInput label="현재 비밀번호" error={errors.currentPassword}>
           <PasswordInput
+            className="h-9 px-4 text-sm"
             autoComplete="current-password"
             value={currentPassword}
             disabled={isTemporaryPasswordUser}
@@ -148,6 +149,7 @@ export default function PasswordPanel({
 
         <LabeledInput label="새 비밀번호" error={errors.newPassword}>
           <PasswordInput
+            className="h-9 px-4 text-sm"
             autoComplete="new-password"
             value={newPassword}
             onChange={(event) => handleNewPasswordChange(event.target.value)}
@@ -156,6 +158,7 @@ export default function PasswordPanel({
 
         <LabeledInput label="새 비밀번호 확인" error={errors.confirmPassword}>
           <PasswordInput
+            className="h-9 px-4 text-sm"
             autoComplete="new-password"
             value={confirmPassword}
             onChange={(event) => handleConfirmPasswordChange(event.target.value)}
