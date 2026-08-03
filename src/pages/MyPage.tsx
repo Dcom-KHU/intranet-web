@@ -131,7 +131,6 @@ export default function MyPage() {
 
       <Modal
         isOpen={blocker.state === "blocked"}
-        badge="저장 필요"
         title="변경사항이 저장되지 않았습니다."
         description={
           selectedMenu === "password" ? (

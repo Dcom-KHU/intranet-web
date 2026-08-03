@@ -282,7 +282,6 @@ const ManageUsers = () => {
       />
       <Modal
         isOpen={transferTarget !== null}
-        badge="권한 이양"
         title={`${transferTarget?.name ?? "선택한 회원"}님에게 관리자 권한을 이양할까요?`}
         description={
           <>

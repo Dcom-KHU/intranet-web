@@ -103,7 +103,6 @@ export default function ForgetPassword() {
       {isSuccessModalOpen && (
         <Modal
           isOpen
-          badge="비밀번호 찾기"
           title="임시 비밀번호를 전송했습니다."
           description="이메일에서 임시 비밀번호를 확인한 뒤 로그인해 주세요. 로그인 후 비밀번호를 변경해야 합니다."
           actionLabel="로그인하러 가기"

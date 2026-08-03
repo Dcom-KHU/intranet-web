@@ -121,7 +121,6 @@ export default function MyPageSidebar({
 
       <Modal
         isOpen={isWithdrawModalOpen}
-        badge="회원 탈퇴"
         title="정말 회원 탈퇴하시겠습니까?"
         description={
           <>

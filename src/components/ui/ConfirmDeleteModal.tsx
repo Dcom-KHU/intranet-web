@@ -20,7 +20,6 @@ export default function ConfirmDeleteModal({
   return (
     <Modal
       isOpen={isOpen}
-      badge="삭제 확인"
       title={title}
       description={description}
       actionLabel={isDeleting ? "삭제 중" : "삭제"}
