@@ -275,7 +275,6 @@ export default function UploadForm({
 
       <Modal
         isOpen={isCancelModalOpen}
-        badge={isEditMode ? "수정 취소" : "작성 취소"}
         title="변경사항이 저장되지 않았습니다."
         description={
           isEditMode ? "수정을 취소하시겠습니까?" : "작성을 취소하시겠습니까?"

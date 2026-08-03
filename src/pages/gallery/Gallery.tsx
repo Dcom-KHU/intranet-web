@@ -17,7 +17,7 @@ import SearchResultSummary from "../../components/ui/SearchResultSummary";
 const ITEMS_PER_PAGE = 8;
 
 const GALLERY_TEXT = {
-  pageTitle: "활동 사진 갤러리",
+  pageTitle: "활동사진 갤러리",
   description: "D.COM의 소중한 추억을 확인해보세요",
   searchPlaceholder: "활동사진 제목을 검색하세요",
   empty: "등록된 활동사진이 없습니다.",

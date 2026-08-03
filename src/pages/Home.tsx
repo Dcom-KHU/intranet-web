@@ -11,6 +11,9 @@ import AuthenticatedImage from "../components/ui/AuthenticatedImage";
 
 const homeBackgroundImages = [khuBg, khuBg2, khuBg3];
 
+const formatHomeDate = (date: string) => date.slice(0, 10);
+const formatMobileHomeDate = (date: string) => formatHomeDate(date).slice(5);
+
 const Home = () => {
     const navigate = useNavigate();
     const { data, loading, error } = useHomeDashboard();
@@ -31,6 +34,39 @@ const Home = () => {
 
                 <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
 
+                    <Container title="족보" icon={IoPencilOutline} onViewAllClick={() => navigate("/exam-archive")}>
+                        {exam?.slice(0, 5).map(item => (
+                            <div
+                                key={item.id}
+                                className="flex py-1 text-sm hover:font-bold cursor-pointer items-center justify-between overflow-hidden"
+                                onClick={() => navigate(`/exam-archive/${item.id}`)}
+                            >
+                                <p className="min-w-0 truncate">
+                                    {item.author.name}
+                                    {" | "}
+                                    
+                                    {item.professor}
+                                    {" - "}
+                                    <span className="inline">
+                                    {item.subject.length > 8
+                                        ? `${item.subject.slice(0, 8)}...`
+                                        : item.subject}
+                                    </span>
+                                </p>
+
+                                <p className="text-gray-400 text-xs flex-shrink-0 ml-2">
+                                    <span className="sm:hidden">
+                                        {formatMobileHomeDate(item.date)}
+                                    </span>
+
+                                    <span className="hidden sm:inline">
+                                        {formatHomeDate(item.date)}
+                                    </span>
+                                </p>
+                            </div>
+                        ))}
+                    </Container>
+
                     <Container title="공지사항" icon={IoNotificationsOutline} onViewAllClick={() => navigate("/notice")}>
                         {notices?.slice(0, 5).map(item => (
                             <div
@@ -47,11 +83,11 @@ const Home = () => {
                                 </p>
                                 <p className="text-gray-400 text-xs flex-shrink-0 ml-2">
                                     <span className="sm:hidden">
-                                        {item.date.slice(5)}
+                                        {formatMobileHomeDate(item.date)}
                                     </span>
 
                                     <span className="hidden sm:inline">
-                                        {item.date}
+                                        {formatHomeDate(item.date)}
                                     </span>
                                 </p>
                             </div>
@@ -76,51 +112,21 @@ const Home = () => {
                                 </p>
                                 <p className="text-gray-400 text-xs flex-shrink-0 ml-2">
                                     <span className="sm:hidden">
-                                        {item.date.slice(5)}
+                                        {formatMobileHomeDate(item.date)}
                                     </span>
 
                                     <span className="hidden sm:inline">
-                                        {item.date}
+                                        {formatHomeDate(item.date)}
                                     </span>
                                 </p>
                             </div>
                         ))}
                     </Container>       
                     
-                    <Container title="최근 등록 족보" icon={IoPencilOutline} onViewAllClick={() => navigate("/exam-archive")}>
-                        {exam?.slice(0, 5).map(item => (
-                            <div
-                                key={item.id}
-                                className="flex py-1 text-sm hover:font-bold cursor-pointer items-center justify-between overflow-hidden"
-                                onClick={() => navigate(`/exam-archive/${item.id}`)}
-                            >
-                                <p className="min-w-0 truncate">
-                                    {item.author.name}
-                                    {" | "}
-                                    
-                                    {item.professor}
-                                    {" - "}
-                                    <span className="inline">
-                                    {item.subject.length > 8
-                                        ? `${item.subject.slice(0, 8)}...`
-                                        : item.subject}
-                                    </span>
-                                </p>
+                    
 
-                                <p className="text-gray-400 text-xs flex-shrink-0 ml-2">
-                                    <span className="sm:hidden">
-                                        {item.date.slice(5)}
-                                    </span>
-
-                                    <span className="hidden sm:inline">
-                                        {item.date}
-                                    </span>
-                                </p>
-                            </div>
-                        ))}
-                    </Container>
                     <div className="lg:col-span-3 [&>div]:h-full">
-                        <Container title="최근 활동 사진" icon={IoImageOutline} onViewAllClick={() => navigate("/gallery")}>
+                        <Container title="활동사진" icon={IoImageOutline} onViewAllClick={() => navigate("/gallery")}>
                             <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
                                 {galleryPost.slice(0,4).map((item) => (
                                     <AuthenticatedImage

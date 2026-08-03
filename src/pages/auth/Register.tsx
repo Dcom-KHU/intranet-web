@@ -61,7 +61,6 @@ const Register = () => {
   const registerModalContent =
     registerModalType === "registerFailed"
         ? {
-            badge: "가입 실패",
             title: "회원가입에 실패했습니다.",
             description: (
               <>
@@ -78,7 +77,6 @@ const Register = () => {
           }
         : registerModalType === "registerComplete"
           ? {
-              badge: "승인 대기",
               title: "가입 신청이 완료되었습니다.",
               description: (
                 <>
@@ -275,7 +273,6 @@ const Register = () => {
       {registerModalContent && (
         <Modal
           isOpen
-          badge={registerModalContent.badge}
           title={registerModalContent.title}
           description={registerModalContent.description}
           actionLabel={registerModalContent.actionLabel}

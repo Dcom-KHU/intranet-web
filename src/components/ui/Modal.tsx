@@ -3,7 +3,6 @@ import dcomLogo from "../../assets/dcom-logo-black.png";
 
 type ModalProps = {
   isOpen: boolean;
-  badge?: string;
   title: string;
   description: ReactNode;
   actionLabel?: string;
@@ -16,7 +15,6 @@ type ModalProps = {
 
 export default function Modal({
   isOpen,
-  badge,
   title,
   description,
   actionLabel,
@@ -64,10 +62,6 @@ export default function Modal({
           className="mx-auto mb-3 h-20 w-auto object-contain"
         />
 
-        <span className="mb-7 inline-flex rounded-full bg-blue-500 px-4 py-2 text-xs font-semibold text-white">
-          {badge}
-        </span>
-
         <h3
           id={labelledById}
           className="mb-4 text-sm font-bold text-gray-900"
@@ -83,7 +77,7 @@ export default function Modal({
           {secondaryActionLabel && (
             <button
               type="button"
-              className="text-xs font-medium text-gray-500 underline underline-offset-2"
+              className="text-xs font-medium rounded-full outline outline-1 outline-gray-500 text-gray-500 px-4 py-2"
               onClick={onSecondaryAction}
             >
               {secondaryActionLabel}
@@ -91,7 +85,7 @@ export default function Modal({
           )}
           <button
             type="button"
-            className="text-xs font-medium text-blue-600 underline underline-offset-2"
+            className="text-xs font-medium rounded-full outline outline-1 outline-red-500 text-red-600 px-4 py-2"
             onClick={onAction}
           >
             {actionLabel}
