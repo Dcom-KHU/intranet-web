@@ -7,6 +7,7 @@ import khuBg2 from "../assets/khu-bg-2.jpg"
 import khuBg3 from "../assets/khu-bg-3.jpg"
 import { useHomeDashboard } from "../features/home/hooks/useHomeDashboard";
 import Loading from "../components/Loading";
+import AuthenticatedImage from "../components/ui/AuthenticatedImage";
 
 const homeBackgroundImages = [khuBg, khuBg2, khuBg3];
 
@@ -122,7 +123,7 @@ const Home = () => {
                         <Container title="최근 활동 사진" icon={IoImageOutline} onViewAllClick={() => navigate("/gallery")}>
                             <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
                                 {galleryPost.slice(0,4).map((item) => (
-                                    <img 
+                                    <AuthenticatedImage
                                         key={item.id}
                                         src={item.imageUrl} 
                                         alt={item.title} 

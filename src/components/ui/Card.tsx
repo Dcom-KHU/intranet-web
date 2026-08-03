@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { IoCalendarOutline } from "react-icons/io5";
 import { HiPhotograph } from "react-icons/hi";
+import AuthenticatedImage from "./AuthenticatedImage";
 
 
 type BaseCardProps = {
@@ -64,7 +65,11 @@ const Card = (props: CardProps) => {
       className="overflow-hidden rounded-xl border bg-white cursor-pointer transition-all hover:shadow-md"
     >
       <div className="relative aspect-[4/2.5] overflow-hidden">
-        <img src={imageUrl} alt={title} className="h-full w-full object-cover" />
+        <AuthenticatedImage
+          src={imageUrl}
+          alt={title}
+          className="h-full w-full object-cover"
+        />
 
         {imageCount !== undefined && (
           <span className="absolute flex justify-center items-center gap-1 bottom-2 right-2 rounded-xl bg-black/30 px-2 py-0.5 text-xs text-[#E0E0E0] outline outline-1">

@@ -34,7 +34,6 @@ export const getInfos = async ({
       },
     });
 
-
     return response.data.data;
 };
 

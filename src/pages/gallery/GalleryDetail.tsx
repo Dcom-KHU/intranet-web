@@ -17,6 +17,7 @@ import { useGalleryDetail } from "../../features/gallery/hooks/useGalleryDetail"
 import PageBackButton from "../../components/ui/PageBackButton";
 import { deleteGalleryPost } from "../../features/gallery/api/gallery.api";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
+import AuthenticatedImage from "../../components/ui/AuthenticatedImage";
 
 
 const GalleryDetail = () => {
@@ -105,7 +106,7 @@ const GalleryDetail = () => {
           >
             {gallery.images.map((image, index) => (
               <SwiperSlide key={`${image}-${index}`}>
-                <img
+                <AuthenticatedImage
                   src={image}
                   alt={`${gallery.title} ${index + 1}`}
                   className="h-[260px] w-full object-cover sm:h-[340px] lg:h-[420px]"
