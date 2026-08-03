@@ -58,8 +58,6 @@ export const downloadInfoPostFile = async (
   fileId: number,
   fileName: string,
 ) => {
-
-  console.log(`Downloading file with ID: ${fileId} and name: ${fileName}`);
   const response = await api.get<Blob>(
     `/api/attachments/info-posts/${fileId}/download`,
     { responseType: "blob" },

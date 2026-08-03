@@ -52,8 +52,6 @@ export const downloadNoticeFile = async (
   fileId: number,
   fileName: string,
 ) => {
-  console.log("downloadNoticeFile called with fileId:", fileId, "and fileName:", fileName);
-
   const response = await api.get<Blob>(
     `/api/attachments/notice/${fileId}/download`,
     { responseType: "blob" },
