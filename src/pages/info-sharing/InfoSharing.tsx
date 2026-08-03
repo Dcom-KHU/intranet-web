@@ -26,8 +26,6 @@ const INFOSHARING_TEXT = {
 
 const InfoSharing = () => {
   const navigate = useNavigate();
-  // const { currentUser } = useAuth();
-  // const isAdmin = currentUser?.role === "ADMIN";
   const [searchKeyword, setSearchKeyword] = useState("");
   const [appliedKeyword, setAppliedKeyword] = useState("");
   const [page, setPage] = useState(0);
@@ -80,7 +78,10 @@ const InfoSharing = () => {
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-20">
       <section className="mb-10">
-        <h1 className="text-xl font-bold text-[#4988C4]">
+        <h1 
+          onClick={() => navigate("/info-sharing")}
+          className="text-xl font-bold text-[#4988C4] cursor-pointer"
+        >
           {INFOSHARING_TEXT.pageTitle}
         </h1>
         <p className="mt-2 text-sm text-gray-500">
