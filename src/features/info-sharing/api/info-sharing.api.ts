@@ -39,13 +39,18 @@ export const getInfos = async ({
 };
 
 // 정보공유 게시글 상세 조회
-export const getInfoDetailById = async (id: number) => {
-  const response = await api.get<{ data: InfoPostDetailResponse }>(
-    `/api/info-posts/${id}`
+export const getInfoDetailById = async (
+  id: number,
+  signal?: AbortSignal,
+) => {
+  const response = await api.get<{ data: InfoPostDetailResponse | null }>(
+    `/api/info-posts/${id}`,
+    { signal },
   );
 
-
-  return toInfoPostDetail(response.data.data);
+  return response.data.data
+    ? toInfoPostDetail(response.data.data)
+    : null;
 };
 
 // 정보공유 게시글 등록

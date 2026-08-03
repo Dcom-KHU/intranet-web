@@ -55,12 +55,18 @@ export const getSearchExamArchives = async ({
 
 
 // 족보 상세 조회
-export const getExamArchiveById = async (id: number) => {
-  const response = await api.get<{ data: ExamArchiveDetailDto }>(
+export const getExamArchiveById = async (
+  id: number,
+  signal?: AbortSignal,
+) => {
+  const response = await api.get<{ data: ExamArchiveDetailDto | null }>(
     `/api/archives/${id}`,
+    { signal },
   );
 
-  return toExamArchiveDetail(response.data.data);
+  return response.data.data
+    ? toExamArchiveDetail(response.data.data)
+    : null;
 };
 
 

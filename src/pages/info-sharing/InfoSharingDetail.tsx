@@ -13,21 +13,33 @@ import PageBackButton from "../../components/ui/PageBackButton";
 import { deleteInfoPost } from "@/features/info-sharing/api/info-sharing.api";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import ConvertTime from "../../components/ConvertTime";
+import DetailQueryError from "../../components/DetailQueryError";
 
 
 const InfoSharingDetail = () => {
     const navigate = useNavigate();
     const { id } = useParams();
     const postId = Number(id);
-    const { data: info } = useInfoDetail(postId);
+    const {
+      data: info,
+      loading,
+      errorType,
+      errorMessage,
+    } = useInfoDetail(postId);
     const { currentUser } = useAuth();
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
 
-    if (!info) {
-        return <Loading />
-    }   
+    if (loading) return <Loading />;
+    if (errorType || !info) {
+      return (
+        <DetailQueryError
+          message={errorMessage || "정보공유 게시글 데이터가 없습니다."}
+          fallbackPath="/info"
+        />
+      );
+    }
 
     const handleDeletePost = async () => {
         setIsDeleting(true);

@@ -14,19 +14,31 @@ import PageBackButton from "../../components/ui/PageBackButton";
 import { deleteExamPost, downloadExamArchiveFile } from "../../features/exam-archive/api/exam-archive.api";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import ConvertTime from "../../components/ConvertTime";
+import DetailQueryError from "../../components/DetailQueryError";
 
 
 const ExamArchiveDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const archiveId = Number(id);
-  const { data } = useExamArchiveDetail(archiveId);
+  const {
+    data,
+    loading,
+    errorType,
+    errorMessage,
+  } = useExamArchiveDetail(archiveId);
   const { currentUser } = useAuth();
   const [deleteRecordId, setDeleteRecordId] = useState<number | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  if (!data) {
-    return <Loading />;
+  if (loading) return <Loading />;
+  if (errorType || !data) {
+    return (
+      <DetailQueryError
+        message={errorMessage || "족보 데이터가 없습니다."}
+        fallbackPath="/exam-archive"
+      />
+    );
   }
 
   const handleDeletePost = async () => {
