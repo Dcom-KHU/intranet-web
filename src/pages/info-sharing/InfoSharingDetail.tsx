@@ -84,23 +84,19 @@ const InfoSharingDetail = () => {
         
                         {info.attachmentItems?.length ? (
                         <ul className="space-y-3">
-                            {info.attachmentItems.map((file) => (
+                          {info.attachmentItems.map((file) => (
                             <li key={file.id}>
-                                <button
+                              <button
                                 type="button"
                                 className="text-sm text-[#4988C4] underline underline-offset-2 transition-all [#0F2854]"
                                 onClick={() =>
-                                  downloadInfoPostFile(
-                                    info.id,
-                                    file.id,
-                                    file.name,
-                                  )
+                                  downloadInfoPostFile(file.id, file.name)
                                 }
-                                >
+                              >
                                 {file.name}
-                                </button>
+                              </button>
                             </li>
-                            ))}
+                          ))}
                         </ul>
                         ) : null}
         

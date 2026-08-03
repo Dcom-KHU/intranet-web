@@ -71,25 +71,21 @@ const NoticeDetail = () => {
   
                 {notice.fileItems?.length ? (
                   <ul className="space-y-3">
-                      {notice.fileItems.map((file) => (
+                    {notice.fileItems.map((file) => (
                       <li key={file.id}>
-                          <button
+                        <button
                           type="button"
                           className="text-sm text-[#4988C4] underline underline-offset-2 transition-all [#0F2854]"
                           onClick={() =>
-                            downloadNoticeFile(
-                              notice.id,
-                              file.id,
-                              file.name,
-                            )
+                            downloadNoticeFile(file.id, file.name)
                           }
-                          >
+                        >
                           {file.name}
-                          </button>
+                        </button>
                       </li>
-                      ))}
+                    ))}
                   </ul>
-                  ) : null}
+                ) : null}
   
                 {isAdmin && (
                   <div className="absolute bottom-6 right-6 flex items-center gap-3">

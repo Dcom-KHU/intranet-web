@@ -55,12 +55,13 @@ export const getInfoDetailById = async (
 
 // 정보공유 첨부파일 다운로드
 export const downloadInfoPostFile = async (
-  postId: number,
   fileId: number,
   fileName: string,
 ) => {
+
+  console.log(`Downloading file with ID: ${fileId} and name: ${fileName}`);
   const response = await api.get<Blob>(
-    `/api/info-posts/${postId}/files/${fileId}/download`,
+    `/api/attachments/info-posts/${fileId}/download`,
     { responseType: "blob" },
   );
   const objectUrl = URL.createObjectURL(response.data);
