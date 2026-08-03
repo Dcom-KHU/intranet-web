@@ -67,7 +67,7 @@ export const updateGalleryPost = async (id: number, post: UploadPostDraft) => {
   );
 
   // 새 사진이 있으면 기존 사진 전체를 교체하고,
-  // 없으면 files 파트를 생략해 기존 사진을 유지합니다.
+  // 없으면 files 파트를 생략해 기존 사진을 유지
   post.files.forEach((file) => formData.append("files", file));
 
   const response = await api.put(
