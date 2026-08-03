@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useBlocker, useSearchParams } from "react-router-dom";
 
 import Loading from "../components/Loading";
@@ -24,6 +25,7 @@ export default function MyPage() {
   const { user, loading, saving, saveUser } = useProfileEdit();
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const blocker = useBlocker(hasUnsavedChanges);
+  const shouldReduceMotion = useReducedMotion();
 
   const handleDirtyChange = useCallback((isDirty: boolean) => {
     setHasUnsavedChanges(isDirty);
@@ -53,6 +55,30 @@ export default function MyPage() {
   if (loading) return <Loading />;
   if (!user) return null;
 
+  const selectedPanel = {
+    profile: (
+      <ProfilePanel
+        user={user}
+        saveUser={saveUser}
+        saving={saving}
+        onDirtyChange={handleDirtyChange}
+      />
+    ),
+    password: (
+      <PasswordPanel
+        user={user}
+        onDirtyChange={handleDirtyChange}
+      />
+    ),
+    posts: (
+      <MyPostsPanel
+        studentNumber={user.studentNumber}
+        isAdmin={user.role === "ADMIN"}
+      />
+    ),
+    comments: <MyCommentsPanel studentNumber={user.studentNumber} />,
+  } satisfies Record<ActiveMenu, React.ReactNode>;
+
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-20">
       <section className="mb-10">
@@ -70,30 +96,36 @@ export default function MyPage() {
           onMenuSelect={handleMenuSelect}
         />
 
-        <main className="min-h-[440px] rounded-2xl border border-[#B5D4F4] bg-white p-5 sm:p-7">
-          {selectedMenu === "profile" && (
-            <ProfilePanel
-              user={user}
-              saveUser={saveUser}
-              saving={saving}
-              onDirtyChange={handleDirtyChange}
-            />
-          )}
-          {selectedMenu === "password" && (
-            <PasswordPanel
-              user={user}
-              onDirtyChange={handleDirtyChange}
-            />
-          )}
-          {selectedMenu === "posts" && (
-            <MyPostsPanel
-              studentNumber={user.studentNumber}
-              isAdmin={user.role === "ADMIN"}
-            />
-          )}
-          {selectedMenu === "comments" && (
-            <MyCommentsPanel studentNumber={user.studentNumber} />
-          )}
+        <main className="min-h-[440px] overflow-x-clip rounded-2xl border border-[#B5D4F4] bg-white p-5 sm:p-7">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={selectedMenu}
+              initial={{ opacity: shouldReduceMotion ? 1 : 0 }}
+              animate={{
+                opacity: 1,
+                transition: shouldReduceMotion
+                  ? { duration: 0 }
+                  : {
+                      delay: 0.08,
+                      duration: 0.22,
+                      ease: [0.4, 0, 0.2, 1],
+                    },
+              }}
+              exit={
+                shouldReduceMotion
+                  ? { opacity: 1, transition: { duration: 0 } }
+                  : {
+                      opacity: 0,
+                      transition: {
+                        duration: 0.18,
+                        ease: [0.4, 0, 1, 1],
+                      },
+                    }
+              }
+            >
+              {selectedPanel[selectedMenu]}
+            </motion.div>
+          </AnimatePresence>
         </main>
       </div>
 
