@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ComponentProps } from "react";
+import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 
 import { Button } from "../../../components/ui/Button";
 import Input from "../../../components/ui/Input";
@@ -18,6 +19,46 @@ type PasswordErrors = Partial<Record<PasswordField, string>>;
 interface PasswordPanelProps {
   user: User;
   onDirtyChange: DirtyChangeHandler;
+}
+
+function PasswordInput(props: ComponentProps<typeof Input>) {
+  const [isVisible, setIsVisible] = useState(false);
+
+  const hidePassword = () => setIsVisible(false);
+
+  return (
+    <div className="relative">
+      <Input
+        {...props}
+        type={isVisible ? "text" : "password"}
+        className={`pr-10 ${props.className ?? ""}`}
+      />
+      <button
+        type="button"
+        disabled={props.disabled}
+        aria-label="누르는 동안 비밀번호 보기"
+        className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-gray-400 transition-colors hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-40"
+        onPointerDown={() => setIsVisible(true)}
+        onPointerUp={hidePassword}
+        onPointerLeave={hidePassword}
+        onPointerCancel={hidePassword}
+        onBlur={hidePassword}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            setIsVisible(true);
+          }
+        }}
+        onKeyUp={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            hidePassword();
+          }
+        }}
+      >
+        {isVisible ? <IoEyeOutline /> : <IoEyeOffOutline />}
+      </button>
+    </div>
+  );
 }
 
 export default function PasswordPanel({
@@ -133,8 +174,7 @@ export default function PasswordPanel({
 
       <div className="space-y-5">
         <LabeledInput label="현재 비밀번호" error={errors.currentPassword}>
-          <Input
-            type="password"
+          <PasswordInput
             autoComplete="current-password"
             value={currentPassword}
             disabled={isTemporaryPasswordUser}
@@ -148,8 +188,7 @@ export default function PasswordPanel({
         </LabeledInput>
 
         <LabeledInput label="새 비밀번호" error={errors.newPassword}>
-          <Input
-            type="password"
+          <PasswordInput
             autoComplete="new-password"
             value={newPassword}
             onChange={(event) => handleNewPasswordChange(event.target.value)}
@@ -157,8 +196,7 @@ export default function PasswordPanel({
         </LabeledInput>
 
         <LabeledInput label="새 비밀번호 확인" error={errors.confirmPassword}>
-          <Input
-            type="password"
+          <PasswordInput
             autoComplete="new-password"
             value={confirmPassword}
             onChange={(event) => handleConfirmPasswordChange(event.target.value)}
