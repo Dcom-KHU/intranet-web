@@ -30,7 +30,11 @@ const InfoSharing = () => {
   const [appliedKeyword, setAppliedKeyword] = useState("");
   const [page, setPage] = useState(0);
   const size = 10;
-  const { data: infos, pageInfo } = useInfos(page, size, appliedKeyword);
+  const { data: infos, pageInfo, loading, error } = useInfos(
+    page,
+    size,
+    appliedKeyword,
+  );
 
   const columns: DataTableColumn<InfoPostList>[] = [
     {
@@ -79,8 +83,8 @@ const InfoSharing = () => {
     <div className="px-4 py-8 sm:px-6 lg:px-20">
       <section className="mb-10">
         <h1 
-          onClick={() => navigate("/info-sharing")}
-          className="text-xl font-bold text-[#4988C4] cursor-pointer"
+          onClick={() => navigate("/info")}
+          className="cursor-pointer text-xl font-bold text-[#4988C4]"
         >
           {INFOSHARING_TEXT.pageTitle}
         </h1>
@@ -116,8 +120,14 @@ const InfoSharing = () => {
           data={infos}
           rowKey={(info) => info.id}
           emptyMessage={INFOSHARING_TEXT.empty}
+          isLoading={loading}
+          loadingMessage="정보공유 게시글을 불러오는 중입니다."
           onRowClick={(info) => navigate(`/info/${info.id}`)}
         />
+
+        {error && (
+          <p className="mt-4 text-center text-sm text-red-500">{error}</p>
+        )}
 
         <Pagination
           className="mt-6"
