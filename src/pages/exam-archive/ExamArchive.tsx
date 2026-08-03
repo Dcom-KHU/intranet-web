@@ -12,6 +12,7 @@ import SearchBar from "../../components/ui/SearchBar";
 import ConvertTime from "@/components/ConvertTime";
 import Pagination from "@/components/ui/Pagination";
 import { normalizeExamSubject } from "../../features/exam-archive/utils/exam-archive.utils";
+import SearchResultSummary from "../../components/ui/SearchResultSummary";
 
 const SEARCH_LOADING_TIME = 250;
 
@@ -22,8 +23,6 @@ const EXAM_ARCHIVE_TEXT = {
   professor: "교수명",
   lastModifiedAt: "최근 수정일",
   searchPlaceholder: "과목명 또는 교수명을 입력하세요",
-  searchResult: "검색 결과",
-  postCount: "개의 게시물",
   recent: "최근 업로드된 족보",
   loading: "검색 중...",
   empty: "검색 결과가 없습니다.",
@@ -140,24 +139,16 @@ const ExamArchive = () => {
       </section>
 
       <section>
-        <h2 className="mb-4 text-lg font-semibold">
-          {appliedKeyword ? (
-            <div className="flex items-end justify-between">
-              <span>
-                "{appliedKeyword}" {EXAM_ARCHIVE_TEXT.searchResult}
-              </span>
-
-              <span className="text-sm font-normal text-gray-400">
-                <span className="text-base font-semibold text-[#4988C4]">
-                  {pageInfo.totalElements}
-                </span>{" "}
-                {EXAM_ARCHIVE_TEXT.postCount}
-              </span>
-            </div>
-          ) : (
-            EXAM_ARCHIVE_TEXT.recent
-          )}
-        </h2>
+        {appliedKeyword ? (
+          <SearchResultSummary
+            keyword={appliedKeyword}
+            totalElements={pageInfo.totalElements}
+          />
+        ) : (
+          <h2 className="mb-4 text-lg font-semibold">
+            {EXAM_ARCHIVE_TEXT.recent}
+          </h2>
+        )}
 
         <DataTable
           columns={columns}

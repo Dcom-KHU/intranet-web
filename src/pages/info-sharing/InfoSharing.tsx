@@ -11,6 +11,7 @@ import { useInfos } from "../../features/info-sharing/hooks/useInfos";
 import type { InfoPostList } from "../../features/info-sharing/types/info-sharing.type";
 import ConvertTime from "@/components/ConvertTime";
 import Pagination from "@/components/ui/Pagination";
+import SearchResultSummary from "@/components/ui/SearchResultSummary";
 
 
 const INFOSHARING_TEXT = {
@@ -117,6 +118,10 @@ const InfoSharing = () => {
       </section>
 
       <section>
+        <SearchResultSummary
+          keyword={appliedKeyword}
+          totalElements={pageInfo.totalElements}
+        />
         <DataTable
           columns={columns}
           data={infos}

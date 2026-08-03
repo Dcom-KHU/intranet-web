@@ -11,6 +11,7 @@ import Pagination from "../../components/ui/Pagination";
 import useAuth from "../../features/auth/hooks/useAuth";
 import { useNotices } from "../../features/notice/hooks/useNotices";
 import type { NoticeType } from "../../features/notice/types/notice.type";
+import SearchResultSummary from "../../components/ui/SearchResultSummary";
 
 const NOTICE_TEXT = {
   pageTitle: "공지사항",
@@ -119,6 +120,10 @@ const Notice = () => {
       </section>
 
       <section>
+        <SearchResultSummary
+          keyword={appliedKeyword}
+          totalElements={pageInfo.totalElements}
+        />
         <DataTable
           columns={columns}
           data={notices}
