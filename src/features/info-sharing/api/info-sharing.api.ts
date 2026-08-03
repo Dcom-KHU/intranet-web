@@ -53,6 +53,27 @@ export const getInfoDetailById = async (
     : null;
 };
 
+// 정보공유 첨부파일 다운로드
+export const downloadInfoPostFile = async (
+  postId: number,
+  fileId: number,
+  fileName: string,
+) => {
+  const response = await api.get<Blob>(
+    `/api/info-posts/${postId}/files/${fileId}/download`,
+    { responseType: "blob" },
+  );
+  const objectUrl = URL.createObjectURL(response.data);
+  const link = document.createElement("a");
+
+  link.href = objectUrl;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(objectUrl);
+};
+
 // 정보공유 게시글 등록
 export const createInfoPosts = async (posts: UploadPostDraft[]) => {
   await Promise.all(

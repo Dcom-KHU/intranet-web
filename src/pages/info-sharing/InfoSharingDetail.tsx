@@ -10,7 +10,7 @@ import Loading from "../../components/Loading";
 import CommentSection from "../../features/comment/components/CommentSection";
 import UserDisplayName from "../../components/ui/UserDisplay";
 import PageBackButton from "../../components/ui/PageBackButton";
-import { deleteInfoPost } from "@/features/info-sharing/api/info-sharing.api";
+import { deleteInfoPost, downloadInfoPostFile } from "@/features/info-sharing/api/info-sharing.api";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import ConvertTime from "../../components/ConvertTime";
 import DetailQueryError from "../../components/DetailQueryError";
@@ -82,17 +82,23 @@ const InfoSharingDetail = () => {
                             {info.description}
                         </p>
         
-                        {info.attachments?.length ? (
+                        {info.attachmentItems?.length ? (
                         <ul className="space-y-3">
-                            {info.attachments.map((i) => (
-                            <li key={i}>
-                                <a
-                                href={`/${i}`}
+                            {info.attachmentItems.map((file) => (
+                            <li key={file.id}>
+                                <button
+                                type="button"
                                 className="text-sm text-[#4988C4] underline underline-offset-2 transition-all [#0F2854]"
-                                onClick={(event) => event.preventDefault()}
+                                onClick={() =>
+                                  downloadInfoPostFile(
+                                    info.id,
+                                    file.id,
+                                    file.name,
+                                  )
+                                }
                                 >
-                                {i}
-                                </a>
+                                {file.name}
+                                </button>
                             </li>
                             ))}
                         </ul>
