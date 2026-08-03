@@ -1,4 +1,4 @@
-export type CreateExamArchiveSemester = "FIRST" | "SECOND";
+export type CreateExamArchiveSemester = "FIRST" | "SECOND" | "UNKNOWN";
 
 export type CreateExamArchiveExamType =
   | "MIDTERM"
@@ -7,7 +7,7 @@ export type CreateExamArchiveExamType =
   | "ASSIGNMENT";
 
 export interface CreateExamArchiveRecordDto {
-  examYear: number;
+  examYear: number | null;
   semester: CreateExamArchiveSemester;
   examType: CreateExamArchiveExamType;
   content: string;

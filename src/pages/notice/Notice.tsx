@@ -21,6 +21,8 @@ const NOTICE_TEXT = {
   date: "작성일",
   empty: "등록된 공지사항이 없습니다.",
   searchPlaceholder: "검색어를 입력하세요",
+  loading: "공지사항을 불러오는 중입니다.",
+  paginationLabel: "공지사항 페이지",
 };
 
 const Notice = () => {
@@ -82,7 +84,10 @@ const Notice = () => {
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-20">
       <section className="mb-10">
-        <h1 className="text-xl font-bold text-[#4988C4]">
+        <h1 
+          onClick={() => navigate("/notice")}
+          className="text-xl font-bold text-[#4988C4] cursor-pointer"
+        >
           {NOTICE_TEXT.pageTitle}
         </h1>
         <p className="mt-2 text-sm text-gray-500">
@@ -120,6 +125,7 @@ const Notice = () => {
           rowKey={(notice) => notice.id}
           emptyMessage={NOTICE_TEXT.empty}
           isLoading={loading}
+          loadingMessage={NOTICE_TEXT.loading}
           onRowClick={(notice) => navigate(`/notice/${notice.id}`)}
         />
 
@@ -130,6 +136,7 @@ const Notice = () => {
           currentPage={pageInfo.page + 1}
           totalPages={pageInfo.totalPages}
           onPageChange={(nextPage) => setPage(nextPage - 1)}
+          ariaLabel={NOTICE_TEXT.paginationLabel}
         />
       </section>
     </div>

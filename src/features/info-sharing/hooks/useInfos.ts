@@ -6,6 +6,8 @@ import { toInfoPostList } from "../mapper/info.mapper";
 // 정보 게시판 글 전체 조회
 export const useInfos = (page = 0, size = 10, keyword = "") => {
     const [data, setData] = useState<InfoPostList[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
     const [pageInfo, setPageInfo] = useState<InfoPostPageInfo>({
         page: 0,
         size,
@@ -14,11 +16,16 @@ export const useInfos = (page = 0, size = 10, keyword = "") => {
     });
 
     useEffect(() => {
-        getInfos({ page, size, keyword: keyword.trim() || undefined }).then((res) => {
-            setData(res.postList.map(toInfoPostList));
-            setPageInfo(res.pageInfo);
-        });
+        setLoading(true);
+        getInfos({ page, size, keyword: keyword.trim() || undefined })
+            .then((res) => {
+                setData(res.postList.map(toInfoPostList));
+                setPageInfo(res.pageInfo);
+                setError("");
+            })
+            .catch(() => setError("정보공유 게시글을 불러오지 못했습니다."))
+            .finally(() => setLoading(false));
     }, [page, size, keyword])
 
-    return { data, pageInfo };
+    return { data, pageInfo, loading, error };
 }

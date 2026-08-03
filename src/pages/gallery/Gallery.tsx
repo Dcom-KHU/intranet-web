@@ -15,6 +15,14 @@ import SearchBar from "../../components/ui/SearchBar";
 
 const ITEMS_PER_PAGE = 8;
 
+const GALLERY_TEXT = {
+  pageTitle: "활동 사진 갤러리",
+  description: "D.COM의 소중한 추억을 확인해보세요",
+  searchPlaceholder: "활동사진 제목을 검색하세요",
+  empty: "등록된 활동사진이 없습니다.",
+  paginationLabel: "활동 사진 페이지",
+};
+
 const Gallery = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
@@ -34,11 +42,14 @@ const Gallery = () => {
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-20">
       <section className="mb-10">
-        <h1 className="text-xl font-bold text-[#4988C4]">
-          활동 사진 갤러리
+        <h1 
+          onClick={() => navigate("/gallery")}
+          className="text-xl font-bold text-[#4988C4] cursor-pointer"
+        >
+          {GALLERY_TEXT.pageTitle}
         </h1>
         <p className="mt-2 text-sm text-gray-500">
-          D.COM의 소중한 추억을 확인해보세요
+          {GALLERY_TEXT.description}
         </p>
       </section>
 
@@ -50,7 +61,7 @@ const Gallery = () => {
             setPage(0);
             setAppliedKeyword(searchKeyword.trim());
           }}
-          placeholder="활동사진 제목을 검색하세요"
+          placeholder={GALLERY_TEXT.searchPlaceholder}
         />
 
         {isAdmin && (
@@ -80,6 +91,11 @@ const Gallery = () => {
             />
           ))}
         </div>
+        {!error && gallery.length === 0 && (
+          <p className="py-10 text-center text-sm text-gray-400">
+            {GALLERY_TEXT.empty}
+          </p>
+        )}
         {error && (
           <p className="py-10 text-center text-sm text-red-500">{error}</p>
         )}
@@ -89,7 +105,7 @@ const Gallery = () => {
         currentPage={pageInfo.page + 1}
         totalPages={pageInfo.totalPages}
         onPageChange={(nextPage) => setPage(nextPage - 1)}
-        ariaLabel="활동 사진 페이지"
+        ariaLabel={GALLERY_TEXT.paginationLabel}
         className="mt-10"
       />
     </div>

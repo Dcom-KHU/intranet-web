@@ -22,17 +22,21 @@ const INFOSHARING_TEXT = {
   date: "작성일",
   empty: "등록된 게시글이 없습니다.",
   searchPlaceholder: "검색어를 입력하세요",
+  loading: "정보공유 게시글을 불러오는 중입니다.",
+  paginationLabel: "정보공유 페이지",
 };
 
 const InfoSharing = () => {
   const navigate = useNavigate();
-  // const { currentUser } = useAuth();
-  // const isAdmin = currentUser?.role === "ADMIN";
   const [searchKeyword, setSearchKeyword] = useState("");
   const [appliedKeyword, setAppliedKeyword] = useState("");
   const [page, setPage] = useState(0);
   const size = 10;
-  const { data: infos, pageInfo } = useInfos(page, size, appliedKeyword);
+  const { data: infos, pageInfo, loading, error } = useInfos(
+    page,
+    size,
+    appliedKeyword,
+  );
 
   const columns: DataTableColumn<InfoPostList>[] = [
     {
@@ -80,7 +84,10 @@ const InfoSharing = () => {
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-20">
       <section className="mb-10">
-        <h1 className="text-xl font-bold text-[#4988C4]">
+        <h1 
+          onClick={() => navigate("/info")}
+          className="cursor-pointer text-xl font-bold text-[#4988C4]"
+        >
           {INFOSHARING_TEXT.pageTitle}
         </h1>
         <p className="mt-2 text-sm text-gray-500">
@@ -115,14 +122,21 @@ const InfoSharing = () => {
           data={infos}
           rowKey={(info) => info.id}
           emptyMessage={INFOSHARING_TEXT.empty}
+          isLoading={loading}
+          loadingMessage={INFOSHARING_TEXT.loading}
           onRowClick={(info) => navigate(`/info/${info.id}`)}
         />
+
+        {error && (
+          <p className="mt-4 text-center text-sm text-red-500">{error}</p>
+        )}
 
         <Pagination
           className="mt-6"
           currentPage={pageInfo.page + 1}
           totalPages={pageInfo.totalPages}
           onPageChange={(nextPage) => setPage(nextPage - 1)}
+          ariaLabel={INFOSHARING_TEXT.paginationLabel}
         />
       </section>
     </div>

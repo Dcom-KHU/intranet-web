@@ -39,6 +39,12 @@ export const uploadModeConfig: Record<UploadMode, UploadModeConfig> = {
   info: baseNoticeConfig,
 };
 
-export const semesterOptions = ["2026-1", "2025-2", "2025-1", "2024-2"];
+export const semesterOptions = [
+  "2026-1",
+  "2025-2",
+  "2025-1",
+  "2024-2",
+  "Unknown",
+];
 
 export const examTypeOptions = ["중간고사", "기말고사", "퀴즈", "과제"];

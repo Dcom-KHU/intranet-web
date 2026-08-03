@@ -11,6 +11,8 @@ export const normalizeExamSubject = (subject: string) =>
   subject.replace(/\s+/g, "");
 
 const toCreateSemester = (semester: string): CreateExamArchiveSemester => {
+  if (semester === "Unknown") return "UNKNOWN";
+
   const semesterNumber = semester.split("-")[1];
 
   return semesterNumber === "2" ? "SECOND" : "FIRST";
@@ -30,7 +32,10 @@ const toCreateExamType = (examType: string): CreateExamArchiveExamType => {
 const toCreateExamArchiveRecord = (
   post: UploadPostDraft,
 ): CreateExamArchiveRecordDto => ({
-  examYear: Number(post.semester.split("-")[0]),
+  examYear:
+    post.semester === "Unknown"
+      ? null
+      : Number(post.semester.split("-")[0]),
   semester: toCreateSemester(post.semester),
   examType: toCreateExamType(post.examType),
   content: htmlToText(post.descriptionHtml),

@@ -26,7 +26,7 @@ const Home = () => {
         <RotatingBackgroundBanner images={homeBackgroundImages} />
 
         <div className="px-3 py-8 sm:px-4 lg:px-8">
-            <div className="w-full ml-5 mr-5">
+            <div className="mx-auto w-full max-w-[1440px]">
 
                 <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
 

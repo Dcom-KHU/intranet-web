@@ -83,7 +83,12 @@ const Manage = () => {
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-20">
       <section className="mb-10">
-        <h1 className="text-xl font-bold text-[#4988C4]">D.COM 관리자</h1>
+        <h1 
+          onClick={() => navigate("/manage")}
+          className="text-xl font-bold text-[#4988C4] cursor-pointer"
+        >
+          D.COM 관리자
+        </h1>
         <p className="mt-2 text-sm text-gray-500">
           D.COM 회원과 게시글을 관리해보세요
         </p>
