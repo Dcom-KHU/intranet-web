@@ -164,7 +164,6 @@ export const deleteExamPost = async (
   archiveId: number, 
   recordId: number
 ) => {
-  console.log(`Deleting post with archiveId: ${archiveId}, recordId: ${recordId}`);
 
   const response = await api.delete<ExamArchiveResponseDto>(
     `/api/archives/${archiveId}/records/${recordId}`,

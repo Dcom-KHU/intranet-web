@@ -34,7 +34,6 @@ export const getInfos = async ({
       },
     });
 
-    console.log(response.data)
 
     return response.data.data;
 };
@@ -45,7 +44,6 @@ export const getInfoDetailById = async (id: number) => {
     `/api/info-posts/${id}`
   );
 
-  console.log("상세:", response.data)
 
   return toInfoPostDetail(response.data.data);
 };
@@ -82,7 +80,6 @@ export const updateInfoPost = async (id: number, post: UploadPostDraft) => {
     formData,
   );
 
-  console.log('수정완료');
 
   return toUpdatedInfoPost(response.data.data);
 };

@@ -28,7 +28,6 @@ export const getMyPosts = async (
     },
   );
 
-  console.log("getMyPosts response:", response.data);
 
   return response.data.data;
 };
@@ -47,7 +46,6 @@ export const getMyComments = async (
     },
   );
 
-  console.log("getMyComments response:", response.data);
 
   return response.data.data;
 };

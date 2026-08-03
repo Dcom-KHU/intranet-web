@@ -26,7 +26,6 @@ const InfoSharingDetail = () => {
 
 
     if (!info) {
-        console.log('[InfoSharingDetail.tsx] info 데이터가 없습니다.')
         return <Loading />
     }   
 

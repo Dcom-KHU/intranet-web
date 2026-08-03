@@ -35,7 +35,6 @@ export const getNotices = async ({
     },
   );
 
-  console.log(response.data)
   return response.data.data;
 };
 
@@ -45,7 +44,6 @@ export const getNoticeDetail = async (noticeId: number) => {
     `/api/notice/${noticeId}`,
   );
 
-  console.log(response.data)
   return response.data.data;
 };
 
