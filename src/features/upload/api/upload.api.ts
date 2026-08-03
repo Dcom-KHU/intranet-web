@@ -27,7 +27,7 @@ export const uploadPosts = async ({
   });
 
   const response = await api.post<UploadPostsResponse>(
-    `/api/uploads/${mode}`,
+    `/api/${mode}`,
     formData,
   );
 

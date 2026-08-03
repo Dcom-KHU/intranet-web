@@ -64,7 +64,6 @@ export const getPendingUsers = async ({
     { params: { page, size, ...(sort ? { sort } : {}) } },
   );
 
-  console.log(response.data)
   return toPendingUsersPage(response.data.data);
 };
 
@@ -74,7 +73,6 @@ export const getAdminDashboard = async () => {
     "/api/admin/dashboard",
   );
 
-  console.log(response.data)
   return toAdminDashboard(response.data.data);
 };
 
@@ -84,7 +82,6 @@ export const approveUser = async (userId: number) => {
     `/api/admin/users/${userId}/approve`,
   );
 
-  console.log(userId, '가 승인되었습니다.')
   return response.data;
 };
 
@@ -94,7 +91,6 @@ export const rejectUser = async (userId: number) => {
     `/api/admin/users/${userId}/reject`,
   );
 
-  console.log(userId, '가 거부되었습니다.')
   return response.data;
 };
 

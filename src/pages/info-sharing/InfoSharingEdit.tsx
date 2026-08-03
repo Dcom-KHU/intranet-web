@@ -5,15 +5,29 @@ import Loading from "../../components/Loading";
 import useAuth from "../../features/auth/hooks/useAuth";
 import { updateInfoPost } from "../../features/info-sharing/api/info-sharing.api";
 import { useInfoDetail } from "../../features/info-sharing/hooks/useInfoDetail";
+import DetailQueryError from "../../components/DetailQueryError";
 
 const InfoSharingEdit = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const postId = Number(id);
   const { currentUser } = useAuth();
-  const { data: info } = useInfoDetail(postId);
+  const {
+    data: info,
+    loading,
+    errorType,
+    errorMessage,
+  } = useInfoDetail(postId);
 
-  if (!info) return <Loading />;
+  if (loading) return <Loading />;
+  if (errorType || !info) {
+    return (
+      <DetailQueryError
+        message={errorMessage || "정보공유 게시글 데이터가 없습니다."}
+        fallbackPath="/info"
+      />
+    );
+  }
 
   if (currentUser?.studentNumber !== info.author.studentNumber) {
     return <Navigate to={`/info/${postId}`} replace />;

@@ -11,10 +11,11 @@ import { useInfos } from "../../features/info-sharing/hooks/useInfos";
 import type { InfoPostList } from "../../features/info-sharing/types/info-sharing.type";
 import ConvertTime from "@/components/ConvertTime";
 import Pagination from "@/components/ui/Pagination";
+import SearchResultSummary from "@/components/ui/SearchResultSummary";
 
 
 const INFOSHARING_TEXT = {
-  pageTitle: "정보 공유 게시판",
+  pageTitle: "정보공유 게시판",
   description: "D.COM 부원들과 유익한 정보를 나누는 게시판입니다.",
   number: "번호",
   title: "제목",
@@ -117,6 +118,10 @@ const InfoSharing = () => {
       </section>
 
       <section>
+        <SearchResultSummary
+          keyword={appliedKeyword}
+          totalElements={pageInfo.totalElements}
+        />
         <DataTable
           columns={columns}
           data={infos}

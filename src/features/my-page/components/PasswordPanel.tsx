@@ -1,8 +1,7 @@
-import { useEffect, useState, type ComponentProps } from "react";
-import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
+import { useEffect, useState } from "react";
 
 import { Button } from "../../../components/ui/Button";
-import Input from "../../../components/ui/Input";
+import PasswordInput from "../../../components/ui/PasswordInput";
 import useChangePassword from "../../auth/hooks/useChangePassword";
 import useResetPassword from "../../auth/hooks/useResetPassword";
 import type { User } from "../../auth/types/user.type";
@@ -19,46 +18,6 @@ type PasswordErrors = Partial<Record<PasswordField, string>>;
 interface PasswordPanelProps {
   user: User;
   onDirtyChange: DirtyChangeHandler;
-}
-
-function PasswordInput(props: ComponentProps<typeof Input>) {
-  const [isVisible, setIsVisible] = useState(false);
-
-  const hidePassword = () => setIsVisible(false);
-
-  return (
-    <div className="relative">
-      <Input
-        {...props}
-        type={isVisible ? "text" : "password"}
-        className={`pr-10 ${props.className ?? ""}`}
-      />
-      <button
-        type="button"
-        disabled={props.disabled}
-        aria-label="누르는 동안 비밀번호 보기"
-        className="absolute inset-y-0 right-0 flex w-10 items-center justify-center text-gray-400 transition-colors hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-40"
-        onPointerDown={() => setIsVisible(true)}
-        onPointerUp={hidePassword}
-        onPointerLeave={hidePassword}
-        onPointerCancel={hidePassword}
-        onBlur={hidePassword}
-        onKeyDown={(event) => {
-          if (event.key === "Enter" || event.key === " ") {
-            event.preventDefault();
-            setIsVisible(true);
-          }
-        }}
-        onKeyUp={(event) => {
-          if (event.key === "Enter" || event.key === " ") {
-            hidePassword();
-          }
-        }}
-      >
-        {isVisible ? <IoEyeOutline /> : <IoEyeOffOutline />}
-      </button>
-    </div>
-  );
 }
 
 export default function PasswordPanel({
@@ -166,7 +125,7 @@ export default function PasswordPanel({
   };
 
   return (
-    <section className="px-10 pb-5 pt-10">
+    <section className="px-2 pb-5 pt-10 sm:px-10">
       <h2 className="mb-2 text-base font-bold text-[#0F2854]">비밀번호 변경</h2>
       <p className="mb-8 text-xs text-gray-500">
         영문과 숫자를 포함한 8자 이상의 비밀번호를 사용해 주세요.
@@ -175,6 +134,7 @@ export default function PasswordPanel({
       <div className="space-y-5">
         <LabeledInput label="현재 비밀번호" error={errors.currentPassword}>
           <PasswordInput
+            className="h-9 px-4 text-sm"
             autoComplete="current-password"
             value={currentPassword}
             disabled={isTemporaryPasswordUser}
@@ -189,6 +149,7 @@ export default function PasswordPanel({
 
         <LabeledInput label="새 비밀번호" error={errors.newPassword}>
           <PasswordInput
+            className="h-9 px-4 text-sm"
             autoComplete="new-password"
             value={newPassword}
             onChange={(event) => handleNewPasswordChange(event.target.value)}
@@ -197,6 +158,7 @@ export default function PasswordPanel({
 
         <LabeledInput label="새 비밀번호 확인" error={errors.confirmPassword}>
           <PasswordInput
+            className="h-9 px-4 text-sm"
             autoComplete="new-password"
             value={confirmPassword}
             onChange={(event) => handleConfirmPasswordChange(event.target.value)}

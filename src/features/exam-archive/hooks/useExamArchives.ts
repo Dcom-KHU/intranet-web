@@ -24,7 +24,6 @@ export const useExamArchives = (page: number, size: number) => {
         });
     }, [page, size]);
 
-    console.log("useExamArchives data, pageInfo:", data, pageInfo);
 
     return { data, pageInfo };
 };

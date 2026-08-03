@@ -5,6 +5,7 @@ import Loading from "../../components/Loading";
 import useAuth from "../../features/auth/hooks/useAuth";
 import { updateExamPost } from "../../features/exam-archive/api/exam-archive.api";
 import { useExamArchiveDetail } from "../../features/exam-archive/hooks/useExamArchiveDetail";
+import DetailQueryError from "../../components/DetailQueryError";
 
 const ExamArchiveEdit = () => {
   const navigate = useNavigate();
@@ -12,9 +13,31 @@ const ExamArchiveEdit = () => {
   const archivePostId = Number(archiveId);
   const postId = Number(postIdParam);
   const { currentUser } = useAuth();
-  const { data: archive } = useExamArchiveDetail(archivePostId);
+  const {
+    data: archive,
+    loading,
+    errorType,
+    errorMessage,
+  } = useExamArchiveDetail(archivePostId);
 
-  if (!archive) return <Loading />;
+  if (loading) return <Loading />;
+  if (errorType || !archive) {
+    return (
+      <DetailQueryError
+        message={errorMessage || "족보 데이터가 없습니다."}
+        fallbackPath="/exam-archive"
+      />
+    );
+  }
+
+  if (!Number.isInteger(postId) || postId <= 0) {
+    return (
+      <DetailQueryError
+        message="올바르지 않은 족보 게시글 ID입니다."
+        fallbackPath={`/exam-archive/${archivePostId}`}
+      />
+    );
+  }
 
   const post = archive.posts.find((item) => item.id === postId);
   if (!post) return <Navigate to={`/exam-archive/${archivePostId}`} replace />;

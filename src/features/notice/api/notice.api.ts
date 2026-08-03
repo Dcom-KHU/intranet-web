@@ -35,7 +35,6 @@ export const getNotices = async ({
     },
   );
 
-  console.log(response.data)
   return response.data.data;
 };
 
@@ -45,8 +44,31 @@ export const getNoticeDetail = async (noticeId: number) => {
     `/api/notice/${noticeId}`,
   );
 
-  console.log(response.data)
   return response.data.data;
+};
+
+// 공지사항 첨부파일 다운로드
+export const downloadNoticeFile = async (
+  fileId: number,
+  fileName: string,
+) => {
+  console.log("downloadNoticeFile called with fileId:", fileId, "and fileName:", fileName);
+
+  const response = await api.get<Blob>(
+    `/api/attachments/notice/${fileId}/download`,
+    { responseType: "blob" },
+  );
+  const objectUrl = URL.createObjectURL(response.data);
+  const link = document.createElement("a");
+
+  link.href = objectUrl;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => {
+    URL.revokeObjectURL(objectUrl);
+  }, 100);
 };
 
 // 공지사항 작성

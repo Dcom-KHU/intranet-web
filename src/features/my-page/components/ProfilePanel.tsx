@@ -35,7 +35,7 @@ export default function ProfilePanel({
   );
 
   return (
-    <section className="px-10 pt-10 pb-5">
+    <section className="px-2 pb-5 pt-10 sm:px-10">
       <h2 className="mb-8 text-base font-bold text-[#0F2854]">회원 정보</h2>
 
       <div className="space-y-5">
@@ -44,7 +44,9 @@ export default function ProfilePanel({
             <Input
               value={form.isEditing ? form.draft.name : user.name}
               readOnly={!form.isEditing}
-              className={!form.isEditing ? "bg-[#F7F8FA]" : "bg-white"}
+              className={`h-9 px-4 text-sm ${
+                !form.isEditing ? "bg-[#F7F8FA]" : "bg-white"
+              }`}
               onChange={(event) =>
                 form.handleFieldChange("name", event.target.value)
               }
@@ -52,12 +54,20 @@ export default function ProfilePanel({
           </LabeledInput>
 
           <LabeledInput label="학번">
-            <Input value={user.studentNumber} readOnly className="bg-[#F7F8FA]" />
+            <Input
+              value={user.studentNumber}
+              readOnly
+              className="h-9 bg-[#F7F8FA] px-4 text-sm"
+            />
           </LabeledInput>
         </div>
 
         <LabeledInput label="아이디">
-          <Input value={user.userID} readOnly className="bg-[#F7F8FA]" />
+          <Input
+            value={user.userID}
+            readOnly
+            className="h-9 bg-[#F7F8FA] px-4 text-sm"
+          />
         </LabeledInput>
 
         <ProfileEmailField
@@ -79,7 +89,9 @@ export default function ProfilePanel({
           <Input
             value={form.isEditing ? form.draft.phoneNumber : user.phoneNumber}
             readOnly={!form.isEditing}
-            className={!form.isEditing ? "bg-[#F7F8FA]" : "bg-white"}
+            className={`h-9 px-4 text-sm ${
+              !form.isEditing ? "bg-[#F7F8FA]" : "bg-white"
+            }`}
             onChange={(event) =>
               form.handleFieldChange("phoneNumber", event.target.value)
             }

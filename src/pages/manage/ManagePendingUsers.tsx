@@ -197,7 +197,7 @@ const ManagePendingUsers = () => {
       <ConfirmDeleteModal
         isOpen={rejectUserId !== null}
         title="가입 요청을 거절하시겠습니까?"
-        description="거절된 회원 정보는 데이터베이스에서 영구 삭제됩니다."
+        description="거절 시 해당 사용자는 인트라넷 사용이 어려우며, 해당 작업은 되돌릴 수 없습니다."
         isDeleting={processingUserId !== null}
         onConfirm={() => {
           if (rejectUserId !== null) void handleUser(rejectUserId, "reject");

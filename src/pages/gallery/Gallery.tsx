@@ -11,6 +11,7 @@ import { Button } from "../../components/ui/Button";
 import Pagination from "../../components/ui/Pagination";
 import Loading from "../../components/Loading";
 import SearchBar from "../../components/ui/SearchBar";
+import SearchResultSummary from "../../components/ui/SearchResultSummary";
 
 
 const ITEMS_PER_PAGE = 8;
@@ -79,6 +80,10 @@ const Gallery = () => {
 
 
       <section>
+        <SearchResultSummary
+          keyword={appliedKeyword}
+          totalElements={pageInfo.totalElements}
+        />
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {gallery.map((post) => (
             <Card

@@ -34,20 +34,45 @@ export const getInfos = async ({
       },
     });
 
-    console.log(response.data)
 
     return response.data.data;
 };
 
 // 정보공유 게시글 상세 조회
-export const getInfoDetailById = async (id: number) => {
-  const response = await api.get<{ data: InfoPostDetailResponse }>(
-    `/api/info-posts/${id}`
+export const getInfoDetailById = async (
+  id: number,
+  signal?: AbortSignal,
+) => {
+  const response = await api.get<{ data: InfoPostDetailResponse | null }>(
+    `/api/info-posts/${id}`,
+    { signal },
   );
 
-  console.log("상세:", response.data)
+  return response.data.data
+    ? toInfoPostDetail(response.data.data)
+    : null;
+};
 
-  return toInfoPostDetail(response.data.data);
+// 정보공유 첨부파일 다운로드
+export const downloadInfoPostFile = async (
+  fileId: number,
+  fileName: string,
+) => {
+
+  console.log(`Downloading file with ID: ${fileId} and name: ${fileName}`);
+  const response = await api.get<Blob>(
+    `/api/attachments/info-posts/${fileId}/download`,
+    { responseType: "blob" },
+  );
+  const objectUrl = URL.createObjectURL(response.data);
+  const link = document.createElement("a");
+
+  link.href = objectUrl;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(objectUrl);
 };
 
 // 정보공유 게시글 등록
@@ -82,7 +107,6 @@ export const updateInfoPost = async (id: number, post: UploadPostDraft) => {
     formData,
   );
 
-  console.log('수정완료');
 
   return toUpdatedInfoPost(response.data.data);
 };
