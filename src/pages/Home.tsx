@@ -87,7 +87,7 @@ const Home = () => {
                         ))}
                     </Container>       
                     
-                    <Container title="최근 등록 족보" icon={IoPencilOutline} onViewAllClick={() => navigate("/exam-archive")}>
+                    <Container title="족보" icon={IoPencilOutline} onViewAllClick={() => navigate("/exam-archive")}>
                         {exam?.slice(0, 5).map(item => (
                             <div
                                 key={item.id}
@@ -120,7 +120,7 @@ const Home = () => {
                         ))}
                     </Container>
                     <div className="lg:col-span-3 [&>div]:h-full">
-                        <Container title="최근 활동 사진" icon={IoImageOutline} onViewAllClick={() => navigate("/gallery")}>
+                        <Container title="활동사진" icon={IoImageOutline} onViewAllClick={() => navigate("/gallery")}>
                             <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
                                 {galleryPost.slice(0,4).map((item) => (
                                     <AuthenticatedImage
