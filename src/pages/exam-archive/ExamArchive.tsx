@@ -15,6 +15,21 @@ import { normalizeExamSubject } from "../../features/exam-archive/utils/exam-arc
 
 const SEARCH_LOADING_TIME = 250;
 
+const EXAM_ARCHIVE_TEXT = {
+  pageTitle: "족보 아카이브",
+  description: "선배들이 남긴 귀중한 전공 자료를 확인해보세요.",
+  subject: "과목명",
+  professor: "교수명",
+  lastModifiedAt: "최근 수정일",
+  searchPlaceholder: "과목명 또는 교수명을 입력하세요",
+  searchResult: "검색 결과",
+  postCount: "개의 게시물",
+  recent: "최근 업로드된 족보",
+  loading: "검색 중...",
+  empty: "검색 결과가 없습니다.",
+  paginationLabel: "족보 페이지",
+};
+
 const ExamArchive = () => {
   const navigate = useNavigate();
 
@@ -42,7 +57,7 @@ const ExamArchive = () => {
   const columns: DataTableColumn<ExamArchiveListType>[] = [
     {
       key: "subject",
-      header: "과목명",
+      header: EXAM_ARCHIVE_TEXT.subject,
       width: "w-[50%]",
       render: (item) => (
         <div className="flex min-w-0 items-center gap-2 ml-5 text-sm">
@@ -55,14 +70,14 @@ const ExamArchive = () => {
     },
     {
       key: "professor",
-      header: "교수명",
+      header: EXAM_ARCHIVE_TEXT.professor,
       width: "w-[20%]",
       cellClassName: "truncate text-sm text-gray-700",
       render: (item) => item.professor,
     },
     {
       key: "date",
-      header: "최근 수정일",
+      header: EXAM_ARCHIVE_TEXT.lastModifiedAt,
       width: "w-[17%]",
       cellClassName: "truncate text-sm text-gray-500",
       render: (item) => <ConvertTime date={item.date} />,
@@ -98,11 +113,11 @@ const ExamArchive = () => {
           onClick={() => navigate("/exam-archive")}
           className="text-xl font-bold text-[#4988C4] cursor-pointer"
         >
-          족보 아카이브
+          {EXAM_ARCHIVE_TEXT.pageTitle}
         </h1>
 
         <p className="mt-2 text-sm text-gray-500">
-          선배들이 남긴 귀중한 전공 자료를 확인해보세요.
+          {EXAM_ARCHIVE_TEXT.description}
         </p>
       </section>
 
@@ -111,7 +126,7 @@ const ExamArchive = () => {
           value={searchKeyword}
           onChange={setSearchKeyword}
           onSearch={handleSearch}
-          placeholder="과목명 또는 교수명을 입력하세요"
+          placeholder={EXAM_ARCHIVE_TEXT.searchPlaceholder}
         />
 
         <Button
@@ -129,18 +144,18 @@ const ExamArchive = () => {
           {appliedKeyword ? (
             <div className="flex items-end justify-between">
               <span>
-                "{appliedKeyword}" 검색 결과
+                "{appliedKeyword}" {EXAM_ARCHIVE_TEXT.searchResult}
               </span>
 
               <span className="text-sm font-normal text-gray-400">
                 <span className="text-base font-semibold text-[#4988C4]">
                   {pageInfo.totalElements}
                 </span>{" "}
-                개의 게시물
+                {EXAM_ARCHIVE_TEXT.postCount}
               </span>
             </div>
           ) : (
-            "최근 업로드된 족보"
+            EXAM_ARCHIVE_TEXT.recent
           )}
         </h2>
 
@@ -149,8 +164,8 @@ const ExamArchive = () => {
           data={data}
           rowKey={(item) => item.id}
           isLoading={isSearching}
-          loadingMessage="검색 중..."
-          emptyMessage="검색 결과가 없습니다."
+          loadingMessage={EXAM_ARCHIVE_TEXT.loading}
+          emptyMessage={EXAM_ARCHIVE_TEXT.empty}
           onRowClick={(item) =>
             navigate(`/exam-archive/${item.id}`)
           }
@@ -163,6 +178,7 @@ const ExamArchive = () => {
           onPageChange={(nextPage) =>
             setPage(nextPage - 1)
           }
+          ariaLabel={EXAM_ARCHIVE_TEXT.paginationLabel}
         />
       </section>
     </div>

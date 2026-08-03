@@ -22,6 +22,8 @@ const INFOSHARING_TEXT = {
   date: "작성일",
   empty: "등록된 게시글이 없습니다.",
   searchPlaceholder: "검색어를 입력하세요",
+  loading: "정보공유 게시글을 불러오는 중입니다.",
+  paginationLabel: "정보공유 페이지",
 };
 
 const InfoSharing = () => {
@@ -121,7 +123,7 @@ const InfoSharing = () => {
           rowKey={(info) => info.id}
           emptyMessage={INFOSHARING_TEXT.empty}
           isLoading={loading}
-          loadingMessage="정보공유 게시글을 불러오는 중입니다."
+          loadingMessage={INFOSHARING_TEXT.loading}
           onRowClick={(info) => navigate(`/info/${info.id}`)}
         />
 
@@ -134,6 +136,7 @@ const InfoSharing = () => {
           currentPage={pageInfo.page + 1}
           totalPages={pageInfo.totalPages}
           onPageChange={(nextPage) => setPage(nextPage - 1)}
+          ariaLabel={INFOSHARING_TEXT.paginationLabel}
         />
       </section>
     </div>

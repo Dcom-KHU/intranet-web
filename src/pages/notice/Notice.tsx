@@ -21,6 +21,8 @@ const NOTICE_TEXT = {
   date: "작성일",
   empty: "등록된 공지사항이 없습니다.",
   searchPlaceholder: "검색어를 입력하세요",
+  loading: "공지사항을 불러오는 중입니다.",
+  paginationLabel: "공지사항 페이지",
 };
 
 const Notice = () => {
@@ -120,6 +122,7 @@ const Notice = () => {
           rowKey={(notice) => notice.id}
           emptyMessage={NOTICE_TEXT.empty}
           isLoading={loading}
+          loadingMessage={NOTICE_TEXT.loading}
           onRowClick={(notice) => navigate(`/notice/${notice.id}`)}
         />
 
@@ -130,6 +133,7 @@ const Notice = () => {
           currentPage={pageInfo.page + 1}
           totalPages={pageInfo.totalPages}
           onPageChange={(nextPage) => setPage(nextPage - 1)}
+          ariaLabel={NOTICE_TEXT.paginationLabel}
         />
       </section>
     </div>
