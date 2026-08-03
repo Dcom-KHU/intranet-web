@@ -47,6 +47,27 @@ export const getNoticeDetail = async (noticeId: number) => {
   return response.data.data;
 };
 
+// 공지사항 파일 다운로드
+export const downloadNoticeFile = async (
+  noticeId: number,
+  fileId: number,
+  fileName: string,
+) => {
+  const response = await api.get<Blob>(
+    `/api/notice/${noticeId}/files/${fileId}/download`,
+    { responseType: "blob" },
+  );
+  const objectUrl = URL.createObjectURL(response.data);
+  const link = document.createElement("a");
+
+  link.href = objectUrl;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(objectUrl);
+};
+
 // 공지사항 작성
 export const createNotices = async (posts: UploadPostDraft[]) => {
   await Promise.all(
