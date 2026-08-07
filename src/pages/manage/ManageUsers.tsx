@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 
 import Loading from "../../components/Loading";
 import { Button } from "../../components/ui/Button";
@@ -13,7 +14,10 @@ import ManageUserDetailModal from "../../features/manage/components/ManageUserDe
 import Modal from "../../components/ui/Modal";
 import useAuth from "../../features/auth/hooks/useAuth";
 import { AUTH_QUERY_KEY } from "../../features/auth/constants/auth.constants";
-import { transferAdmin } from "../../features/manage/api/manage.api";
+import {
+  deleteManagedUser,
+  transferAdmin,
+} from "../../features/manage/api/manage.api";
 import ManagedUserName from "../../features/manage/components/ManagedUserName";
 
 type SortType = "lastLogin" | "studentNumber" | "name";
@@ -38,8 +42,9 @@ const ManageUsers = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [appliedKeyword, setAppliedKeyword] = useState("");
   const [page, setPage] = useState(0);
-  const [hiddenUserIds, setHiddenUserIds] = useState<number[]>([]);
   const [deleteUserId, setDeleteUserId] = useState<number | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [transferTarget, setTransferTarget] = useState<{
     id: number;
@@ -47,21 +52,49 @@ const ManageUsers = () => {
   } | null>(null);
   const [isTransferring, setIsTransferring] = useState(false);
 
-  const { data, loading, error } = useManageUsers(
+  const { data, loading, error, refetch } = useManageUsers(
     page,
     10,
     appliedKeyword,
     sortQuery[sortType],
   );
 
-  const users = (data?.users ?? []).filter(
-    (user) => !hiddenUserIds.includes(user.id),
-  );
+  const users = data?.users ?? [];
 
-  const deleteUser = () => {
-    if (deleteUserId === null || deleteUserId === currentUser?.id) return;
-    setHiddenUserIds((ids) => [...ids, deleteUserId]);
-    setDeleteUserId(null);
+  const deleteUser = async () => {
+    if (
+      deleteUserId === null ||
+      deleteUserId === currentUser?.id ||
+      isDeleting
+    ) {
+      return;
+    }
+
+    setIsDeleting(true);
+    setDeleteError("");
+
+    try {
+      await deleteManagedUser(deleteUserId);
+      setDeleteUserId(null);
+
+      if (users.length === 1 && page > 0) {
+        setPage((currentPage) => currentPage - 1);
+      } else {
+        await refetch();
+      }
+    } catch (requestError) {
+      const responseMessage = axios.isAxiosError(requestError)
+        ? requestError.response?.data?.message
+        : null;
+
+      setDeleteError(
+        typeof responseMessage === "string" && responseMessage.length > 0
+          ? responseMessage
+          : "회원을 삭제하지 못했습니다. 잠시 후 다시 시도해주세요.",
+      );
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const handleTransferAdmin = async () => {
@@ -248,6 +281,7 @@ const ManageUsers = () => {
                           className="whitespace-nowrap px-2.5 py-1.5 text-xs"
                           onClick={(event) => {
                             event.stopPropagation();
+                            setDeleteError("");
                             setDeleteUserId(user.id);
                           }}
                         >
@@ -272,9 +306,16 @@ const ManageUsers = () => {
       />
       <ConfirmDeleteModal
         isOpen={deleteUserId !== null}
-        description="삭제한 회원은 목록에서 복구할 수 없습니다."
-        onConfirm={deleteUser}
-        onCancel={() => setDeleteUserId(null)}
+        description={
+          deleteError ||
+          "활동 이력이 있는 회원은 탈퇴 처리되며, 활동 이력이 없는 회원은 완전히 삭제됩니다."
+        }
+        isDeleting={isDeleting}
+        onConfirm={() => void deleteUser()}
+        onCancel={() => {
+          setDeleteUserId(null);
+          setDeleteError("");
+        }}
       />
       <ManageUserDetailModal
         userId={selectedUserId}

@@ -47,6 +47,13 @@ export const getManageUserDetail = async (userId: number) => {
   return toManageUserDetail(response.data.data);
 };
 
+// 관리자 회원 탈퇴/삭제 처리
+export const deleteManagedUser = async (userId: number) => {
+  const response = await api.delete(`/api/admin/users/${userId}`);
+
+  return response.data;
+};
+
 export interface PendingUsersRequest {
   page?: number;
   size?: number;
