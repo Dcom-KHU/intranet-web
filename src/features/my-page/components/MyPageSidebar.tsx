@@ -49,18 +49,28 @@ const menuItems: MenuItem[] = [
 interface MyPageSidebarProps {
   selectedMenu: ActiveMenu;
   onMenuSelect: (menu: ActiveMenu) => void;
+  isAdmin: boolean;
 }
 
 export default function MyPageSidebar({
   selectedMenu,
   onMenuSelect,
+  isAdmin,
 }: MyPageSidebarProps) {
   const navigate = useNavigate();
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
+  const [isAdminTransferModalOpen, setIsAdminTransferModalOpen] =
+    useState(false);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
   const [withdrawError, setWithdrawError] = useState("");
 
   const handleWithdraw = async () => {
+    if (isAdmin) {
+      setIsWithdrawModalOpen(false);
+      setIsAdminTransferModalOpen(true);
+      return;
+    }
+
     setIsWithdrawing(true);
     setWithdrawError("");
 
@@ -109,6 +119,11 @@ export default function MyPageSidebar({
             type="button"
             onClick={() => {
               setWithdrawError("");
+              if (isAdmin) {
+                setIsAdminTransferModalOpen(true);
+                return;
+              }
+
               setIsWithdrawModalOpen(true);
             }}
             className="flex h-11 w-full items-center gap-3 rounded-lg px-3 text-sm text-red-500 transition-all hover:bg-red-50"
@@ -146,6 +161,23 @@ export default function MyPageSidebar({
           setWithdrawError("");
         }}
         labelledById="withdraw-modal-title"
+      />
+
+      <Modal
+        isOpen={isAdminTransferModalOpen}
+        title="관리자 권한을 먼저 이양해주세요."
+        description={
+          <>
+            관리자는 권한을 이양하기 전에는 회원 탈퇴를 할 수 없습니다.
+            <br />
+            회원 관리에서 다른 회원에게 관리자 권한을 이양해주세요.
+          </>
+        }
+        actionLabel="회원 관리로 이동"
+        onAction={() => navigate("/manage/users")}
+        secondaryActionLabel="닫기"
+        onSecondaryAction={() => setIsAdminTransferModalOpen(false)}
+        labelledById="admin-transfer-required-modal-title"
       />
     </>
   );
