@@ -94,6 +94,7 @@ export default function MyPage() {
         <MyPageSidebar
           selectedMenu={selectedMenu}
           onMenuSelect={handleMenuSelect}
+          isAdmin={user.role === "ADMIN"}
         />
 
         <main className="min-h-[440px] overflow-x-clip rounded-2xl border border-[#B5D4F4] bg-white p-5 sm:p-7">
