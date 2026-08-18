@@ -11,9 +11,9 @@ export type UploadPostDraft = {
   professor: string;
   examYear: number | null;
   semester: string;
-  semesterCode: "FIRST" | "SECOND" | "SUMMER" | "WINTER" | "UNKNOWN";
+  semesterCode: "FIRST" | "SECOND" | "SUMMER" | "WINTER" | "UNKNOWN" | null;
   examType: string;
-  examTypeCode: "MIDTERM" | "FINAL";
+  examTypeCode: "MIDTERM" | "FINAL" | null;
   title: string;
   date: string;
   location: string;
