@@ -72,7 +72,7 @@ const Card = (props: CardProps) => {
         />
 
         {imageCount !== undefined && (
-          <span className="absolute flex justify-center items-center gap-1 bottom-2 right-2 rounded-xl bg-black/30 px-2 py-0.5 text-xs text-[#E0E0E0] outline outline-1">
+          <span className="absolute flex justify-center items-center gap-1 bottom-2 right-2 rounded-xl bg-black/20 px-2 py-0.5 text-xs text-white/80 outline outline-1">
             <HiPhotograph />
             {imageCount}
           </span>

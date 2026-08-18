@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState, type DragEvent } from "react";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import Underline from "@tiptap/extension-underline";
@@ -6,6 +6,7 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { IoClose } from "react-icons/io5";
 
+import Modal from "../../../components/ui/Modal";
 import {
   examTypeOptions,
   semesterOptions,
@@ -17,8 +18,11 @@ import type {
   UploadPostDraft,
 } from "../types/upload.type";
 import Field from "./fields/Field";
+import DateField from "./fields/DateField";
 import SelectField from "./fields/SelectField";
 import UploadToolbar from "./UploadToolbar";
+
+const GALLERY_IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "heic"];
 
 type UploadEntryCardProps = {
   entry: UploadEntry;
@@ -38,6 +42,9 @@ export default function UploadEntryCard({
   onRemove,
 }: UploadEntryCardProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const dragDepthRef = useRef(0);
+  const [isDraggingFiles, setIsDraggingFiles] = useState(false);
+  const [invalidGalleryFiles, setInvalidGalleryFiles] = useState<string[]>([]);
   const config = uploadModeConfig[mode];
   const placeholder = config.showExamFields
     ? "자료 설명을 입력하세요"
@@ -45,6 +52,7 @@ export default function UploadEntryCard({
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
+        dropcursor: false,
         undoRedo: {
           newGroupDelay: 0,
         },
@@ -67,7 +75,7 @@ export default function UploadEntryCard({
     editorProps: {
       attributes: {
         class:
-          "upload-editor min-h-[210px] text-sm leading-6 text-gray-800 outline-none [&_ul]:list-disc [&_ul]:pl-6 [&_li]:my-1 [&_a]:cursor-pointer [&_a]:text-blue-500 [&_a]:underline [&_a]:underline-offset-2 [&_.is-editor-empty:first-child::before]:float-left [&_.is-editor-empty:first-child::before]:h-0 [&_.is-editor-empty:first-child::before]:text-gray-300 [&_.is-editor-empty:first-child::before]:content-[attr(data-placeholder)]",
+          "upload-editor min-h-[210px] px-2 text-sm leading-6 text-gray-800 outline-none [&_ul]:list-disc [&_ul]:pl-6 [&_li]:my-1 [&_a]:cursor-pointer [&_a]:text-blue-500 [&_a]:underline [&_a]:underline-offset-2 [&_.is-editor-empty:first-child::before]:float-left [&_.is-editor-empty:first-child::before]:h-0 [&_.is-editor-empty:first-child::before]:text-gray-300 [&_.is-editor-empty:first-child::before]:content-[attr(data-placeholder)]",
       },
     },
     onUpdate: ({ editor: currentEditor }) => {
@@ -119,8 +127,86 @@ export default function UploadEntryCard({
     onChange({ files: [...entry.files, ...filesToAdd] });
   };
 
+  const isFileDrag = (event: DragEvent<HTMLDivElement>) =>
+    Array.from(event.dataTransfer.types).includes("Files");
+
+  const handleDragEnter = (event: DragEvent<HTMLDivElement>) => {
+    if (!isFileDrag(event)) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    dragDepthRef.current += 1;
+    setIsDraggingFiles(true);
+  };
+
+  const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
+    if (!isFileDrag(event)) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.dataTransfer.dropEffect = "copy";
+  };
+
+  const handleDragLeave = (event: DragEvent<HTMLDivElement>) => {
+    if (!isFileDrag(event)) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    dragDepthRef.current = Math.max(0, dragDepthRef.current - 1);
+    if (dragDepthRef.current === 0) setIsDraggingFiles(false);
+  };
+
+  const handleDrop = (event: DragEvent<HTMLDivElement>) => {
+    if (!isFileDrag(event)) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    dragDepthRef.current = 0;
+    setIsDraggingFiles(false);
+
+    const droppedFiles = Array.from(event.dataTransfer.files);
+    if (mode !== "gallery") {
+      appendFiles(droppedFiles);
+      return;
+    }
+
+    const acceptedFiles: File[] = [];
+    const rejectedFileNames: string[] = [];
+
+    droppedFiles.forEach((file) => {
+      const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
+
+      if (GALLERY_IMAGE_EXTENSIONS.includes(extension)) {
+        acceptedFiles.push(file);
+      } else {
+        rejectedFileNames.push(file.name);
+      }
+    });
+
+    if (acceptedFiles.length > 0) appendFiles(acceptedFiles);
+    if (rejectedFileNames.length > 0) setInvalidGalleryFiles(rejectedFileNames);
+  };
+
   return (
-    <div className="relative min-h-[420px] rounded-xl border border-gray-200 bg-white px-6 pb-6 pt-7 shadow-sm sm:px-8">
+    <div
+      className={`relative min-h-[420px] rounded-xl border bg-white px-6 pb-6 pt-7 shadow-sm transition-colors sm:px-8 ${
+        isDraggingFiles
+          ? "border-dashed border-[#4988C4] bg-[#F4F8FC]"
+          : "border-gray-200"
+      }`}
+      onDragEnterCapture={handleDragEnter}
+      onDragOverCapture={handleDragOver}
+      onDragLeaveCapture={handleDragLeave}
+      onDropCapture={handleDrop}
+    >
+      {isDraggingFiles && (
+        <div className="pointer-events-none absolute inset-px z-20 flex items-center justify-center rounded-[11px] bg-[#F4F8FC]">
+          <p className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-[#4988C4]">
+            파일을 여기에 놓아주세요
+          </p>
+        </div>
+      )}
+
       <button
         type="button"
         aria-label={isOnlyEntry ? "닫기" : "작성 항목 삭제"}
@@ -131,12 +217,13 @@ export default function UploadEntryCard({
       </button>
 
       {config.showExamFields ? (
-        <div className="grid gap-x-7 gap-y-5 sm:grid-cols-2">
+        <div className="grid gap-y-6 sm:grid-cols-2 sm:gap-x-10">
           <Field
             label="과목명"
             name={`posts.${index}.subject`}
             placeholder="과목명"
             value={entry.subject}
+            required
             onChange={(value) => onChange({ subject: value })}
           />
           <Field
@@ -144,6 +231,7 @@ export default function UploadEntryCard({
             name={`posts.${index}.professor`}
             placeholder="OOO 교수"
             value={entry.professor}
+            required
             onChange={(value) => onChange({ professor: value })}
           />
           <SelectField
@@ -151,6 +239,7 @@ export default function UploadEntryCard({
             name={`posts.${index}.semester`}
             options={semesterOptions}
             value={entry.semester}
+            required
             onChange={(value) => onChange({ semester: value })}
           />
           <SelectField
@@ -158,6 +247,7 @@ export default function UploadEntryCard({
             name={`posts.${index}.examType`}
             options={examTypeOptions}
             value={entry.examType}
+            required
             onChange={(value) => onChange({ examType: value })}
           />
         </div>
@@ -169,21 +259,21 @@ export default function UploadEntryCard({
               name={`posts.${index}.title`}
               placeholder="제목"
               value={entry.title}
+              required
               onChange={(value) => onChange({ title: value })}
             />
           </div>
-          <Field
+          <DateField
             label="날짜"
             name={`posts.${index}.date`}
-            placeholder="날짜"
-            type="date"
             value={entry.date}
+            required
             onChange={(value) => onChange({ date: value })}
           />
           <Field
-            label="위치"
+            label="장소"
             name={`posts.${index}.location`}
-            placeholder="위치"
+            placeholder="장소"
             value={entry.location}
             onChange={(value) => onChange({ location: value })}
           />
@@ -194,14 +284,29 @@ export default function UploadEntryCard({
           name={`posts.${index}.title`}
           placeholder="제목"
           value={entry.title}
+          required={config.requireTitle}
           onChange={(value) => onChange({ title: value })}
         />
       )}
 
+      <p className="mt-6 px-2 text-xs font-medium text-gray-500">
+        내용
+        {config.requireDescription && (
+          <span className="ml-0.5 text-red-500">*</span>
+        )}
+        {config.requireImage &&
+          entry.files.length === 0 &&
+          entry.existingFiles.length === 0 &&
+          entry.existingFileItems.length === 0 && (
+            <span className="ml-2 font-normal text-red-400">
+              사진을 최소 1개 이상 첨부해주세요.
+            </span>
+          )}
+      </p>
       <EditorContent
         editor={editor}
         aria-label={`${index + 1}번째 본문`}
-        className="mt-6 min-h-[210px] w-full"
+        className="mt-2 min-h-[210px] w-full"
       />
       <input
         type="hidden"
@@ -273,15 +378,6 @@ export default function UploadEntryCard({
         </ul>
       )}
 
-      {config.requireImage &&
-        entry.files.length === 0 &&
-        entry.existingFiles.length === 0 &&
-        entry.existingFileItems.length === 0 && (
-          <p className="mb-4 text-xs text-red-400">
-            사진을 최소 1개 이상 첨부해주세요.
-          </p>
-        )}
-
       <UploadToolbar
         editor={editor}
         attachmentLabel={mode === "gallery" ? "사진 첨부" : "파일 첨부"}
@@ -292,12 +388,33 @@ export default function UploadEntryCard({
         ref={fileInputRef}
         type="file"
         multiple
-        accept={mode === "gallery" ? "image/*" : undefined}
+        accept={
+          mode === "gallery"
+            ? ".jpg,.jpeg,.png,.heic,image/jpeg,image/png,image/heic"
+            : undefined
+        }
         className="hidden"
         onChange={(event) => {
           appendFiles(Array.from(event.target.files ?? []));
           event.currentTarget.value = "";
         }}
+      />
+
+      <Modal
+        isOpen={invalidGalleryFiles.length > 0}
+        title="지원하지 않는 파일 형식입니다"
+        description={
+          <>
+            <p>활동사진은 JPG, JPEG, PNG, HEIC 파일만 첨부할 수 있습니다.</p>
+            <p className="mt-2 break-all text-red-400">
+              {invalidGalleryFiles.join(", ")}
+            </p>
+          </>
+        }
+        actionLabel="확인"
+        onAction={() => setInvalidGalleryFiles([])}
+        onClose={() => setInvalidGalleryFiles([])}
+        labelledById={`invalid-gallery-file-modal-${index}`}
       />
     </div>
   );

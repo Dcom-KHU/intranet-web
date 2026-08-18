@@ -12,6 +12,7 @@ import useAuth from "../../features/auth/hooks/useAuth";
 import { useNotices } from "../../features/notice/hooks/useNotices";
 import type { NoticeType } from "../../features/notice/types/notice.type";
 import SearchResultSummary from "../../components/ui/SearchResultSummary";
+import Loading from "../../components/Loading";
 
 const NOTICE_TEXT = {
   pageTitle: "공지사항",
@@ -39,6 +40,8 @@ const Notice = () => {
     size,
     appliedKeyword,
   );
+
+  if (loading) return <Loading />;
 
   const columns: DataTableColumn<NoticeType>[] = [
     {

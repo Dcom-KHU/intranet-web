@@ -77,47 +77,52 @@ const GalleryDetail = () => {
           description={gallery.description}
         >
           <div className="relative">
-          <button
-            type="button"
-            aria-label="이전 사진"
-            className="gallery-prev absolute left-3 top-1/2 z-10 -translate-y-1/2 p-2 text-white/80 transition-all hover:text-white"
-          >
-            <HiChevronLeft size={36} />
-          </button>
+            <button
+              type="button"
+              aria-label="이전 사진"
+              className="gallery-prev absolute left-3 top-1/2 z-10 -translate-y-1/2 p-2 text-white/80 transition-all hover:text-white"
+            >
+              <HiChevronLeft 
+                className="text-white/80 drop-shadow-[0_0_4px_rgba(0,0,0,0.6)] transition-all hover:text-blue-400"
+                size={36} 
+              />
+            </button>
 
-          <button
-            type="button"
-            aria-label="다음 사진"
-            className="gallery-next absolute right-3 top-1/2 z-10 -translate-y-1/2 p-2 text-white/80 transition-all hover:text-white"
-          >
-            <HiChevronRight size={36} />
-          </button>
+            <button
+              type="button"
+              aria-label="다음 사진"
+              className="gallery-next absolute right-3 top-1/2 z-10 -translate-y-1/2 p-2 text-white/80 transition-all hover:text-white"
+            >
+              <HiChevronRight 
+                className="text-white/80 drop-shadow-[0_0_4px_rgba(0,0,0,0.6)] transition-all hover:text-blue-400"
+                size={36} 
+              />
+            </button>
 
-          <Swiper
-            modules={[Navigation, Pagination]}
-            navigation={{
-              prevEl: ".gallery-prev",
-              nextEl: ".gallery-next",
-            }}
-            pagination={{ clickable: true }}
-            loop
-            spaceBetween={20}
-            onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
-          >
-            {gallery.images.map((image, index) => (
-              <SwiperSlide key={`${image}-${index}`}>
-                <AuthenticatedImage
-                  src={image}
-                  alt={`${gallery.title} ${index + 1}`}
-                  className="h-[260px] w-full object-cover sm:h-[340px] lg:h-[420px]"
-                />
-              </SwiperSlide>
-            ))}
-          </Swiper>
+            <Swiper
+              modules={[Navigation, Pagination]}
+              navigation={{
+                prevEl: ".gallery-prev",
+                nextEl: ".gallery-next",
+              }}
+              loop
+              spaceBetween={20}
+              onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
+            >
+              {gallery.images.map((image, index) => (
+                <SwiperSlide key={`${image}-${index}`}>
+                  <AuthenticatedImage
+                    src={image}
+                    alt={`${gallery.title} ${index + 1}`}
+                    className="h-[260px] w-full object-cover sm:h-[340px] lg:h-[420px]"
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
 
-          <span className="absolute bottom-4 right-4 rounded-full bg-black/40 px-3 py-1 text-xs text-white">
-            {activeIndex + 1} / {gallery.images.length}
-          </span>
+            <span className="absolute z-20 bottom-4 right-4 rounded-full bg-black/30 px-3 py-1 text-xs text-white">
+              {activeIndex + 1} / {gallery.images.length}
+            </span>
           </div>
         </Card>
 

@@ -14,7 +14,7 @@ export default function Loading() {
   }, []);
 
   return (
-    <div className="flex min-h-[60vh] w-full items-center justify-center">
+    <div className="flex min-h-[calc(100vh-10.25rem)] min-h-[calc(100dvh-10.25rem)] w-full items-center justify-center">
       {showIndicator && (
         <div
           className="flex flex-col items-center gap-3"

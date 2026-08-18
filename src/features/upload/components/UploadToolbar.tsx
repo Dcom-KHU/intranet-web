@@ -85,7 +85,7 @@ export default function UploadToolbar({
   };
 
   return (
-    <div className="relative flex flex-wrap items-center gap-1 rounded-full bg-[#F4F7FB] px-2 py-1 text-[11px] text-gray-500 sm:w-fit">
+    <div className="relative flex flex-wrap items-center gap-1.5 rounded-full bg-[#F4F7FB] px-3 py-1.5 text-xs text-gray-500 sm:w-fit">
       <ToolbarButton
         label="되돌리기"
         onClick={() => editor?.chain().focus().undo().run()}
@@ -105,21 +105,21 @@ export default function UploadToolbar({
         isActive={editor?.isActive("bold")}
         onClick={() => editor?.chain().focus().toggleBold().run()}
       >
-        B
+        <span className="font-bold">B</span>
       </ToolbarButton>
       <ToolbarButton
         label="기울임"
         isActive={editor?.isActive("italic")}
         onClick={() => editor?.chain().focus().toggleItalic().run()}
       >
-        I
+        <span className="italic">I</span> 
       </ToolbarButton>
       <ToolbarButton
         label="밑줄"
         isActive={editor?.isActive("underline")}
         onClick={() => editor?.chain().focus().toggleUnderline().run()}
       >
-        U
+        <span className="underline">U</span>
       </ToolbarButton>
       <ToolbarButton
         label="취소선"
@@ -206,10 +206,10 @@ export default function UploadToolbar({
       <button
         type="button"
         aria-label={attachmentLabel}
-        className="rounded-full px-2 py-1 transition-all hover:bg-white"
+        className="flex min-h-7 min-w-7 items-center justify-center rounded-full px-2.5 py-1.5 transition-all hover:bg-white"
         onClick={onAttach}
       >
-        <IoAttach />
+        <IoAttach size={16} />
       </button>
     </div>
   );
@@ -233,7 +233,7 @@ function ToolbarButton({
       type="button"
       aria-label={label}
       disabled={disabled}
-      className={`min-w-6 rounded-full px-1 py-1 font-medium transition-all hover:bg-white disabled:cursor-not-allowed disabled:opacity-35 ${
+      className={`min-h-7 min-w-7 rounded-full px-1.5 py-1.5 font-medium transition-all hover:bg-white disabled:cursor-not-allowed disabled:opacity-35 ${
         isActive ? "bg-white text-[#4988C4] shadow-sm" : ""
       }`}
       onMouseDown={(event) => event.preventDefault()}

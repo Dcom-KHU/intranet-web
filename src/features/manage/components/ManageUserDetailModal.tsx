@@ -5,11 +5,13 @@ import ManagedUserName from "./ManagedUserName";
 
 type ManageUserDetailModalProps = {
   userId: number | null;
+  requestedAt?: string;
   onClose: () => void;
 };
 
 export default function ManageUserDetailModal({
   userId,
+  requestedAt,
   onClose,
 }: ManageUserDetailModalProps) {
   const { data: user, loading, error } = useManageUserDetail(userId);
@@ -30,7 +32,9 @@ export default function ManageUserDetailModal({
         ["아이디", user.userID],
         ["이메일", user.email],
         ["전화번호", user.phoneNumber || "-"],
-        ["최근 접속일", user.lastLoginAt],
+        requestedAt
+          ? ["신청일", requestedAt]
+          : ["최근 접속일", user.lastLoginAt || "-"],
       ]
     : [];
 

@@ -35,6 +35,7 @@ export const toGalleryPostsPage = (
     imageUrl: album.coverImageUrl,
     title: album.eventName,
     date: album.activityDate,
+    imageCount: album.imageCount,
   })),
   ...response.pageInfo,
 });

@@ -134,8 +134,8 @@ const ExamArchiveDetail = () => {
                 </ul>
               ) : null}
 
-              {currentUser?.studentNumber === post.author.studentNumber && (
-                <div className="absolute bottom-6 right-6 flex items-center gap-3">
+              <div className="absolute bottom-6 right-6 flex items-center gap-3">
+                {currentUser?.studentNumber === post.author.studentNumber && (
                   <button
                     type="button"
                     aria-label="족보 수정"
@@ -146,6 +146,8 @@ const ExamArchiveDetail = () => {
                   >
                     <HiOutlinePencil size={16} />
                   </button>
+                )}
+                {currentUser?.role === "ADMIN" && (
                   <button
                     type="button"
                     aria-label="삭제"
@@ -154,8 +156,8 @@ const ExamArchiveDetail = () => {
                   >
                     <GoTrash size={16} />
                   </button>
-                </div>
-              )}
+                )}
+              </div>
             </article>
           ))}
         </div>

@@ -209,7 +209,7 @@ export default function UploadForm({
   };
 
   return (
-    <section className="mx-auto w-full max-w-[1100px] px-4 py-8 sm:px-6 lg:px-8">
+    <section className="w-full px-4 py-8 sm:px-6 lg:px-20">
       {onCancel && (
         <PageBackButton
           label={cancelLabel}
@@ -221,7 +221,11 @@ export default function UploadForm({
         {title}
       </h1>
 
-      <form onSubmit={handleSubmit}>
+      <div className="rounded-2xl px-4 pb-4 pt-1 sm:px-6 sm:pb-6 sm:pt-1 lg:px-10 lg:pb-10 lg:pt-2">
+        <form
+          className="mx-auto w-full max-w-[1100px]"
+          onSubmit={handleSubmit}
+        >
         <div className="space-y-3">
           {entries.map((entry, index) => (
             <UploadEntryCard
@@ -268,10 +272,11 @@ export default function UploadForm({
               !canAddMultiplePosts ? "ml-auto" : ""
             }`}
           >
-            {isSubmitting ? "전송 중" : submitLabel}
+            {isSubmitting ? "업로드 중" : submitLabel}
           </Button>
         </div>
-      </form>
+        </form>
+      </div>
 
       <Modal
         isOpen={isCancelModalOpen}
