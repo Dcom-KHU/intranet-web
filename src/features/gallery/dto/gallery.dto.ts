@@ -4,6 +4,7 @@ export interface GalleryAlbumDto {
   coverImageUrl: string;
   eventName: string;
   activityDate: string;
+  imageCount: number;
 }
 
 export interface GalleryAlbumsResponseDto {

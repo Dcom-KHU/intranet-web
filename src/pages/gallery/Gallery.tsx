@@ -86,6 +86,7 @@ const Gallery = () => {
         />
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {gallery.map((post) => (
+            console.log("활동사진 게시글:", post),
             <Card
               key={post.id}
               imageUrl={post.imageUrl}

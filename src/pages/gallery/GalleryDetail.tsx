@@ -82,7 +82,10 @@ const GalleryDetail = () => {
             aria-label="이전 사진"
             className="gallery-prev absolute left-3 top-1/2 z-10 -translate-y-1/2 p-2 text-white/80 transition-all hover:text-white"
           >
-            <HiChevronLeft size={36} />
+            <HiChevronLeft 
+              className="text-white/80 drop-shadow-[0_0_4px_rgba(0,0,0,0.6)] transition-all hover:text-blue-400"
+              size={36} 
+            />
           </button>
 
           <button
@@ -90,7 +93,10 @@ const GalleryDetail = () => {
             aria-label="다음 사진"
             className="gallery-next absolute right-3 top-1/2 z-10 -translate-y-1/2 p-2 text-white/80 transition-all hover:text-white"
           >
-            <HiChevronRight size={36} />
+            <HiChevronRight 
+              className="text-white/80 drop-shadow-[0_0_4px_rgba(0,0,0,0.6)] transition-all hover:text-blue-400"
+              size={36} 
+            />
           </button>
 
           <Swiper
@@ -115,7 +121,7 @@ const GalleryDetail = () => {
             ))}
           </Swiper>
 
-          <span className="absolute bottom-4 right-4 rounded-full bg-black/40 px-3 py-1 text-xs text-white">
+          <span className="absolute bottom-4 right-4 rounded-full bg-red-500 px-3 py-1 text-xs text-white">
             {activeIndex + 1} / {gallery.images.length}
           </span>
           </div>
