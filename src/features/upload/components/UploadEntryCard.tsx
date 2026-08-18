@@ -198,7 +198,7 @@ export default function UploadEntryCard({
       </button>
 
       {config.showExamFields ? (
-        <div className="grid gap-x-7 gap-y-5 sm:grid-cols-2">
+        <div className="grid gap-y-6 sm:grid-cols-2 sm:gap-x-10">
           <Field
             label="과목명"
             name={`posts.${index}.subject`}

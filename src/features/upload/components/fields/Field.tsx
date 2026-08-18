@@ -17,13 +17,13 @@ export default function Field({
 }: FieldProps) {
   return (
     <label className="block border-b border-gray-200 pb-2">
-      <span className="block text-xs font-medium text-gray-500">{label}</span>
+      <span className="block text-xs font-medium text-gray-500 px-2">{label}</span>
       <input
         name={name}
         type={type}
         value={value}
         placeholder={placeholder}
-        className="mt-2 w-full text-sm font-medium text-gray-900 outline-none placeholder:text-gray-300"
+        className="mt-2 w-full px-2 text-sm font-medium text-gray-900 outline-none placeholder:text-gray-300"
         onChange={(event) => onChange(event.target.value)}
       />
     </label>
