@@ -206,6 +206,9 @@ const ManagePendingUsers = () => {
       />
       <ManageUserDetailModal
         userId={selectedUserId}
+        requestedAt={
+          data.users.find((user) => user.id === selectedUserId)?.requestedAt
+        }
         onClose={() => setSelectedUserId(null)}
       />
     </div>
