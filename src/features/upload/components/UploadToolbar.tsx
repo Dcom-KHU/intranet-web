@@ -105,21 +105,21 @@ export default function UploadToolbar({
         isActive={editor?.isActive("bold")}
         onClick={() => editor?.chain().focus().toggleBold().run()}
       >
-        B
+        <span className="font-bold">B</span>
       </ToolbarButton>
       <ToolbarButton
         label="기울임"
         isActive={editor?.isActive("italic")}
         onClick={() => editor?.chain().focus().toggleItalic().run()}
       >
-        I
+        <span className="italic">I</span> 
       </ToolbarButton>
       <ToolbarButton
         label="밑줄"
         isActive={editor?.isActive("underline")}
         onClick={() => editor?.chain().focus().toggleUnderline().run()}
       >
-        U
+        <span className="underline">U</span>
       </ToolbarButton>
       <ToolbarButton
         label="취소선"

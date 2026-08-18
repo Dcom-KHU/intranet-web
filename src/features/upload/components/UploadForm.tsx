@@ -272,7 +272,7 @@ export default function UploadForm({
               !canAddMultiplePosts ? "ml-auto" : ""
             }`}
           >
-            {isSubmitting ? "전송 중" : submitLabel}
+            {isSubmitting ? "업로드 중" : submitLabel}
           </Button>
         </div>
         </form>
