@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState, type DragEvent } from "react";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import Underline from "@tiptap/extension-underline";
@@ -38,6 +38,8 @@ export default function UploadEntryCard({
   onRemove,
 }: UploadEntryCardProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const dragDepthRef = useRef(0);
+  const [isDraggingFiles, setIsDraggingFiles] = useState(false);
   const config = uploadModeConfig[mode];
   const placeholder = config.showExamFields
     ? "자료 설명을 입력하세요"
@@ -45,6 +47,7 @@ export default function UploadEntryCard({
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
+        dropcursor: false,
         undoRedo: {
           newGroupDelay: 0,
         },
@@ -119,8 +122,72 @@ export default function UploadEntryCard({
     onChange({ files: [...entry.files, ...filesToAdd] });
   };
 
+  const isFileDrag = (event: DragEvent<HTMLDivElement>) =>
+    Array.from(event.dataTransfer.types).includes("Files");
+
+  const handleDragEnter = (event: DragEvent<HTMLDivElement>) => {
+    if (!isFileDrag(event)) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    dragDepthRef.current += 1;
+    setIsDraggingFiles(true);
+  };
+
+  const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
+    if (!isFileDrag(event)) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.dataTransfer.dropEffect = "copy";
+  };
+
+  const handleDragLeave = (event: DragEvent<HTMLDivElement>) => {
+    if (!isFileDrag(event)) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    dragDepthRef.current = Math.max(0, dragDepthRef.current - 1);
+    if (dragDepthRef.current === 0) setIsDraggingFiles(false);
+  };
+
+  const handleDrop = (event: DragEvent<HTMLDivElement>) => {
+    if (!isFileDrag(event)) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    dragDepthRef.current = 0;
+    setIsDraggingFiles(false);
+
+    const droppedFiles = Array.from(event.dataTransfer.files);
+    const acceptedFiles =
+      mode === "gallery"
+        ? droppedFiles.filter((file) => file.type.startsWith("image/"))
+        : droppedFiles;
+
+    appendFiles(acceptedFiles);
+  };
+
   return (
-    <div className="relative min-h-[420px] rounded-xl border border-gray-200 bg-white px-6 pb-6 pt-7 shadow-sm sm:px-8">
+    <div
+      className={`relative min-h-[420px] rounded-xl border bg-white px-6 pb-6 pt-7 shadow-sm transition-colors sm:px-8 ${
+        isDraggingFiles
+          ? "border-dashed border-[#4988C4] bg-[#F4F8FC]"
+          : "border-gray-200"
+      }`}
+      onDragEnterCapture={handleDragEnter}
+      onDragOverCapture={handleDragOver}
+      onDragLeaveCapture={handleDragLeave}
+      onDropCapture={handleDrop}
+    >
+      {isDraggingFiles && (
+        <div className="pointer-events-none absolute inset-px z-20 flex items-center justify-center rounded-[11px] bg-[#F4F8FC]">
+          <p className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-[#4988C4]">
+            파일을 여기에 놓아주세요
+          </p>
+        </div>
+      )}
+
       <button
         type="button"
         aria-label={isOnlyEntry ? "닫기" : "작성 항목 삭제"}
