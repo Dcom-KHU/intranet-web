@@ -6,6 +6,7 @@ type SelectFieldProps = {
   name: string;
   options: string[];
   value: string;
+  required?: boolean;
   onChange: (value: string) => void;
 };
 
@@ -14,6 +15,7 @@ export default function SelectField({
   name,
   options,
   value,
+  required = false,
   onChange,
 }: SelectFieldProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -67,16 +69,17 @@ export default function SelectField({
         className="mb-2 px-2 block text-xs font-medium text-gray-500"
       >
         {label}
+        {required && <span className="ml-0.5 text-red-500">*</span>}
       </span>
 
-      <input type="hidden" name={name} value={value} />
+      <input type="hidden" name={name} value={value} required={required} />
       <button
         type="button"
         aria-labelledby={labelId}
         aria-controls={listboxId}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
-        className={`flex w-full items-center justify-between rounded-xl border bg-[#F8F9FC] px-4 py-2 text-left text-sm font-medium text-[#0F2854] outline-none transition-all hover:border-[#B5D4F4] hover:bg-white focus:ring-2 focus:ring-[#4988C4]/10 ${
+        className={`flex w-full items-center justify-between rounded-xl border bg-[#F8F9FC] px-4 py-2 text-left text-sm font-medium text-[#0F2854] outline-none transition-all hover:bg-white focus:ring-2 focus:ring-[#4988C4]/10 ${
           isOpen ? "border-[#4988C4] bg-white" : "border-gray-200"
         }`}
         onClick={() => setIsOpen((current) => !current)}

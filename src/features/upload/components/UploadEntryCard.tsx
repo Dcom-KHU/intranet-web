@@ -70,7 +70,7 @@ export default function UploadEntryCard({
     editorProps: {
       attributes: {
         class:
-          "upload-editor min-h-[210px] text-sm leading-6 text-gray-800 outline-none [&_ul]:list-disc [&_ul]:pl-6 [&_li]:my-1 [&_a]:cursor-pointer [&_a]:text-blue-500 [&_a]:underline [&_a]:underline-offset-2 [&_.is-editor-empty:first-child::before]:float-left [&_.is-editor-empty:first-child::before]:h-0 [&_.is-editor-empty:first-child::before]:text-gray-300 [&_.is-editor-empty:first-child::before]:content-[attr(data-placeholder)]",
+          "upload-editor min-h-[210px] px-2 text-sm leading-6 text-gray-800 outline-none [&_ul]:list-disc [&_ul]:pl-6 [&_li]:my-1 [&_a]:cursor-pointer [&_a]:text-blue-500 [&_a]:underline [&_a]:underline-offset-2 [&_.is-editor-empty:first-child::before]:float-left [&_.is-editor-empty:first-child::before]:h-0 [&_.is-editor-empty:first-child::before]:text-gray-300 [&_.is-editor-empty:first-child::before]:content-[attr(data-placeholder)]",
       },
     },
     onUpdate: ({ editor: currentEditor }) => {
@@ -204,6 +204,7 @@ export default function UploadEntryCard({
             name={`posts.${index}.subject`}
             placeholder="과목명"
             value={entry.subject}
+            required
             onChange={(value) => onChange({ subject: value })}
           />
           <Field
@@ -211,6 +212,7 @@ export default function UploadEntryCard({
             name={`posts.${index}.professor`}
             placeholder="OOO 교수"
             value={entry.professor}
+            required
             onChange={(value) => onChange({ professor: value })}
           />
           <SelectField
@@ -218,6 +220,7 @@ export default function UploadEntryCard({
             name={`posts.${index}.semester`}
             options={semesterOptions}
             value={entry.semester}
+            required
             onChange={(value) => onChange({ semester: value })}
           />
           <SelectField
@@ -225,6 +228,7 @@ export default function UploadEntryCard({
             name={`posts.${index}.examType`}
             options={examTypeOptions}
             value={entry.examType}
+            required
             onChange={(value) => onChange({ examType: value })}
           />
         </div>
@@ -236,6 +240,7 @@ export default function UploadEntryCard({
               name={`posts.${index}.title`}
               placeholder="제목"
               value={entry.title}
+              required
               onChange={(value) => onChange({ title: value })}
             />
           </div>
@@ -245,12 +250,13 @@ export default function UploadEntryCard({
             placeholder="날짜"
             type="date"
             value={entry.date}
+            required
             onChange={(value) => onChange({ date: value })}
           />
           <Field
-            label="위치"
+            label="장소"
             name={`posts.${index}.location`}
-            placeholder="위치"
+            placeholder="장소"
             value={entry.location}
             onChange={(value) => onChange({ location: value })}
           />
@@ -261,14 +267,29 @@ export default function UploadEntryCard({
           name={`posts.${index}.title`}
           placeholder="제목"
           value={entry.title}
+          required={config.requireTitle}
           onChange={(value) => onChange({ title: value })}
         />
       )}
 
+      <p className="mt-6 px-2 text-xs font-medium text-gray-500">
+        내용
+        {config.requireDescription && (
+          <span className="ml-0.5 text-red-500">*</span>
+        )}
+        {config.requireImage &&
+          entry.files.length === 0 &&
+          entry.existingFiles.length === 0 &&
+          entry.existingFileItems.length === 0 && (
+            <span className="ml-2 font-normal text-red-400">
+              사진을 최소 1개 이상 첨부해주세요.
+            </span>
+          )}
+      </p>
       <EditorContent
         editor={editor}
         aria-label={`${index + 1}번째 본문`}
-        className="mt-6 min-h-[210px] w-full"
+        className="mt-2 min-h-[210px] w-full"
       />
       <input
         type="hidden"
@@ -339,15 +360,6 @@ export default function UploadEntryCard({
           ))}
         </ul>
       )}
-
-      {config.requireImage &&
-        entry.files.length === 0 &&
-        entry.existingFiles.length === 0 &&
-        entry.existingFileItems.length === 0 && (
-          <p className="mb-4 text-xs text-red-400">
-            사진을 최소 1개 이상 첨부해주세요.
-          </p>
-        )}
 
       <UploadToolbar
         editor={editor}
