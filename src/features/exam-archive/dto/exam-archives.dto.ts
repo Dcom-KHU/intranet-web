@@ -32,9 +32,8 @@ export interface ExamArchiveFileDto {
 export interface ExamArchiveRecordDto {
   recordId: number;
   examYear: number | null;
-  semester: ExamSemesterDto;
-  examType: ExamTypeDto;
-  label: string | null;
+  semester: ExamSemesterDto | null;
+  examType: ExamTypeDto | null;
   content: string;
   createdAt: string;
   updatedAt: string | null;

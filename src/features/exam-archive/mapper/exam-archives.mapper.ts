@@ -32,6 +32,18 @@ const examTypeLabels: Record<ExamTypeDto, string> = {
   FINAL: "기말고사",
 };
 
+const toSemesterLabel = (dto: ExamArchiveRecordDto) => {
+  if (dto.semester === "UNKNOWN") return "";
+
+  return [
+    dto.examYear !== null ? `${dto.examYear}년` : null,
+    dto.semester ? semesterLabels[dto.semester] : null,
+    dto.examType ? examTypeLabels[dto.examType] : null,
+  ]
+    .filter((label): label is string => label !== null)
+    .join(" ");
+};
+
 const toExamArchiveRecord = (
   dto: ExamArchiveRecordDto,
   archive: Pick<ExamArchiveDetailDto, "subjectName" | "professorName">,
@@ -39,12 +51,7 @@ const toExamArchiveRecord = (
   id: dto.recordId,
   subject: archive.subjectName,
   professor: archive.professorName,
-  semester:
-    dto.semester === "UNKNOWN" || dto.examYear === null
-      ? ""
-      : dto.label
-        ? `${dto.examYear}년 ${semesterLabels[dto.semester]} ${examTypeLabels[dto.examType]}`
-        : "",
+  semester: toSemesterLabel(dto),
   examYear: dto.examYear,
   semesterCode: dto.semester,
   examType: dto.examType,
