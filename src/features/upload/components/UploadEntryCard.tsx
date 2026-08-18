@@ -18,6 +18,7 @@ import type {
   UploadPostDraft,
 } from "../types/upload.type";
 import Field from "./fields/Field";
+import DateField from "./fields/DateField";
 import SelectField from "./fields/SelectField";
 import UploadToolbar from "./UploadToolbar";
 
@@ -262,11 +263,9 @@ export default function UploadEntryCard({
               onChange={(value) => onChange({ title: value })}
             />
           </div>
-          <Field
+          <DateField
             label="날짜"
             name={`posts.${index}.date`}
-            placeholder="날짜"
-            type="date"
             value={entry.date}
             required
             onChange={(value) => onChange({ date: value })}
