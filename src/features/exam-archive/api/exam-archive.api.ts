@@ -64,7 +64,6 @@ export const getExamArchiveById = async (
     { signal },
   );
 
-  console.log("getExamArchiveById response:", response.data);
   return response.data.data
     ? toExamArchiveDetail(response.data.data)
     : null;
