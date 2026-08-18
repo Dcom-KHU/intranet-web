@@ -100,26 +100,28 @@ const InfoSharingDetail = () => {
                         </ul>
                         ) : null}
         
-                        {currentUser?.studentNumber === info.author.studentNumber && (
-                            <div className="absolute bottom-6 right-6 flex items-center gap-3">
-                                <button
-                                    type="button"
-                                    aria-label="게시글 수정"
-                                    className="text-gray-400 transition-all [#4988C4]"
-                                    onClick={() => navigate(`/info/${postId}/edit`)}
-                                >
-                                    <HiOutlinePencil size={16} />
-                                </button>
-                                <button
-                                    type="button"
-                                    aria-label="삭제"
-                                    className="text-gray-400 transition-all red-400"
-                                    onClick={() => setIsDeleteModalOpen(true)}
-                                >
-                                    <GoTrash size={16} />
-                                </button>
-                            </div>
-                        )}
+                        <div className="absolute bottom-6 right-6 flex items-center gap-3">
+                          {currentUser?.studentNumber === info.author.studentNumber && (
+                            <button
+                                type="button"
+                                aria-label="게시글 수정"
+                                className="text-gray-400 transition-all [#4988C4]"
+                                onClick={() => navigate(`/info/${postId}/edit`)}
+                            >
+                                <HiOutlinePencil size={16} />
+                            </button>
+                          )}
+                          {currentUser?.role === "ADMIN" && (
+                            <button
+                                type="button"
+                                aria-label="삭제"
+                                className="text-gray-400 transition-all red-400"
+                                onClick={() => setIsDeleteModalOpen(true)}
+                            >
+                                <GoTrash size={16} />
+                            </button>
+                          )}
+                        </div>
                     </article>
                     
                 </div>
