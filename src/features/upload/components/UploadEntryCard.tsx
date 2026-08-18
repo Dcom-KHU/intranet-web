@@ -6,6 +6,7 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { IoClose } from "react-icons/io5";
 
+import Modal from "../../../components/ui/Modal";
 import {
   examTypeOptions,
   semesterOptions,
@@ -19,6 +20,8 @@ import type {
 import Field from "./fields/Field";
 import SelectField from "./fields/SelectField";
 import UploadToolbar from "./UploadToolbar";
+
+const GALLERY_IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "heic"];
 
 type UploadEntryCardProps = {
   entry: UploadEntry;
@@ -40,6 +43,7 @@ export default function UploadEntryCard({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragDepthRef = useRef(0);
   const [isDraggingFiles, setIsDraggingFiles] = useState(false);
+  const [invalidGalleryFiles, setInvalidGalleryFiles] = useState<string[]>([]);
   const config = uploadModeConfig[mode];
   const placeholder = config.showExamFields
     ? "자료 설명을 입력하세요"
@@ -160,12 +164,26 @@ export default function UploadEntryCard({
     setIsDraggingFiles(false);
 
     const droppedFiles = Array.from(event.dataTransfer.files);
-    const acceptedFiles =
-      mode === "gallery"
-        ? droppedFiles.filter((file) => file.type.startsWith("image/"))
-        : droppedFiles;
+    if (mode !== "gallery") {
+      appendFiles(droppedFiles);
+      return;
+    }
 
-    appendFiles(acceptedFiles);
+    const acceptedFiles: File[] = [];
+    const rejectedFileNames: string[] = [];
+
+    droppedFiles.forEach((file) => {
+      const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
+
+      if (GALLERY_IMAGE_EXTENSIONS.includes(extension)) {
+        acceptedFiles.push(file);
+      } else {
+        rejectedFileNames.push(file.name);
+      }
+    });
+
+    if (acceptedFiles.length > 0) appendFiles(acceptedFiles);
+    if (rejectedFileNames.length > 0) setInvalidGalleryFiles(rejectedFileNames);
   };
 
   return (
@@ -371,12 +389,33 @@ export default function UploadEntryCard({
         ref={fileInputRef}
         type="file"
         multiple
-        accept={mode === "gallery" ? "image/*" : undefined}
+        accept={
+          mode === "gallery"
+            ? ".jpg,.jpeg,.png,.heic,image/jpeg,image/png,image/heic"
+            : undefined
+        }
         className="hidden"
         onChange={(event) => {
           appendFiles(Array.from(event.target.files ?? []));
           event.currentTarget.value = "";
         }}
+      />
+
+      <Modal
+        isOpen={invalidGalleryFiles.length > 0}
+        title="지원하지 않는 파일 형식입니다"
+        description={
+          <>
+            <p>활동사진은 JPG, JPEG, PNG, HEIC 파일만 첨부할 수 있습니다.</p>
+            <p className="mt-2 break-all text-red-400">
+              {invalidGalleryFiles.join(", ")}
+            </p>
+          </>
+        }
+        actionLabel="확인"
+        onAction={() => setInvalidGalleryFiles([])}
+        onClose={() => setInvalidGalleryFiles([])}
+        labelledById={`invalid-gallery-file-modal-${index}`}
       />
     </div>
   );
