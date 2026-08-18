@@ -221,7 +221,7 @@ export default function UploadForm({
         {title}
       </h1>
 
-      <div className="rounded-2xl p-4 sm:p-6 lg:p-10">
+      <div className="rounded-2xl px-4 pb-4 pt-1 sm:px-6 sm:pb-6 sm:pt-1 lg:px-10 lg:pb-10 lg:pt-2">
         <form
           className="mx-auto w-full max-w-[1100px]"
           onSubmit={handleSubmit}
