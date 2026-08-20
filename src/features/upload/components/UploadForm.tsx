@@ -17,7 +17,7 @@ import {
 } from "../utils/uploadEntry";
 import UploadEntryCard from "./UploadEntryCard";
 import PageBackButton from "../../../components/ui/PageBackButton";
-import { htmlToText } from "../../../utils/html";
+import { getUploadValidationError } from "../utils/uploadValidation";
 
 type FormMessage = {
   type: "error" | "success";
@@ -107,58 +107,9 @@ export default function UploadForm({
   };
 
   const validateEntries = () => {
-    if (
-      config.showExamFields &&
-      entries.some(
-        (entry) => !entry.subject.trim() || !entry.professor.trim(),
-      )
-    ) {
-      showMessage("과목명과 교수명을 입력해주세요.");
-      return false;
-    }
-
-    if (
-      config.requireTitle &&
-      entries.some((entry) => !entry.title.trim())
-    ) {
-      showMessage("제목을 입력해주세요.");
-      return false;
-    }
-
-    if (
-      config.requireDescription &&
-      entries.some((entry) => {
-        const text = htmlToText(entry.descriptionHtml);
-
-        return !text;
-      })
-    ) {
-      showMessage("내용을 입력해주세요.");
-      return false;
-    }
-
-    if (
-      config.showGalleryFields &&
-      entries.some((entry) => !entry.date)
-    ) {
-      showMessage("활동 날짜를 입력해주세요.");
-      return false;
-    }
-
-    if (
-      config.requireImage &&
-      entries.some(
-        (entry) =>
-          entry.files.length === 0 &&
-          entry.existingFiles.length === 0 &&
-          entry.existingFileItems.length === 0,
-      )
-    ) {
-      showMessage("사진을 최소 1개 이상 첨부해주세요.");
-      return false;
-    }
-
-    return true;
+    const error = getUploadValidationError(mode, entries);
+    if (error) showMessage(error);
+    return error === null;
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {

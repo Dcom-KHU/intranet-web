@@ -11,8 +11,6 @@ import {
   emptyExamPeriodOption,
   examYearOptions,
   examTypeOptions,
-  MAX_FILE_SIZE_BYTES,
-  MAX_UPLOAD_REQUEST_SIZE_BYTES,
   semesterOptions,
   uploadModeConfig,
 } from "../constants/uploadConfig";
@@ -25,8 +23,7 @@ import Field from "./fields/Field";
 import DateField from "./fields/DateField";
 import SelectField from "./fields/SelectField";
 import UploadToolbar from "./UploadToolbar";
-
-const GALLERY_IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "heic"];
+import { validateUploadFiles } from "../utils/fileValidation";
 
 type UploadEntryCardProps = {
   entry: UploadEntry;
@@ -117,36 +114,17 @@ export default function UploadEntryCard({
 
   const appendFiles = (selectedFiles: File[]) => {
     const errors: string[] = [];
-    const existingFileKeys = new Set(
-      entry.files.map(
-        (file) =>
-          `${file.name}-${file.size}-${file.lastModified}-${file.type}`,
-      ),
-    );
-    const uniqueFiles = selectedFiles.filter((file) => {
-      const key = `${file.name}-${file.size}-${file.lastModified}-${file.type}`;
-
-      if (existingFileKeys.has(key)) return false;
-      existingFileKeys.add(key);
-      return true;
+    const {
+      filesToAdd,
+      invalidFormatFiles,
+      oversizedFiles,
+      exceedsRequestLimit,
+    } = validateUploadFiles({
+      selectedFiles,
+      existingFiles: entry.files,
+      mode,
+      totalSelectedFileSize,
     });
-
-    const invalidFormatFiles =
-      mode === "gallery"
-        ? uniqueFiles.filter((file) => {
-            const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
-            return !GALLERY_IMAGE_EXTENSIONS.includes(extension);
-          })
-        : [];
-    const validFormatFiles = uniqueFiles.filter(
-      (file) => !invalidFormatFiles.includes(file),
-    );
-    const oversizedFiles = validFormatFiles.filter(
-      (file) => file.size > MAX_FILE_SIZE_BYTES,
-    );
-    let filesToAdd = validFormatFiles.filter(
-      (file) => file.size <= MAX_FILE_SIZE_BYTES,
-    );
 
     if (invalidFormatFiles.length > 0) {
       errors.push(
@@ -159,10 +137,8 @@ export default function UploadEntryCard({
       );
     }
 
-    const addedFileSize = filesToAdd.reduce((sum, file) => sum + file.size, 0);
-    if (totalSelectedFileSize + addedFileSize > MAX_UPLOAD_REQUEST_SIZE_BYTES) {
+    if (exceedsRequestLimit) {
       errors.push("한 번의 등록 요청에는 최대 100MB까지 첨부할 수 있습니다.");
-      filesToAdd = [];
     }
 
     if (filesToAdd.length > 0) {
