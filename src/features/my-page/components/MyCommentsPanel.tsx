@@ -31,13 +31,7 @@ const getCommentTypeMeta = (type: string) =>
     path: "",
   };
 
-interface MyCommentsPanelProps {
-  studentNumber: string;
-}
-
-export default function MyCommentsPanel({
-  studentNumber: _studentNumber,
-}: MyCommentsPanelProps) {
+export default function MyCommentsPanel() {
   const navigate = useNavigate();
   const { deleteMyComment } = useMyActivityMutations();
   const [currentPage, setCurrentPage] = useState(1);

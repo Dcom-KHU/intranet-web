@@ -70,13 +70,8 @@ export default function MyPage() {
         onDirtyChange={handleDirtyChange}
       />
     ),
-    posts: (
-      <MyPostsPanel
-        studentNumber={user.studentNumber}
-        isAdmin={user.role === "ADMIN"}
-      />
-    ),
-    comments: <MyCommentsPanel studentNumber={user.studentNumber} />,
+    posts: <MyPostsPanel />,
+    comments: <MyCommentsPanel />,
   } satisfies Record<ActiveMenu, React.ReactNode>;
 
   return (

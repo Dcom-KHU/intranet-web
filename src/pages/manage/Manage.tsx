@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   IoChatbubbleOutline,
@@ -14,7 +14,6 @@ import Loading from "../../components/Loading";
 import { Button } from "../../components/ui/Button";
 import Container from "../../components/ui/Container";
 import { useAdminDashboard } from "../../features/manage/hooks/useAdminDashboard";
-import type { DashboardSignupRequest } from "../../features/manage/types/manage-dashboard.type";
 import { useManageMutations } from "../../features/manage/hooks/useManageMutations";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 
@@ -22,18 +21,8 @@ const Manage = () => {
   const navigate = useNavigate();
   const { data: dashboard, loading, error, refetch } = useAdminDashboard();
   const { approveUser, rejectUser } = useManageMutations();
-  const [pendingUsers, setPendingUsers] = useState<DashboardSignupRequest[]>([]);
-  const [pendingCount, setPendingCount] = useState(0);
-  const [totalUserCount, setTotalUserCount] = useState(0);
   const [processingUserId, setProcessingUserId] = useState<number | null>(null);
   const [rejectUserId, setRejectUserId] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (!dashboard) return;
-    setPendingUsers(dashboard.recentSignupRequests);
-    setPendingCount(dashboard.pendingUserCount);
-    setTotalUserCount(dashboard.totalUserCount);
-  }, [dashboard]);
 
   const handleApprove = async (userId: number) => {
     if (processingUserId !== null) return;
@@ -41,12 +30,7 @@ const Manage = () => {
     setProcessingUserId(userId);
     try {
       await approveUser(userId);
-      setPendingUsers((currentUsers) =>
-        currentUsers.filter((user) => user.id !== userId),
-      );
-      setPendingCount((count) => Math.max(0, count - 1));
-      setTotalUserCount((count) => count + 1);
-      void refetch();
+      await refetch();
     } catch (error) {
       console.error("회원 승인 실패:", error);
       window.alert("회원 승인에 실패했습니다.");
@@ -61,11 +45,7 @@ const Manage = () => {
     setProcessingUserId(userId);
     try {
       await rejectUser(userId);
-      setPendingUsers((currentUsers) =>
-        currentUsers.filter((user) => user.id !== userId),
-      );
-      setPendingCount((count) => Math.max(0, count - 1));
-      void refetch();
+      await refetch();
     } catch (error) {
       console.error("회원 거절 실패:", error);
       window.alert("회원 거절에 실패했습니다.");
@@ -80,6 +60,10 @@ const Manage = () => {
   if (error || !dashboard) {
     return <p className="px-4 py-16 text-center text-sm text-red-500">{error}</p>;
   }
+
+  const pendingUsers = dashboard.recentSignupRequests;
+  const pendingCount = dashboard.pendingUserCount;
+  const totalUserCount = dashboard.totalUserCount;
 
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-20">

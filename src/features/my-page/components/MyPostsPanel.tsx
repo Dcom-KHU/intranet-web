@@ -39,15 +39,7 @@ const getPostTypeMeta = (type: string) =>
     path: "",
   };
 
-interface MyPostsPanelProps {
-  studentNumber: string;
-  isAdmin: boolean;
-}
-
-export default function MyPostsPanel({
-  studentNumber: _studentNumber,
-  isAdmin: _isAdmin,
-}: MyPostsPanelProps) {
+export default function MyPostsPanel() {
   const navigate = useNavigate();
   const { deleteMyPost } = useMyActivityMutations();
   const [currentPage, setCurrentPage] = useState(1);

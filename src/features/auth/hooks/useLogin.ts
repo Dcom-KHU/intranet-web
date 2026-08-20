@@ -25,7 +25,7 @@ export default function useLogin() {
         localStorage.removeItem(ACCESS_TOKEN_KEY);
         localStorage.removeItem(REFRESH_TOKEN_KEY);
         queryClient.removeQueries({ queryKey: AUTH_QUERY_KEY });
-        throw new Error("SESSION_FETCH_FAILED");
+        throw new Error("SESSION_FETCH_FAILED", { cause: meError });
       }
     },
     onError: () => {
