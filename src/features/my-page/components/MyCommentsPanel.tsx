@@ -11,6 +11,7 @@ import ActivityBoardBadge from "./ActivityBoardBadge";
 import { GoTrash } from "react-icons/go";
 import ConfirmDeleteModal from "../../../components/ui/ConfirmDeleteModal";
 import { useMyActivityMutations } from "../hooks/useMyActivityMutations";
+import { logClientError } from "../../../utils/logger";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -57,7 +58,7 @@ export default function MyCommentsPanel() {
         refetch();
       }
     } catch (requestError) {
-      console.error("내가 쓴 댓글 삭제 실패:", requestError);
+      logClientError("내가 쓴 댓글 삭제 실패", requestError);
       window.alert("댓글 삭제에 실패했습니다.");
     } finally {
       setIsDeleting(false);

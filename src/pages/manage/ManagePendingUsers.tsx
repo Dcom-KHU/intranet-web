@@ -8,6 +8,7 @@ import { usePendingUsers } from "../../features/manage/hooks/usePendingUsers";
 import { useManageMutations } from "../../features/manage/hooks/useManageMutations";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import ManageUserDetailModal from "../../features/manage/components/ManageUserDetailModal";
+import { logClientError } from "../../utils/logger";
 
 const ManagePendingUsers = () => {
   const [page, setPage] = useState(0);
@@ -30,9 +31,9 @@ const ManagePendingUsers = () => {
         await refetch();
       }
     } catch (requestError) {
-      console.error(
-        `회원 ${action === "approve" ? "승인" : "거절"} 실패:`,
-        requestError
+      logClientError(
+        `회원 ${action === "approve" ? "승인" : "거절"} 실패`,
+        requestError,
       );
       window.alert(
         `회원 ${action === "approve" ? "승인" : "거절"}에 실패했습니다.`

@@ -16,6 +16,7 @@ import {
 } from "../../auth/constants/auth.constants";
 import { withdrawMe } from "../api/my-activity.api";
 import type { ActiveMenu } from "../types/my.types";
+import { logClientError } from "../../../utils/logger";
 
 type MenuItem = {
   id: ActiveMenu;
@@ -80,7 +81,7 @@ export default function MyPageSidebar({
       localStorage.removeItem(REFRESH_TOKEN_KEY);
       navigate("/", { replace: true });
     } catch (error) {
-      console.error(error);
+      logClientError("회원 탈퇴 실패", error);
       setWithdrawError("회원 탈퇴에 실패했습니다. 잠시 후 다시 시도해주세요.");
       setIsWithdrawing(false);
     }

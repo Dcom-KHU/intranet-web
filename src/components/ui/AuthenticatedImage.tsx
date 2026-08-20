@@ -6,6 +6,7 @@ import {
 } from "react";
 import { api } from "@/api/client";
 import dcomLogo from "../../assets/dcom-logo-black.png";
+import { logClientError } from "../../utils/logger";
 
 type AuthenticatedImageProps = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
   src: string;
@@ -45,7 +46,7 @@ const AuthenticatedImage = ({
       .catch((error) => {
         if (!isMounted) return;
 
-        console.error("인증 이미지 로드 실패:", error);
+        logClientError("인증 이미지 로드 실패", error);
       });
 
     return () => {

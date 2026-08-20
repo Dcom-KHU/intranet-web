@@ -18,6 +18,7 @@ import {
 import UploadEntryCard from "./UploadEntryCard";
 import PageBackButton from "../../../components/ui/PageBackButton";
 import { getUploadValidationError } from "../utils/uploadValidation";
+import { logClientError } from "../../../utils/logger";
 
 type FormMessage = {
   type: "error" | "success";
@@ -145,18 +146,14 @@ export default function UploadForm({
         ? "게시글 수정에 실패했습니다."
         : "업로드에 실패했습니다. 잠시 후 다시 시도해주세요.";
 
+      logClientError("업로드 실패", error);
+
       if (axios.isAxiosError(error)) {
-        console.error("업로드 실패 응답:", {
-          status: error.response?.status,
-          data: error.response?.data,
-        });
         const responseMessage = error.response?.data?.message;
 
         if (typeof responseMessage === "string") {
           errorMessage = responseMessage;
         }
-      } else {
-        console.error("업로드 실패:", error);
       }
       showMessage(errorMessage);
     } finally {

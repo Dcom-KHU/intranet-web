@@ -16,6 +16,7 @@ import Container from "../../components/ui/Container";
 import { useAdminDashboard } from "../../features/manage/hooks/useAdminDashboard";
 import { useManageMutations } from "../../features/manage/hooks/useManageMutations";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
+import { logClientError } from "../../utils/logger";
 
 const Manage = () => {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ const Manage = () => {
       await approveUser(userId);
       await refetch();
     } catch (error) {
-      console.error("회원 승인 실패:", error);
+      logClientError("회원 승인 실패", error);
       window.alert("회원 승인에 실패했습니다.");
     } finally {
       setProcessingUserId(null);
@@ -47,7 +48,7 @@ const Manage = () => {
       await rejectUser(userId);
       await refetch();
     } catch (error) {
-      console.error("회원 거절 실패:", error);
+      logClientError("회원 거절 실패", error);
       window.alert("회원 거절에 실패했습니다.");
     } finally {
       setProcessingUserId(null);

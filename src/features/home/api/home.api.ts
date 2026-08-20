@@ -5,6 +5,5 @@ import { toHomeDashboard } from "../mapper/home.mapper";
 export const getHomeDashboard = async () => {
   const response = await api.get<HomeDashboardResponseDto>("/api/home");
 
-  console.log("홈 대시보드 조회 응답:", response.data);
   return toHomeDashboard(response.data.data);
 };

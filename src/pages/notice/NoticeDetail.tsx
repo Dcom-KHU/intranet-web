@@ -12,6 +12,7 @@ import PageBackButton from "../../components/ui/PageBackButton";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import { downloadNoticeFile } from "../../features/notice/api/notice.api";
 import { useNoticeMutations } from "../../features/notice/hooks/useNoticeMutations";
+import { logClientError } from "../../utils/logger";
 import ConvertTime from "../../components/ConvertTime";
 
 
@@ -33,7 +34,7 @@ const NoticeDetail = () => {
       await deleteNotice(noticeId);
       navigate("/notice");
     } catch (deleteError) {
-      console.error("공지사항 삭제 실패:", deleteError);
+      logClientError("공지사항 삭제 실패", deleteError);
       window.alert("공지사항 삭제에 실패했습니다.");
       setIsDeleting(false);
     }

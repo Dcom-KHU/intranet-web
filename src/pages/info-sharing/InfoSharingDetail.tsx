@@ -12,6 +12,7 @@ import UserDisplayName from "../../components/ui/UserDisplay";
 import PageBackButton from "../../components/ui/PageBackButton";
 import { downloadInfoPostFile } from "@/features/info-sharing/api/info-sharing.api";
 import { useInfoMutations } from "@/features/info-sharing/hooks/useInfoMutations";
+import { logClientError } from "@/utils/logger";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import ConvertTime from "../../components/ConvertTime";
 import DetailQueryError from "../../components/DetailQueryError";
@@ -49,7 +50,7 @@ const InfoSharingDetail = () => {
           await deleteInfo(postId);
           navigate("/info");
         } catch (error) {
-          console.error("정보공유 게시글 삭제 실패:", error);
+          logClientError("정보공유 게시글 삭제 실패", error);
           window.alert("게시글 삭제에 실패했습니다.");
           setIsDeleting(false);
         }

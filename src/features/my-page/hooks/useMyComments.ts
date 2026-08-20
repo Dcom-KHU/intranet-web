@@ -1,6 +1,7 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { queryKeys } from "../../../app/query-keys";
 import { getMyComments } from "../api/my-activity.api";
+import { logClientError } from "../../../utils/logger";
 
 export const useMyComments = (page: number, size: number) => {
   const query = useQuery({
@@ -9,7 +10,7 @@ export const useMyComments = (page: number, size: number) => {
       try {
         return await getMyComments(page, size);
       } catch (error) {
-        console.error(error);
+        logClientError("내 댓글 조회 실패", error);
         throw error;
       }
     },

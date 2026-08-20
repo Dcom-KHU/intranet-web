@@ -16,6 +16,7 @@ import useAuth from "../../features/auth/hooks/useAuth";
 import { AUTH_QUERY_KEY } from "../../features/auth/constants/auth.constants";
 import { useManageMutations } from "../../features/manage/hooks/useManageMutations";
 import ManagedUserName from "../../features/manage/components/ManagedUserName";
+import { logClientError } from "../../utils/logger";
 
 type SortType = "lastLogin" | "studentNumber" | "name";
 
@@ -106,7 +107,7 @@ const ManageUsers = () => {
       window.alert("관리자 권한이 이양되었습니다.");
       navigate("/");
     } catch (requestError) {
-      console.error("관리자 권한 이양 실패:", requestError);
+      logClientError("관리자 권한 이양 실패", requestError);
       window.alert("관리자 권한 이양에 실패했습니다.");
     } finally {
       setIsTransferring(false);

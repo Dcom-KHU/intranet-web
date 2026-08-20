@@ -16,6 +16,7 @@ import CommentSection from "../../features/comment/components/CommentSection";
 import { useGalleryDetail } from "../../features/gallery/hooks/useGalleryDetail";
 import PageBackButton from "../../components/ui/PageBackButton";
 import { useGalleryMutations } from "../../features/gallery/hooks/useGalleryMutations";
+import { logClientError } from "../../utils/logger";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import AuthenticatedImage from "../../components/ui/AuthenticatedImage";
 
@@ -37,7 +38,7 @@ const GalleryDetail = () => {
       await deleteGallery(postId);
       navigate("/gallery");
     } catch (deleteError) {
-      console.error("활동 사진 삭제 실패:", deleteError);
+      logClientError("활동 사진 삭제 실패", deleteError);
       window.alert("활동 사진 삭제에 실패했습니다.");
       setIsDeleting(false);
     }

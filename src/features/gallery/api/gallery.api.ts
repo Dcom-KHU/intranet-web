@@ -28,7 +28,6 @@ export const getGalleryPosts = async (
     },
   );
 
-  console.log("활동사진 목록 조회 응답:", response.data);
   return toGalleryPostsPage(response.data.data);
 };
 

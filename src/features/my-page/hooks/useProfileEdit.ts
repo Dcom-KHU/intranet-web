@@ -5,6 +5,7 @@ import type { User } from "../../auth/types/user.type";
 import { completePasswordReset } from "../../auth/utils/auth.utils";
 import { updateMySettings } from "../api/my-profile.api";
 import type { SaveUserOptions } from "../types/my.types";
+import { logClientError } from "../../../utils/logger";
 
 const toEditableUser = (
   user: Omit<User, "password"> | null,
@@ -47,7 +48,7 @@ export function useProfileEdit() {
 
       return true;
     } catch (error) {
-      console.error(error);
+      logClientError("프로필 수정 실패", error);
       return false;
     } finally {
       setSaving(false);
