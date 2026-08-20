@@ -12,6 +12,7 @@ import type {
 } from "../dto/update-info-post.dto";
 import type { CreateInfoPostRequestDto } from "../dto/create-info-post.dto";
 import { htmlToText } from "../../../utils/html";
+import { formatDate } from "../../../utils/date";
 
 export const toInfoPostList = (
   response: InfoPostListResponse,
@@ -19,7 +20,7 @@ export const toInfoPostList = (
   id: response.postId,
   title: response.title,
   author: response.author,
-  createdAt: response.createdAt,
+  createdAt: formatDate(response.createdAt),
   hasAttachment: response.hasFiles,
   fileCount: response.fileCount,
 });
@@ -31,7 +32,7 @@ export const toInfoPostDetail = (
   title: response.title,
   description: response.content,
   author: response.author,
-  createdAt: response.createdAt,
+  createdAt: formatDate(response.createdAt),
   attachments: (response.files ?? []).map((file) =>
     typeof file === "string" ? file : file.originalFileName,
   ),
@@ -65,7 +66,7 @@ export const toUpdatedInfoPost = (
   id: response.postId,
   title: response.title,
   description: response.content,
-  updatedAt: response.updatedAt,
+  updatedAt: formatDate(response.updatedAt),
   attachments: response.files.map((file) => ({
     id: file.fileId,
     name: file.originalFileName,

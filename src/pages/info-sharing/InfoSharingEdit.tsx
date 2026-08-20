@@ -3,7 +3,7 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import UploadForm from "../../features/upload/components/UploadForm";
 import Loading from "../../components/Loading";
 import useAuth from "../../features/auth/hooks/useAuth";
-import { updateInfoPost } from "../../features/info-sharing/api/info-sharing.api";
+import { useInfoMutations } from "../../features/info-sharing/hooks/useInfoMutations";
 import { useInfoDetail } from "../../features/info-sharing/hooks/useInfoDetail";
 import DetailQueryError from "../../components/DetailQueryError";
 
@@ -12,6 +12,7 @@ const InfoSharingEdit = () => {
   const { id } = useParams();
   const postId = Number(id);
   const { currentUser } = useAuth();
+  const { updateInfo } = useInfoMutations();
   const {
     data: info,
     loading,
@@ -46,7 +47,7 @@ const InfoSharingEdit = () => {
         deleteFileIds: [],
       }}
       onSubmit={async (post) => {
-        await updateInfoPost(postId, post);
+        await updateInfo({ id: postId, post });
         navigate(`/info/${postId}`);
       }}
       onCancel={() => navigate(`/info/${postId}`)}

@@ -1,64 +1,27 @@
-import { useEffect, useState } from "react";
-
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { queryKeys } from "../../../app/query-keys";
 import { getMyComments } from "../api/my-activity.api";
-import type { MyCommentDto } from "../types/my.types";
-
-type MyCommentsState = {
-  data: MyCommentDto[];
-  total: number;
-  loading: boolean;
-  error: string;
-};
+import { logClientError } from "../../../utils/logger";
 
 export const useMyComments = (page: number, size: number) => {
-  const [refreshKey, setRefreshKey] = useState(0);
-  const [state, setState] = useState<MyCommentsState>({
-    data: [],
-    total: 0,
-    loading: true,
-    error: "",
+  const query = useQuery({
+    queryKey: queryKeys.myActivity.comments(page, size),
+    queryFn: async () => {
+      try {
+        return await getMyComments(page, size);
+      } catch (error) {
+        logClientError("내 댓글 조회 실패", error);
+        throw error;
+      }
+    },
+    placeholderData: keepPreviousData,
   });
 
-  useEffect(() => {
-    let cancelled = false;
-
-    setState((prev) => ({
-      ...prev,
-      loading: true,
-      error: "",
-    }));
-
-    getMyComments(page, size)
-      .then(({ comments, total }) => {
-        if (!cancelled) {
-          setState({
-            data: comments,
-            total,
-            loading: false,
-            error: "",
-          });
-        }
-      })
-      .catch((error: unknown) => {
-        console.error(error);
-
-        if (!cancelled) {
-          setState({
-            data: [],
-            total: 0,
-            loading: false,
-            error: "댓글 활동 내역을 불러오지 못했습니다.",
-          });
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [page, refreshKey, size]);
-
   return {
-    ...state,
-    refetch: () => setRefreshKey((key) => key + 1),
+    data: query.data?.comments ?? [],
+    total: query.data?.total ?? 0,
+    loading: query.isPending,
+    error: query.isError ? "댓글 활동 내역을 불러오지 못했습니다." : "",
+    refetch: query.refetch,
   };
 };

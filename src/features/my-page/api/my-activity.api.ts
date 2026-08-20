@@ -6,6 +6,7 @@ import type {
   MyPostsResponseDto,
   MyPostType,
 } from "../types/my.types";
+import { formatDate } from "../../../utils/date";
 
 type ApiResponse<T> = {
   success: boolean;
@@ -29,7 +30,13 @@ export const getMyPosts = async (
   );
 
 
-  return response.data.data;
+  return {
+    ...response.data.data,
+    posts: response.data.data.posts.map((post) => ({
+      ...post,
+      createdAt: formatDate(post.createdAt),
+    })),
+  };
 };
 
 export const getMyComments = async (
@@ -47,7 +54,13 @@ export const getMyComments = async (
   );
 
 
-  return response.data.data;
+  return {
+    ...response.data.data,
+    comments: response.data.data.comments.map((comment) => ({
+      ...comment,
+      createdAt: formatDate(comment.createdAt),
+    })),
+  };
 };
 
 export const deleteMyPost = async (

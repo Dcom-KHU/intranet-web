@@ -3,7 +3,7 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import UploadForm from "../../features/upload/components/UploadForm";
 import Loading from "../../components/Loading";
 import useAuth from "../../features/auth/hooks/useAuth";
-import { updateNoticePost } from "../../features/notice/api/notice.api";
+import { useNoticeMutations } from "../../features/notice/hooks/useNoticeMutations";
 import { useNoticeDetail } from "../../features/notice/hooks/useNoticeDetail";
 
 const NoticeEdit = () => {
@@ -12,6 +12,7 @@ const NoticeEdit = () => {
   const postId = Number(id);
   const { currentUser } = useAuth();
   const { data: notice } = useNoticeDetail(postId);
+  const { updateNotice } = useNoticeMutations();
 
   if (!notice) return <Loading />;
   if (currentUser?.role !== "ADMIN") return <Navigate to="/notice" replace />;
@@ -28,7 +29,7 @@ const NoticeEdit = () => {
         existingFileItems: notice.fileItems ?? [],
       }}
       onSubmit={async (post) => {
-        await updateNoticePost(postId, post);
+        await updateNotice({ id: postId, post });
         navigate(`/notice/${postId}`);
       }}
       onCancel={() => navigate(`/notice/${postId}`)}

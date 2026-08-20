@@ -11,7 +11,9 @@ import { Button } from "../../components/ui/Button";
 import Loading from "../../components/Loading";
 import UserDisplayName from "../../components/ui/UserDisplay";
 import PageBackButton from "../../components/ui/PageBackButton";
-import { deleteExamPost, downloadExamArchiveFile } from "../../features/exam-archive/api/exam-archive.api";
+import { downloadExamArchiveFile } from "../../features/exam-archive/api/exam-archive.api";
+import { useExamArchiveMutations } from "../../features/exam-archive/hooks/useExamArchiveMutations";
+import { logClientError } from "../../utils/logger";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import ConvertTime from "../../components/ConvertTime";
 import DetailQueryError from "../../components/DetailQueryError";
@@ -28,6 +30,7 @@ const ExamArchiveDetail = () => {
     errorMessage,
   } = useExamArchiveDetail(archiveId);
   const { currentUser } = useAuth();
+  const { deleteExamArchive } = useExamArchiveMutations();
   const [deleteRecordId, setDeleteRecordId] = useState<number | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -46,10 +49,10 @@ const ExamArchiveDetail = () => {
 
     setIsDeleting(true);
     try {
-      await deleteExamPost(archiveId, deleteRecordId);
+      await deleteExamArchive({ archiveId, recordId: deleteRecordId });
       navigate("/exam-archive");
     } catch (error) {
-      console.error("족보 게시글 삭제 실패:", error);
+      logClientError("족보 게시글 삭제 실패", error);
       window.alert("족보 게시글 삭제에 실패했습니다.");
       setIsDeleting(false);
     }

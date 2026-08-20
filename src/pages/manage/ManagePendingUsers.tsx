@@ -5,9 +5,10 @@ import { Button } from "../../components/ui/Button";
 import PageBackButton from "../../components/ui/PageBackButton";
 import Pagination from "../../components/ui/Pagination";
 import { usePendingUsers } from "../../features/manage/hooks/usePendingUsers";
-import { approveUser, rejectUser } from "../../features/manage/api/manage.api";
+import { useManageMutations } from "../../features/manage/hooks/useManageMutations";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import ManageUserDetailModal from "../../features/manage/components/ManageUserDetailModal";
+import { logClientError } from "../../utils/logger";
 
 const ManagePendingUsers = () => {
   const [page, setPage] = useState(0);
@@ -15,6 +16,7 @@ const ManagePendingUsers = () => {
   const [rejectUserId, setRejectUserId] = useState<number | null>(null);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const { data, loading, error, refetch } = usePendingUsers(page, 10);
+  const { approveUser, rejectUser } = useManageMutations();
 
   const handleUser = async (userId: number, action: "approve" | "reject") => {
     if (processingUserId !== null) return;
@@ -29,9 +31,9 @@ const ManagePendingUsers = () => {
         await refetch();
       }
     } catch (requestError) {
-      console.error(
-        `회원 ${action === "approve" ? "승인" : "거절"} 실패:`,
-        requestError
+      logClientError(
+        `회원 ${action === "approve" ? "승인" : "거절"} 실패`,
+        requestError,
       );
       window.alert(
         `회원 ${action === "approve" ? "승인" : "거절"}에 실패했습니다.`

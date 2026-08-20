@@ -1,4 +1,4 @@
-import { examTypeOptions, semesterOptions } from "../constants/uploadConfig";
+import { examTypeOptions } from "../constants/uploadConfig";
 import type {
   UploadEntry,
   UploadPostDraft,
@@ -13,9 +13,9 @@ export const createUploadEntry = (
   id,
   subject: initialSubject,
   professor: initialProfessor,
-  examYear: Number(semesterOptions[0].split("-")[0]),
-  semester: semesterOptions[0],
-  semesterCode: semesterOptions[0].endsWith("-2") ? "SECOND" : "FIRST",
+  examYear: null,
+  semester: "",
+  semesterCode: null,
   examType: examTypeOptions[0],
   examTypeCode: "MIDTERM",
   title: "",

@@ -1,28 +1,17 @@
-import { useCallback, useEffect, useState } from "react";
-
+import { useQuery } from "@tanstack/react-query";
+import { queryKeys } from "../../../app/query-keys";
 import { getAdminDashboard } from "../api/manage.api";
-import type { AdminDashboard } from "../types/manage-dashboard.type";
 
 export const useAdminDashboard = () => {
-  const [data, setData] = useState<AdminDashboard | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const query = useQuery({
+    queryKey: queryKeys.manage.dashboard,
+    queryFn: getAdminDashboard,
+  });
 
-  const fetchDashboard = useCallback(async () => {
-    try {
-      const dashboard = await getAdminDashboard();
-      setData(dashboard);
-      setError("");
-    } catch {
-      setError("대시보드 정보를 불러오지 못했습니다.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    void fetchDashboard();
-  }, [fetchDashboard]);
-
-  return { data, loading, error, refetch: fetchDashboard };
+  return {
+    data: query.data ?? null,
+    loading: query.isPending,
+    error: query.isError ? "대시보드 정보를 불러오지 못했습니다." : "",
+    refetch: query.refetch,
+  };
 };

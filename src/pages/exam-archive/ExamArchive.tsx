@@ -13,6 +13,7 @@ import ConvertTime from "@/components/ConvertTime";
 import Pagination from "@/components/ui/Pagination";
 import { normalizeExamSubject } from "../../features/exam-archive/utils/exam-archive.utils";
 import SearchResultSummary from "../../components/ui/SearchResultSummary";
+import Loading from "../../components/Loading";
 
 const SEARCH_LOADING_TIME = 250;
 
@@ -49,7 +50,7 @@ const ExamArchive = () => {
     size,
   );
 
-  const { data, pageInfo } = appliedKeyword.trim()
+  const { data, pageInfo, loading, error } = appliedKeyword.trim()
     ? searchQuery
     : archiveQuery;
 
@@ -104,6 +105,8 @@ const ExamArchive = () => {
       }
     };
   }, []);
+
+  if (loading) return <Loading />;
 
   return (
     <div className="px-4 py-8 sm:px-6 lg:px-20">
@@ -171,6 +174,10 @@ const ExamArchive = () => {
           }
           ariaLabel={EXAM_ARCHIVE_TEXT.paginationLabel}
         />
+
+        {error && (
+          <p className="mt-4 text-center text-sm text-red-500">{error}</p>
+        )}
       </section>
     </div>
   );

@@ -10,7 +10,8 @@ import type { MyPostDto, MyPostType } from "../types/my.types";
 import ActivityBoardBadge from "./ActivityBoardBadge";
 import { GoTrash } from "react-icons/go";
 import ConfirmDeleteModal from "../../../components/ui/ConfirmDeleteModal";
-import { deleteMyPost } from "../api/my-activity.api";
+import { useMyActivityMutations } from "../hooks/useMyActivityMutations";
+import { logClientError } from "../../../utils/logger";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -39,16 +40,9 @@ const getPostTypeMeta = (type: string) =>
     path: "",
   };
 
-interface MyPostsPanelProps {
-  studentNumber: string;
-  isAdmin: boolean;
-}
-
-export default function MyPostsPanel({
-  studentNumber: _studentNumber,
-  isAdmin: _isAdmin,
-}: MyPostsPanelProps) {
+export default function MyPostsPanel() {
   const navigate = useNavigate();
+  const { deleteMyPost } = useMyActivityMutations();
   const [currentPage, setCurrentPage] = useState(1);
   const [deleteTarget, setDeleteTarget] = useState<MyPostDto | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -63,7 +57,7 @@ export default function MyPostsPanel({
 
     setIsDeleting(true);
     try {
-      await deleteMyPost(deleteTarget.id, deleteTarget.type);
+      await deleteMyPost({ id: deleteTarget.id, type: deleteTarget.type });
       setDeleteTarget(null);
 
       if (data.length === 1 && currentPage > 1) {
@@ -72,7 +66,7 @@ export default function MyPostsPanel({
         refetch();
       }
     } catch (requestError) {
-      console.error("내가 쓴 글 삭제 실패:", requestError);
+      logClientError("내가 쓴 글 삭제 실패", requestError);
       window.alert("게시글 삭제에 실패했습니다.");
     } finally {
       setIsDeleting(false);
@@ -99,7 +93,7 @@ export default function MyPostsPanel({
       header: "작성일",
       width: "w-28",
       cellClassName: "text-xs text-gray-400",
-      render: (post) => post.createdAt.slice(0, 10),
+      render: (post) => post.createdAt,
     },
     {
       key: "delete",

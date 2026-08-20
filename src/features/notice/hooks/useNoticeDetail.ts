@@ -1,34 +1,24 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { queryKeys } from "../../../app/query-keys";
 import { getNoticeDetail } from "../api/notice.api";
-import type { NoticeDetailType } from "../types/notice.type";
 import { toNoticeDetail } from "../mapper/notice.mapper";
 
-// 공지사항 상세 조회
 export const useNoticeDetail = (id: number) => {
-  const [data, setData] = useState<NoticeDetailType | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const isValidId = Number.isInteger(id) && id > 0;
+  const query = useQuery({
+    queryKey: queryKeys.notices.detail(id),
+    queryFn: async () => toNoticeDetail(await getNoticeDetail(id)),
+    enabled: isValidId,
+  });
 
-  useEffect(() => {
-    if (!Number.isFinite(id)) {
-      setData(null);
-      setError("올바르지 않은 공지사항 ID입니다.");
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    getNoticeDetail(id)
-      .then((notice) => {
-        setData(toNoticeDetail(notice));
-        setError("");
-      })
-      .catch(() => {
-        setData(null);
-        setError("공지사항을 불러오지 못했습니다.");
-      })
-      .finally(() => setLoading(false));
-  }, [id]);
-
-  return { data, loading, error };
+  return {
+    data: query.data ?? null,
+    loading: isValidId && query.isPending,
+    error: !isValidId
+      ? "올바르지 않은 공지사항 ID입니다."
+      : query.isError
+        ? "공지사항을 불러오지 못했습니다."
+        : "",
+    refetch: query.refetch,
+  };
 };

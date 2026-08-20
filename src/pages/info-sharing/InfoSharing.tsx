@@ -12,6 +12,7 @@ import type { InfoPostList } from "../../features/info-sharing/types/info-sharin
 import ConvertTime from "@/components/ConvertTime";
 import Pagination from "@/components/ui/Pagination";
 import SearchResultSummary from "@/components/ui/SearchResultSummary";
+import Loading from "../../components/Loading";
 
 
 const INFOSHARING_TEXT = {
@@ -38,6 +39,8 @@ const InfoSharing = () => {
     size,
     appliedKeyword,
   );
+
+  if (loading) return <Loading />;
 
   const columns: DataTableColumn<InfoPostList>[] = [
     {

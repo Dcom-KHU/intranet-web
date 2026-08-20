@@ -11,9 +11,6 @@ import AuthenticatedImage from "../components/ui/AuthenticatedImage";
 
 const homeBackgroundImages = [khuBg, khuBg2, khuBg3];
 
-const formatHomeDate = (date: string) => date.slice(0, 10);
-const formatMobileHomeDate = (date: string) => formatHomeDate(date).slice(5);
-
 const Home = () => {
     const navigate = useNavigate();
     const { data, loading, error } = useHomeDashboard();
@@ -55,13 +52,7 @@ const Home = () => {
                                 </p>
 
                                 <p className="text-gray-400 text-xs flex-shrink-0 ml-2">
-                                    <span className="sm:hidden">
-                                        {formatMobileHomeDate(item.date)}
-                                    </span>
-
-                                    <span className="hidden sm:inline">
-                                        {formatHomeDate(item.date)}
-                                    </span>
+                                    {item.date}
                                 </p>
                             </div>
                         ))}
@@ -82,13 +73,7 @@ const Home = () => {
                                     </span>
                                 </p>
                                 <p className="text-gray-400 text-xs flex-shrink-0 ml-2">
-                                    <span className="sm:hidden">
-                                        {formatMobileHomeDate(item.date)}
-                                    </span>
-
-                                    <span className="hidden sm:inline">
-                                        {formatHomeDate(item.date)}
-                                    </span>
+                                    {item.date}
                                 </p>
                             </div>
                         ))}
@@ -111,13 +96,7 @@ const Home = () => {
                                     </span>
                                 </p>
                                 <p className="text-gray-400 text-xs flex-shrink-0 ml-2">
-                                    <span className="sm:hidden">
-                                        {formatMobileHomeDate(item.date)}
-                                    </span>
-
-                                    <span className="hidden sm:inline">
-                                        {formatHomeDate(item.date)}
-                                    </span>
+                                    {item.date}
                                 </p>
                             </div>
                         ))}

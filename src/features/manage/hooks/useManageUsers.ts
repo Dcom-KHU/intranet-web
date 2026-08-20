@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
-
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { queryKeys } from "../../../app/query-keys";
 import { getManageUsers } from "../api/manage.api";
-import type { ManageUsersPage } from "../types/manage-users.type";
 
 export const useManageUsers = (
   page: number,
@@ -9,31 +8,23 @@ export const useManageUsers = (
   keyword: string,
   sort: string,
 ) => {
-  const [data, setData] = useState<ManageUsersPage | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  const fetchUsers = useCallback(async () => {
-    try {
-      const response = await getManageUsers({
+  const normalizedKeyword = keyword.trim();
+  const query = useQuery({
+    queryKey: queryKeys.manage.users(page, size, normalizedKeyword, sort),
+    queryFn: () =>
+      getManageUsers({
         page,
         size,
-        keyword: keyword || undefined,
+        keyword: normalizedKeyword || undefined,
         sort,
-      });
-      setData(response);
-      setError("");
-    } catch {
-      setError("회원 목록을 불러오지 못했습니다.");
-    } finally {
-      setLoading(false);
-    }
-  }, [keyword, page, size, sort]);
+      }),
+    placeholderData: keepPreviousData,
+  });
 
-  useEffect(() => {
-    setLoading(true);
-    void fetchUsers();
-  }, [fetchUsers]);
-
-  return { data, loading, error, refetch: fetchUsers };
+  return {
+    data: query.data ?? null,
+    loading: query.isPending,
+    error: query.isError ? "회원 목록을 불러오지 못했습니다." : "",
+    refetch: query.refetch,
+  };
 };

@@ -39,12 +39,20 @@ export const uploadModeConfig: Record<UploadMode, UploadModeConfig> = {
   info: baseNoticeConfig,
 };
 
-export const semesterOptions = [
-  "2026-1",
-  "2025-2",
-  "2025-1",
-  "2024-2",
-  "Unknown",
+export const emptyExamPeriodOption = "선택 안 함";
+
+const currentYear = new Date().getFullYear();
+export const examYearOptions = [
+  emptyExamPeriodOption,
+  ...Array.from(
+    { length: currentYear - 1998 },
+    (_, index) => String(currentYear - index),
+  ),
 ];
 
+export const semesterOptions = [emptyExamPeriodOption, "1학기", "2학기"];
+
 export const examTypeOptions = ["중간고사", "기말고사", "퀴즈", "과제"];
+
+export const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024;
+export const MAX_UPLOAD_REQUEST_SIZE_BYTES = 100 * 1024 * 1024;

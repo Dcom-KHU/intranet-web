@@ -100,7 +100,7 @@ export default function SelectField({
           id={listboxId}
           role="listbox"
           aria-labelledby={labelId}
-          className="absolute left-0 right-0 top-full z-30 mt-2 overflow-hidden rounded-xl border border-[#B5D4F4] bg-white p-1.5 shadow-lg"
+          className="absolute left-0 right-0 top-full z-30 mt-2 max-h-64 overflow-y-auto rounded-xl border border-[#B5D4F4] bg-white p-1.5 shadow-lg"
         >
           {options.map((option) => {
             const isSelected = option === value;

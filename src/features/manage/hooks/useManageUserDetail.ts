@@ -1,32 +1,18 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { queryKeys } from "../../../app/query-keys";
 import { getManageUserDetail } from "../api/manage.api";
-import type { ManageUserDetail } from "../types/manage-users.type";
 
 export const useManageUserDetail = (userId: number | null) => {
-  const [data, setData] = useState<ManageUserDetail | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const query = useQuery({
+    queryKey: queryKeys.manage.userDetail(userId),
+    queryFn: () => getManageUserDetail(userId as number),
+    enabled: userId !== null,
+  });
 
-  useEffect(() => {
-    if (userId === null) {
-      setData(null);
-      setError("");
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-    getManageUserDetail(userId)
-      .then((user) => {
-        setData(user);
-        setError("");
-      })
-      .catch(() => {
-        setData(null);
-        setError("회원 상세 정보를 불러오지 못했습니다.");
-      })
-      .finally(() => setLoading(false));
-  }, [userId]);
-
-  return { data, loading, error };
+  return {
+    data: query.data ?? null,
+    loading: userId !== null && query.isPending,
+    error: query.isError ? "회원 상세 정보를 불러오지 못했습니다." : "",
+    refetch: query.refetch,
+  };
 };

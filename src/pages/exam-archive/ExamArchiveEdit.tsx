@@ -3,7 +3,7 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import UploadForm from "../../features/upload/components/UploadForm";
 import Loading from "../../components/Loading";
 import useAuth from "../../features/auth/hooks/useAuth";
-import { updateExamPost } from "../../features/exam-archive/api/exam-archive.api";
+import { useExamArchiveMutations } from "../../features/exam-archive/hooks/useExamArchiveMutations";
 import { useExamArchiveDetail } from "../../features/exam-archive/hooks/useExamArchiveDetail";
 import DetailQueryError from "../../components/DetailQueryError";
 
@@ -13,6 +13,7 @@ const ExamArchiveEdit = () => {
   const archivePostId = Number(archiveId);
   const postId = Number(postIdParam);
   const { currentUser } = useAuth();
+  const { updateExamArchive } = useExamArchiveMutations();
   const {
     data: archive,
     loading,
@@ -47,13 +48,6 @@ const ExamArchiveEdit = () => {
   }
 
   const examTypeLabel = post.examType === "FINAL" ? "기말고사" : "중간고사";
-  const semesterSuffix = {
-    FIRST: "1",
-    SECOND: "2",
-    SUMMER: "SUMMER",
-    WINTER: "WINTER",
-    UNKNOWN: "UNKNOWN",
-  }[post.semesterCode ?? "FIRST"];
   const existingFileItems = (post.files ?? []).filter(
     (file) => typeof file !== "string",
   );
@@ -70,12 +64,15 @@ const ExamArchiveEdit = () => {
         professor: post.professor,
         examYear: post.examYear,
         semester:
-          post.semesterCode === "UNKNOWN" || post.examYear === null
-            ? "Unknown"
-            : post.examYear
-              ? `${post.examYear}-${semesterSuffix}`
-              : post.semester,
-        semesterCode: post.semesterCode,
+          post.semesterCode === "FIRST"
+            ? "1학기"
+            : post.semesterCode === "SECOND"
+              ? "2학기"
+              : "",
+        semesterCode:
+          post.semesterCode === "FIRST" || post.semesterCode === "SECOND"
+            ? post.semesterCode
+            : null,
         examType: examTypeLabel,
         examTypeCode: post.examType,
         content: post.description,
@@ -85,7 +82,7 @@ const ExamArchiveEdit = () => {
         deleteFileIds: [],
       }}
       onSubmit={async (draft) => {
-        await updateExamPost(archivePostId, postId, draft);
+        await updateExamArchive({ archiveId: archivePostId, recordId: postId, post: draft });
         navigate(`/exam-archive/${archivePostId}`);
       }}
       onCancel={() => navigate(`/exam-archive/${archivePostId}`)}

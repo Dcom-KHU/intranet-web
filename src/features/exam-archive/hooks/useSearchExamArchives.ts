@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { queryKeys } from "../../../app/query-keys";
 import { getSearchExamArchives } from "../api/exam-archive.api";
-import type { ExamArchiveListType } from "../types/exam-archive.type";
 import { toExamArchive } from "../mapper/exam-archives.mapper";
 
 export const useSearchExamArchives = (
@@ -8,38 +8,39 @@ export const useSearchExamArchives = (
   page: number,
   size: number,
 ) => {
-  const [data, setData] = useState<ExamArchiveListType[]>([]);
-  const [pageInfo, setPageInfo] = useState({
-    page: 0,
-    size: 0,
-    totalPages: 0,
-    totalElements: 0,
+  const normalizedKeyword = searchKeyword.trim();
+  const query = useQuery({
+    queryKey: queryKeys.examArchives.search(normalizedKeyword, page, size),
+    queryFn: async () => {
+      const response = await getSearchExamArchives({
+        searchKeyword: normalizedKeyword,
+        page,
+        size,
+      });
+      return {
+        data: response.content.map(toExamArchive),
+        pageInfo: {
+          page: response.page,
+          size: response.size,
+          totalPages: response.totalPages,
+          totalElements: response.totalElements,
+        },
+      };
+    },
+    enabled: Boolean(normalizedKeyword),
+    placeholderData: keepPreviousData,
   });
 
-  useEffect(() => {
-    if (!searchKeyword.trim()) {
-      setData([]);
-      return;
-    }
-
-    getSearchExamArchives({
-      searchKeyword,
-      page,
-      size,
-    }).then((res) => {
-      setData(res.content.map(toExamArchive));
-
-      setPageInfo({
-        page: res.page,
-        size: res.size,
-        totalPages: res.totalPages,
-        totalElements: res.totalElements,
-      });
-    });
-  }, [searchKeyword, page, size]);
-
   return {
-    data,
-    pageInfo,
+    data: query.data?.data ?? [],
+    pageInfo: query.data?.pageInfo ?? {
+      page: 0,
+      size,
+      totalPages: 0,
+      totalElements: 0,
+    },
+    loading: Boolean(normalizedKeyword) && query.isPending,
+    error: query.isError ? "족보 검색 결과를 불러오지 못했습니다." : "",
+    refetch: query.refetch,
   };
 };

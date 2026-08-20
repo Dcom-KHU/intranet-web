@@ -14,9 +14,6 @@ type CommentItemProps = {
   onDelete: (commentId: number) => Promise<void>;
 };
 
-const formatCommentDate = (createdAt: string) =>
-  createdAt.match(/^\d{4}-\d{2}-\d{2}/)?.[0] ?? createdAt;
-
 const CommentItem = ({
   comment,
   canEdit,
@@ -76,7 +73,7 @@ const CommentItem = ({
 
         <div className="flex shrink-0 items-center gap-2">
           <p className="text-xs text-gray-400">
-            {formatCommentDate(comment.createdAt)}
+            {comment.createdAt}
           </p>
 
           {canEdit && !isEditing && (

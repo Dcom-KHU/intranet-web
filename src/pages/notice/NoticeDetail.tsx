@@ -10,7 +10,9 @@ import useAuth from "../../features/auth/hooks/useAuth";
 import UserDisplayName from "../../components/ui/UserDisplay";
 import PageBackButton from "../../components/ui/PageBackButton";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
-import { deleteNotice, downloadNoticeFile } from "../../features/notice/api/notice.api";
+import { downloadNoticeFile } from "../../features/notice/api/notice.api";
+import { useNoticeMutations } from "../../features/notice/hooks/useNoticeMutations";
+import { logClientError } from "../../utils/logger";
 import ConvertTime from "../../components/ConvertTime";
 
 
@@ -23,6 +25,7 @@ const NoticeDetail = () => {
   const isAdmin = currentUser?.role === "ADMIN";
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const { deleteNotice } = useNoticeMutations();
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -31,7 +34,7 @@ const NoticeDetail = () => {
       await deleteNotice(noticeId);
       navigate("/notice");
     } catch (deleteError) {
-      console.error("공지사항 삭제 실패:", deleteError);
+      logClientError("공지사항 삭제 실패", deleteError);
       window.alert("공지사항 삭제에 실패했습니다.");
       setIsDeleting(false);
     }

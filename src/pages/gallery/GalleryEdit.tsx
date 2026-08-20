@@ -3,7 +3,7 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import UploadForm from "../../features/upload/components/UploadForm";
 import Loading from "../../components/Loading";
 import useAuth from "../../features/auth/hooks/useAuth";
-import { updateGalleryPost } from "../../features/gallery/api/gallery.api";
+import { useGalleryMutations } from "../../features/gallery/hooks/useGalleryMutations";
 import { useGalleryDetail } from "../../features/gallery/hooks/useGalleryDetail";
 
 const GalleryEdit = () => {
@@ -12,6 +12,7 @@ const GalleryEdit = () => {
   const postId = Number(id);
   const { currentUser } = useAuth();
   const { data: gallery, loading } = useGalleryDetail(postId);
+  const { updateGallery } = useGalleryMutations();
 
   if (loading || !gallery) return <Loading />;
   if (currentUser?.role !== "ADMIN") return <Navigate to="/gallery" replace />;
@@ -23,12 +24,12 @@ const GalleryEdit = () => {
       submitLabel="수정"
       initialPost={{
         title: gallery.title,
-        date: gallery.date.replaceAll(".", "-"),
+        date: gallery.date,
         descriptionHtml: gallery.description,
         existingFiles: gallery.images,
       }}
       onSubmit={async (post) => {
-        await updateGalleryPost(postId, post);
+        await updateGallery({ id: postId, post });
         navigate(`/gallery/${postId}`);
       }}
       onCancel={() => navigate(`/gallery/${postId}`)}

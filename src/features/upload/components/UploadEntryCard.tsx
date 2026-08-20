@@ -8,6 +8,8 @@ import { IoClose } from "react-icons/io5";
 
 import Modal from "../../../components/ui/Modal";
 import {
+  emptyExamPeriodOption,
+  examYearOptions,
   examTypeOptions,
   semesterOptions,
   uploadModeConfig,
@@ -21,14 +23,14 @@ import Field from "./fields/Field";
 import DateField from "./fields/DateField";
 import SelectField from "./fields/SelectField";
 import UploadToolbar from "./UploadToolbar";
-
-const GALLERY_IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "heic"];
+import { validateUploadFiles } from "../utils/fileValidation";
 
 type UploadEntryCardProps = {
   entry: UploadEntry;
   mode: UploadMode;
   index: number;
   isOnlyEntry: boolean;
+  totalSelectedFileSize: number;
   onChange: (patch: Partial<UploadPostDraft>) => void;
   onRemove: () => void;
 };
@@ -38,13 +40,14 @@ export default function UploadEntryCard({
   mode,
   index,
   isOnlyEntry,
+  totalSelectedFileSize,
   onChange,
   onRemove,
 }: UploadEntryCardProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragDepthRef = useRef(0);
   const [isDraggingFiles, setIsDraggingFiles] = useState(false);
-  const [invalidGalleryFiles, setInvalidGalleryFiles] = useState<string[]>([]);
+  const [fileUploadErrors, setFileUploadErrors] = useState<string[]>([]);
   const config = uploadModeConfig[mode];
   const placeholder = config.showExamFields
     ? "자료 설명을 입력하세요"
@@ -110,21 +113,38 @@ export default function UploadEntryCard({
   };
 
   const appendFiles = (selectedFiles: File[]) => {
-    const existingFileKeys = new Set(
-      entry.files.map(
-        (file) =>
-          `${file.name}-${file.size}-${file.lastModified}-${file.type}`,
-      ),
-    );
-    const filesToAdd = selectedFiles.filter((file) => {
-      const key = `${file.name}-${file.size}-${file.lastModified}-${file.type}`;
-
-      if (existingFileKeys.has(key)) return false;
-      existingFileKeys.add(key);
-      return true;
+    const errors: string[] = [];
+    const {
+      filesToAdd,
+      invalidFormatFiles,
+      oversizedFiles,
+      exceedsRequestLimit,
+    } = validateUploadFiles({
+      selectedFiles,
+      existingFiles: entry.files,
+      mode,
+      totalSelectedFileSize,
     });
 
-    onChange({ files: [...entry.files, ...filesToAdd] });
+    if (invalidFormatFiles.length > 0) {
+      errors.push(
+        `지원하지 않는 형식: ${invalidFormatFiles.map((file) => file.name).join(", ")}`,
+      );
+    }
+    if (oversizedFiles.length > 0) {
+      errors.push(
+        `파일당 20MB 초과: ${oversizedFiles.map((file) => file.name).join(", ")}`,
+      );
+    }
+
+    if (exceedsRequestLimit) {
+      errors.push("한 번의 등록 요청에는 최대 100MB까지 첨부할 수 있습니다.");
+    }
+
+    if (filesToAdd.length > 0) {
+      onChange({ files: [...entry.files, ...filesToAdd] });
+    }
+    if (errors.length > 0) setFileUploadErrors(errors);
   };
 
   const isFileDrag = (event: DragEvent<HTMLDivElement>) =>
@@ -164,27 +184,7 @@ export default function UploadEntryCard({
     dragDepthRef.current = 0;
     setIsDraggingFiles(false);
 
-    const droppedFiles = Array.from(event.dataTransfer.files);
-    if (mode !== "gallery") {
-      appendFiles(droppedFiles);
-      return;
-    }
-
-    const acceptedFiles: File[] = [];
-    const rejectedFileNames: string[] = [];
-
-    droppedFiles.forEach((file) => {
-      const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
-
-      if (GALLERY_IMAGE_EXTENSIONS.includes(extension)) {
-        acceptedFiles.push(file);
-      } else {
-        rejectedFileNames.push(file.name);
-      }
-    });
-
-    if (acceptedFiles.length > 0) appendFiles(acceptedFiles);
-    if (rejectedFileNames.length > 0) setInvalidGalleryFiles(rejectedFileNames);
+    appendFiles(Array.from(event.dataTransfer.files));
   };
 
   return (
@@ -234,14 +234,47 @@ export default function UploadEntryCard({
             required
             onChange={(value) => onChange({ professor: value })}
           />
-          <SelectField
-            label="학기"
-            name={`posts.${index}.semester`}
-            options={semesterOptions}
-            value={entry.semester}
-            required
-            onChange={(value) => onChange({ semester: value })}
-          />
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
+            <SelectField
+              label="연도"
+              name={`posts.${index}.examYear`}
+              options={examYearOptions}
+              value={
+                entry.examYear === null
+                  ? emptyExamPeriodOption
+                  : String(entry.examYear)
+              }
+              onChange={(value) =>
+                onChange({
+                  examYear:
+                    value === emptyExamPeriodOption ? null : Number(value),
+                })
+              }
+            />
+            <SelectField
+              label="학기"
+              name={`posts.${index}.semesterCode`}
+              options={semesterOptions}
+              value={
+                entry.semesterCode === "FIRST"
+                  ? "1학기"
+                  : entry.semesterCode === "SECOND"
+                    ? "2학기"
+                    : emptyExamPeriodOption
+              }
+              onChange={(value) =>
+                onChange({
+                  semester: value === emptyExamPeriodOption ? "" : value,
+                  semesterCode:
+                    value === "1학기"
+                      ? "FIRST"
+                      : value === "2학기"
+                        ? "SECOND"
+                        : null,
+                })
+              }
+            />
+          </div>
           <SelectField
             label="시험 유형"
             name={`posts.${index}.examType`}
@@ -401,20 +434,24 @@ export default function UploadEntryCard({
       />
 
       <Modal
-        isOpen={invalidGalleryFiles.length > 0}
-        title="지원하지 않는 파일 형식입니다"
+        isOpen={fileUploadErrors.length > 0}
+        title="첨부할 수 없는 파일이 있습니다"
         description={
-          <>
-            <p>활동사진은 JPG, JPEG, PNG, HEIC 파일만 첨부할 수 있습니다.</p>
-            <p className="mt-2 break-all text-red-400">
-              {invalidGalleryFiles.join(", ")}
-            </p>
-          </>
+          <div className="space-y-2">
+            {mode === "gallery" && (
+              <p>활동사진은 JPG, JPEG, PNG, HEIC 파일만 첨부할 수 있습니다.</p>
+            )}
+            {fileUploadErrors.map((error) => (
+              <p key={error} className="break-all text-red-400">
+                {error}
+              </p>
+            ))}
+          </div>
         }
         actionLabel="확인"
-        onAction={() => setInvalidGalleryFiles([])}
-        onClose={() => setInvalidGalleryFiles([])}
-        labelledById={`invalid-gallery-file-modal-${index}`}
+        onAction={() => setFileUploadErrors([])}
+        onClose={() => setFileUploadErrors([])}
+        labelledById={`file-upload-error-modal-${index}`}
       />
     </div>
   );

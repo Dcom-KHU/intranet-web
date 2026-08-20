@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Loading from "../Loading";
 
 export type DataTableColumn<T> = {
   key: string;
@@ -58,10 +59,7 @@ const DataTable = <T,>({
           {isLoading ? (
             <tr>
               <td colSpan={colSpan} className="px-5 py-16">
-                <div className="flex flex-col items-center justify-center gap-3 text-sm text-gray-500">
-                  <div className="size-8 animate-spin rounded-full border-4 border-gray-200 border-t-[#4988C4]" />
-                  {loadingMessage}
-                </div>
+                <Loading variant="inline" message={loadingMessage} />
               </td>
             </tr>
           ) : (

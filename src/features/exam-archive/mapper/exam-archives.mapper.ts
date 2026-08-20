@@ -10,13 +10,76 @@ import {
   type ExamArchiveListType,
   type ExamArchiveType,
 } from "../types/exam-archive.type";
+import { formatDate } from "../../../utils/date";
+import { htmlToText } from "../../../utils/html";
+import type { UploadPostDraft } from "../../upload/types/upload.type";
+import type {
+  CreateExamArchiveExamType,
+  CreateExamArchiveRecordDto,
+  CreateExamArchiveRequestDto,
+} from "../dto/create-exam-archive.dto";
+import type { UpdateExamArchiveRequestDto } from "../dto/update-exam-archive.dto";
+import { normalizeExamSubject } from "../utils/exam-archive.utils";
+
+const toCreateExamType = (examType: string): CreateExamArchiveExamType => {
+  const examTypeMap: Record<string, CreateExamArchiveExamType> = {
+    중간고사: "MIDTERM",
+    기말고사: "FINAL",
+    퀴즈: "QUIZ",
+    과제: "ASSIGNMENT",
+  };
+
+  return examTypeMap[examType] ?? "MIDTERM";
+};
+
+const toCreateExamArchiveRecord = (
+  post: UploadPostDraft,
+): CreateExamArchiveRecordDto => ({
+  examYear: post.examYear,
+  semester:
+    post.semesterCode === "FIRST" || post.semesterCode === "SECOND"
+      ? post.semesterCode
+      : null,
+  examType: toCreateExamType(post.examType),
+  content: htmlToText(post.descriptionHtml),
+});
+
+export const toCreateExamArchiveRequest = (
+  post: UploadPostDraft,
+): CreateExamArchiveRequestDto => ({
+  subjectName: normalizeExamSubject(post.subject),
+  professorName: post.professor.trim(),
+  records: [toCreateExamArchiveRecord(post)],
+});
+
+export const toUpdateExamArchiveRequest = (
+  post: UploadPostDraft,
+): UpdateExamArchiveRequestDto => {
+  const examTypeMap = {
+    중간고사: "MIDTERM",
+    기말고사: "FINAL",
+  } as const;
+
+  return {
+    examYear: post.examYear,
+    semester:
+      post.semesterCode === "FIRST" || post.semesterCode === "SECOND"
+        ? post.semesterCode
+        : null,
+    examType:
+      examTypeMap[post.examType as keyof typeof examTypeMap] ??
+      post.examTypeCode,
+    content: htmlToText(post.descriptionHtml),
+    deleteFileIds: post.deleteFileIds,
+  };
+};
 
 export const toExamArchive = (dto: ExamArchivesDto): ExamArchiveListType => ({
   id: dto.archiveId,
   subject: dto.subjectName,
   professor: dto.professorName,
   count: dto.recordCount,
-  date: dto.lastModifiedAt,
+  date: formatDate(dto.lastModifiedAt),
 });
 
 const semesterLabels: Record<ExamSemesterDto, string> = {
@@ -24,7 +87,6 @@ const semesterLabels: Record<ExamSemesterDto, string> = {
   SECOND: "2학기",
   SUMMER: "여름학기",
   WINTER: "겨울학기",
-  UNKNOWN: "시기 미상",
 };
 
 const examTypeLabels: Record<ExamTypeDto, string> = {
@@ -33,8 +95,6 @@ const examTypeLabels: Record<ExamTypeDto, string> = {
 };
 
 const toSemesterLabel = (dto: ExamArchiveRecordDto) => {
-  if (dto.semester === "UNKNOWN") return "";
-
   return [
     dto.examYear !== null ? `${dto.examYear}년` : null,
     dto.semester ? semesterLabels[dto.semester] : null,
@@ -59,7 +119,7 @@ const toExamArchiveRecord = (
     studentNumber: dto.author.studentNumber,
     name: dto.author.name,
   },
-  date: dto.createdAt.slice(0, 10),
+  date: formatDate(dto.createdAt),
   description: dto.content,
   files: (dto.files ?? []).map((file) => ({
     id: file.fileId,

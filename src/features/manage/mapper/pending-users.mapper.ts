@@ -1,5 +1,6 @@
 import type { PendingUsersResponseDto } from "../dto/pending-users.dto";
 import type { PendingUsersPage } from "../types/pending-users.type";
+import { formatDate } from "../../../utils/date";
 
 export const toPendingUsersPage = (
   response: PendingUsersResponseDto["data"],
@@ -11,7 +12,7 @@ export const toPendingUsersPage = (
     studentNumber: user.studentId,
     email: user.email,
     phoneNumber: user.phoneNumber,
-    requestedAt: user.createdAt.slice(0, 10),
+    requestedAt: formatDate(user.createdAt),
   })),
   ...response.pageInfo,
 });

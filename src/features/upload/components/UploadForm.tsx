@@ -17,7 +17,8 @@ import {
 } from "../utils/uploadEntry";
 import UploadEntryCard from "./UploadEntryCard";
 import PageBackButton from "../../../components/ui/PageBackButton";
-import { htmlToText } from "../../../utils/html";
+import { getUploadValidationError } from "../utils/uploadValidation";
+import { logClientError } from "../../../utils/logger";
 
 type FormMessage = {
   type: "error" | "success";
@@ -50,6 +51,11 @@ export default function UploadForm({
   const isEditMode = Boolean(onSubmit);
   const isDirty =
     getEntriesSignature(entries) !== getEntriesSignature(initialEntries);
+  const totalSelectedFileSize = entries.reduce(
+    (total, entry) =>
+      total + entry.files.reduce((entryTotal, file) => entryTotal + file.size, 0),
+    0,
+  );
 
   const showMessage = (text: string, type: FormMessage["type"] = "error") => {
     setFormMessage({ type, text });
@@ -102,58 +108,9 @@ export default function UploadForm({
   };
 
   const validateEntries = () => {
-    if (
-      config.showExamFields &&
-      entries.some(
-        (entry) => !entry.subject.trim() || !entry.professor.trim(),
-      )
-    ) {
-      showMessage("과목명과 교수명을 입력해주세요.");
-      return false;
-    }
-
-    if (
-      config.requireTitle &&
-      entries.some((entry) => !entry.title.trim())
-    ) {
-      showMessage("제목을 입력해주세요.");
-      return false;
-    }
-
-    if (
-      config.requireDescription &&
-      entries.some((entry) => {
-        const text = htmlToText(entry.descriptionHtml);
-
-        return !text;
-      })
-    ) {
-      showMessage("내용을 입력해주세요.");
-      return false;
-    }
-
-    if (
-      config.showGalleryFields &&
-      entries.some((entry) => !entry.date)
-    ) {
-      showMessage("활동 날짜를 입력해주세요.");
-      return false;
-    }
-
-    if (
-      config.requireImage &&
-      entries.some(
-        (entry) =>
-          entry.files.length === 0 &&
-          entry.existingFiles.length === 0 &&
-          entry.existingFileItems.length === 0,
-      )
-    ) {
-      showMessage("사진을 최소 1개 이상 첨부해주세요.");
-      return false;
-    }
-
-    return true;
+    const error = getUploadValidationError(mode, entries);
+    if (error) showMessage(error);
+    return error === null;
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -189,18 +146,14 @@ export default function UploadForm({
         ? "게시글 수정에 실패했습니다."
         : "업로드에 실패했습니다. 잠시 후 다시 시도해주세요.";
 
+      logClientError("업로드 실패", error);
+
       if (axios.isAxiosError(error)) {
-        console.error("업로드 실패 응답:", {
-          status: error.response?.status,
-          data: error.response?.data,
-        });
         const responseMessage = error.response?.data?.message;
 
         if (typeof responseMessage === "string") {
           errorMessage = responseMessage;
         }
-      } else {
-        console.error("업로드 실패:", error);
       }
       showMessage(errorMessage);
     } finally {
@@ -234,6 +187,7 @@ export default function UploadForm({
               mode={mode}
               index={index}
               isOnlyEntry={entries.length === 1}
+              totalSelectedFileSize={totalSelectedFileSize}
               onChange={(patch) => updateEntry(entry.id, patch)}
               onRemove={() => removeEntry(entry.id)}
             />

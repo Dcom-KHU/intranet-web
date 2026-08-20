@@ -10,7 +10,8 @@ import type { MyCommentDto } from "../types/my.types";
 import ActivityBoardBadge from "./ActivityBoardBadge";
 import { GoTrash } from "react-icons/go";
 import ConfirmDeleteModal from "../../../components/ui/ConfirmDeleteModal";
-import { deleteMyComment } from "../api/my-activity.api";
+import { useMyActivityMutations } from "../hooks/useMyActivityMutations";
+import { logClientError } from "../../../utils/logger";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -31,14 +32,9 @@ const getCommentTypeMeta = (type: string) =>
     path: "",
   };
 
-interface MyCommentsPanelProps {
-  studentNumber: string;
-}
-
-export default function MyCommentsPanel({
-  studentNumber: _studentNumber,
-}: MyCommentsPanelProps) {
+export default function MyCommentsPanel() {
   const navigate = useNavigate();
+  const { deleteMyComment } = useMyActivityMutations();
   const [currentPage, setCurrentPage] = useState(1);
   const [deleteTarget, setDeleteTarget] = useState<MyCommentDto | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -53,7 +49,7 @@ export default function MyCommentsPanel({
 
     setIsDeleting(true);
     try {
-      await deleteMyComment(deleteTarget.id, deleteTarget.type);
+      await deleteMyComment({ id: deleteTarget.id, type: deleteTarget.type });
       setDeleteTarget(null);
 
       if (data.length === 1 && currentPage > 1) {
@@ -62,7 +58,7 @@ export default function MyCommentsPanel({
         refetch();
       }
     } catch (requestError) {
-      console.error("내가 쓴 댓글 삭제 실패:", requestError);
+      logClientError("내가 쓴 댓글 삭제 실패", requestError);
       window.alert("댓글 삭제에 실패했습니다.");
     } finally {
       setIsDeleting(false);
@@ -96,7 +92,7 @@ export default function MyCommentsPanel({
       header: "작성일",
       width: "w-28",
       cellClassName: "text-xs text-gray-400",
-      render: (comment) => comment.createdAt.slice(0, 10),
+      render: (comment) => comment.createdAt,
     },
     {
       key: "delete",

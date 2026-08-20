@@ -1,64 +1,27 @@
-import { useEffect, useState } from "react";
-
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { queryKeys } from "../../../app/query-keys";
 import { getMyPosts } from "../api/my-activity.api";
-import type { MyPostDto } from "../types/my.types";
-
-type MyPostsState = {
-  data: MyPostDto[];
-  total: number;
-  loading: boolean;
-  error: string;
-};
+import { logClientError } from "../../../utils/logger";
 
 export const useMyPosts = (page: number, size: number) => {
-  const [refreshKey, setRefreshKey] = useState(0);
-  const [state, setState] = useState<MyPostsState>({
-    data: [],
-    total: 0,
-    loading: true,
-    error: "",
+  const query = useQuery({
+    queryKey: queryKeys.myActivity.posts(page, size),
+    queryFn: async () => {
+      try {
+        return await getMyPosts(page, size);
+      } catch (error) {
+        logClientError("내 게시글 조회 실패", error);
+        throw error;
+      }
+    },
+    placeholderData: keepPreviousData,
   });
 
-  useEffect(() => {
-    let cancelled = false;
-
-    setState((prev) => ({
-      ...prev,
-      loading: true,
-      error: "",
-    }));
-
-    getMyPosts(page, size)
-      .then(({ posts, total }) => {
-        if (!cancelled) {
-          setState({
-            data: posts,
-            total,
-            loading: false,
-            error: "",
-          });
-        }
-      })
-      .catch((error: unknown) => {
-        console.error(error);
-
-        if (!cancelled) {
-          setState({
-            data: [],
-            total: 0,
-            loading: false,
-            error: "게시글 활동 내역을 불러오지 못했습니다.",
-          });
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [page, refreshKey, size]);
-
   return {
-    ...state,
-    refetch: () => setRefreshKey((key) => key + 1),
+    data: query.data?.posts ?? [],
+    total: query.data?.total ?? 0,
+    loading: query.isPending,
+    error: query.isError ? "게시글 활동 내역을 불러오지 못했습니다." : "",
+    refetch: query.refetch,
   };
 };

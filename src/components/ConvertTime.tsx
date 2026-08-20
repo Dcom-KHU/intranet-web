@@ -1,4 +1,6 @@
 
+import { formatDate } from "../utils/date";
+
 interface ConvertTimeProps {
   date: string;
   format?: "default" | "korean";
@@ -8,26 +10,15 @@ const ConvertTime = ({
   date,
   format = "default",
 }: ConvertTimeProps) => {
-  const parsedDate = new Date(date);
-
-  if (Number.isNaN(parsedDate.getTime())) {
-    return <>-</>;
-  }
+  const formattedDate = formatDate(date);
+  if (formattedDate === "-") return <>-</>;
 
   if (format === "korean") {
-    return (
-      <>
-        {parsedDate.getFullYear()}년 {parsedDate.getMonth() + 1}월{" "}
-        {parsedDate.getDate()}일
-      </>
-    );
+    const [year, month, day] = formattedDate.split("-");
+    return <>{`${year}년 ${Number(month)}월 ${Number(day)}일`}</>;
   }
 
-  const year = parsedDate.getFullYear();
-  const month = String(parsedDate.getMonth() + 1).padStart(2, "0");
-  const day = String(parsedDate.getDate()).padStart(2, "0");
-
-  return <>{`${year}-${month}-${day}`}</>;
+  return <>{formattedDate}</>;
 };
 
 export default ConvertTime;
