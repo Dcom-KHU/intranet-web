@@ -4,16 +4,13 @@ import type {
   ExamArchiveDetailDto,
   ExamArchivesPageDto,
 } from "../dto/exam-archives.dto";
-import { toExamArchiveDetail } from "../mapper/exam-archives.mapper";
 import {
-  normalizeExamSubject,
   toCreateExamArchiveRequest,
-} from "../utils/exam-archive.utils";
-import { htmlToText } from "../../../utils/html";
-import type {
-  ExamArchiveResponseDto,
-  UpdateExamArchiveRequestDto,
-} from "../dto/update-exam-archive.dto";
+  toExamArchiveDetail,
+  toUpdateExamArchiveRequest,
+} from "../mapper/exam-archives.mapper";
+import { normalizeExamSubject } from "../utils/exam-archive.utils";
+import type { ExamArchiveResponseDto } from "../dto/update-exam-archive.dto";
 
 
 
@@ -118,23 +115,7 @@ export const updateExamPost = async (
   post: UploadPostDraft,
 ) => {
   const formData = new FormData();
-  const examTypeMap = {
-    중간고사: "MIDTERM",
-    기말고사: "FINAL",
-  } as const;
-
-  const request: UpdateExamArchiveRequestDto = {
-    examYear: post.examYear,
-    semester:
-      post.semesterCode === "FIRST" || post.semesterCode === "SECOND"
-        ? post.semesterCode
-        : null,
-    examType:
-      examTypeMap[post.examType as keyof typeof examTypeMap] ??
-      post.examTypeCode,
-    content: htmlToText(post.descriptionHtml),
-    deleteFileIds: post.deleteFileIds,
-  };
+  const request = toUpdateExamArchiveRequest(post);
 
   formData.append(
     "request",

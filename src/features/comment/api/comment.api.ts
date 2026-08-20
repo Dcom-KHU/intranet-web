@@ -3,10 +3,12 @@ import { api } from "@/api/client";
 import type {
   CommentResponseDto,
   CommentsResponseDto,
-  CreateCommentRequestDto,
-  UpdateCommentRequestDto,
 } from "../dto/comment.dto";
-import { toComment } from "../mapper/comment.mapper";
+import {
+  toComment,
+  toCreateCommentRequest,
+  toUpdateCommentRequest,
+} from "../mapper/comment.mapper";
 
 export type CommentTarget = "photo-posts" | "info-sharing";
 
@@ -33,7 +35,7 @@ const infoSharingCommentApi: CommentApi = {
   },
   // 댓글 작성
   create: async (postId, content) => {
-    const request: CreateCommentRequestDto = { content };
+    const request = toCreateCommentRequest(content);
     const response = await api.post<CommentResponseDto>(
       `/api/info-posts/${postId}/comments`,
       request,
@@ -42,7 +44,7 @@ const infoSharingCommentApi: CommentApi = {
   },
   // 댓글 수정
   update: async (postId, commentId, content) => {
-    const request: UpdateCommentRequestDto = { content };
+    const request = toUpdateCommentRequest(content);
     const response = await api.put<CommentResponseDto>(
       `/api/info-posts/${postId}/comments/${commentId}`,
       request,
@@ -69,7 +71,7 @@ const photoPostsCommentApi: CommentApi = {
   },
   // 댓글 생성
   create: async (albumId, content) => {
-    const request: CreateCommentRequestDto = { content };
+    const request = toCreateCommentRequest(content);
     const response = await api.post<CommentResponseDto>(
       `/api/photo-posts/${albumId}/comments`,
       request,
@@ -79,7 +81,7 @@ const photoPostsCommentApi: CommentApi = {
   },
   // 댓글 수정
   update: async (albumId, commentId, content) => {
-    const request: UpdateCommentRequestDto = { content };
+    const request = toUpdateCommentRequest(content);
     const response = await api.put<CommentResponseDto>(
       `/api/photo-posts/${albumId}/comments/${commentId}`,
       request,

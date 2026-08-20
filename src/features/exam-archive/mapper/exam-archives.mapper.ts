@@ -11,6 +11,68 @@ import {
   type ExamArchiveType,
 } from "../types/exam-archive.type";
 import { formatDate } from "../../../utils/date";
+import { htmlToText } from "../../../utils/html";
+import type { UploadPostDraft } from "../../upload/types/upload.type";
+import type {
+  CreateExamArchiveExamType,
+  CreateExamArchiveRecordDto,
+  CreateExamArchiveRequestDto,
+} from "../dto/create-exam-archive.dto";
+import type { UpdateExamArchiveRequestDto } from "../dto/update-exam-archive.dto";
+import { normalizeExamSubject } from "../utils/exam-archive.utils";
+
+const toCreateExamType = (examType: string): CreateExamArchiveExamType => {
+  const examTypeMap: Record<string, CreateExamArchiveExamType> = {
+    중간고사: "MIDTERM",
+    기말고사: "FINAL",
+    퀴즈: "QUIZ",
+    과제: "ASSIGNMENT",
+  };
+
+  return examTypeMap[examType] ?? "MIDTERM";
+};
+
+const toCreateExamArchiveRecord = (
+  post: UploadPostDraft,
+): CreateExamArchiveRecordDto => ({
+  examYear: post.examYear,
+  semester:
+    post.semesterCode === "FIRST" || post.semesterCode === "SECOND"
+      ? post.semesterCode
+      : null,
+  examType: toCreateExamType(post.examType),
+  content: htmlToText(post.descriptionHtml),
+});
+
+export const toCreateExamArchiveRequest = (
+  post: UploadPostDraft,
+): CreateExamArchiveRequestDto => ({
+  subjectName: normalizeExamSubject(post.subject),
+  professorName: post.professor.trim(),
+  records: [toCreateExamArchiveRecord(post)],
+});
+
+export const toUpdateExamArchiveRequest = (
+  post: UploadPostDraft,
+): UpdateExamArchiveRequestDto => {
+  const examTypeMap = {
+    중간고사: "MIDTERM",
+    기말고사: "FINAL",
+  } as const;
+
+  return {
+    examYear: post.examYear,
+    semester:
+      post.semesterCode === "FIRST" || post.semesterCode === "SECOND"
+        ? post.semesterCode
+        : null,
+    examType:
+      examTypeMap[post.examType as keyof typeof examTypeMap] ??
+      post.examTypeCode,
+    content: htmlToText(post.descriptionHtml),
+    deleteFileIds: post.deleteFileIds,
+  };
+};
 
 export const toExamArchive = (dto: ExamArchivesDto): ExamArchiveListType => ({
   id: dto.archiveId,

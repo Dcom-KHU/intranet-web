@@ -1,4 +1,8 @@
-import type { CommentDto } from "../dto/comment.dto";
+import type {
+  CommentDto,
+  CreateCommentRequestDto,
+  UpdateCommentRequestDto,
+} from "../dto/comment.dto";
 import type { Comment } from "../types/comment.type";
 import { formatDate } from "../../../utils/date";
 
@@ -10,3 +14,11 @@ export const toComment = (dto: CommentDto): Comment => ({
   createdAt: formatDate(dto.createdAt),
   updatedAt: dto.updatedAt ? formatDate(dto.updatedAt) : null,
 });
+
+export const toCreateCommentRequest = (
+  content: string,
+): CreateCommentRequestDto => ({ content });
+
+export const toUpdateCommentRequest = (
+  content: string,
+): UpdateCommentRequestDto => ({ content });
