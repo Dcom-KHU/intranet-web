@@ -24,7 +24,6 @@ const semesterLabels: Record<ExamSemesterDto, string> = {
   SECOND: "2학기",
   SUMMER: "여름학기",
   WINTER: "겨울학기",
-  UNKNOWN: "시기 미상",
 };
 
 const examTypeLabels: Record<ExamTypeDto, string> = {
@@ -33,8 +32,6 @@ const examTypeLabels: Record<ExamTypeDto, string> = {
 };
 
 const toSemesterLabel = (dto: ExamArchiveRecordDto) => {
-  if (dto.semester === "UNKNOWN") return "";
-
   return [
     dto.examYear !== null ? `${dto.examYear}년` : null,
     dto.semester ? semesterLabels[dto.semester] : null,

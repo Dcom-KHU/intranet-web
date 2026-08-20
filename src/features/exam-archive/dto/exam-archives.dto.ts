@@ -19,8 +19,7 @@ export type ExamSemesterDto =
   | "FIRST"
   | "SECOND"
   | "SUMMER"
-  | "WINTER"
-  | "UNKNOWN";
+  | "WINTER";
 export type ExamTypeDto = "MIDTERM" | "FINAL";
 
 export interface ExamArchiveFileDto {

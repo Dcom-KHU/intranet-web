@@ -4,19 +4,10 @@ import type {
   CreateExamArchiveExamType,
   CreateExamArchiveRecordDto,
   CreateExamArchiveRequestDto,
-  CreateExamArchiveSemester,
 } from "../dto/create-exam-archive.dto";
 
 export const normalizeExamSubject = (subject: string) =>
   subject.replace(/\s+/g, "");
-
-const toCreateSemester = (semester: string): CreateExamArchiveSemester => {
-  if (semester === "Unknown") return "UNKNOWN";
-
-  const semesterNumber = semester.split("-")[1];
-
-  return semesterNumber === "2" ? "SECOND" : "FIRST";
-};
 
 const toCreateExamType = (examType: string): CreateExamArchiveExamType => {
   const examTypeMap: Record<string, CreateExamArchiveExamType> = {
@@ -32,11 +23,11 @@ const toCreateExamType = (examType: string): CreateExamArchiveExamType => {
 const toCreateExamArchiveRecord = (
   post: UploadPostDraft,
 ): CreateExamArchiveRecordDto => ({
-  examYear:
-    post.semester === "Unknown"
-      ? null
-      : Number(post.semester.split("-")[0]),
-  semester: toCreateSemester(post.semester),
+  examYear: post.examYear,
+  semester:
+    post.semesterCode === "FIRST" || post.semesterCode === "SECOND"
+      ? post.semesterCode
+      : null,
   examType: toCreateExamType(post.examType),
   content: htmlToText(post.descriptionHtml),
 });

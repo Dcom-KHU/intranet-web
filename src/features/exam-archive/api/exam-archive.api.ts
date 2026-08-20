@@ -118,28 +118,17 @@ export const updateExamPost = async (
   post: UploadPostDraft,
 ) => {
   const formData = new FormData();
-  const selectedYear = Number(post.semester.split("-")[0]);
-  const selectedSemester = post.semester.split("-")[1];
-  const isUnknownSemester = post.semester === "Unknown";
   const examTypeMap = {
     중간고사: "MIDTERM",
     기말고사: "FINAL",
   } as const;
 
   const request: UpdateExamArchiveRequestDto = {
-    examYear: isUnknownSemester
-      ? null
-      : Number.isNaN(selectedYear)
-        ? post.examYear
-        : selectedYear,
+    examYear: post.examYear,
     semester:
-      isUnknownSemester
-        ? "UNKNOWN"
-        : selectedSemester === "1"
-          ? "FIRST"
-          : selectedSemester === "2"
-            ? "SECOND"
-            : post.semesterCode,
+      post.semesterCode === "FIRST" || post.semesterCode === "SECOND"
+        ? post.semesterCode
+        : null,
     examType:
       examTypeMap[post.examType as keyof typeof examTypeMap] ??
       post.examTypeCode,

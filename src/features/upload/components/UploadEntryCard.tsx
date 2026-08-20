@@ -8,6 +8,8 @@ import { IoClose } from "react-icons/io5";
 
 import Modal from "../../../components/ui/Modal";
 import {
+  emptyExamPeriodOption,
+  examYearOptions,
   examTypeOptions,
   semesterOptions,
   uploadModeConfig,
@@ -234,14 +236,47 @@ export default function UploadEntryCard({
             required
             onChange={(value) => onChange({ professor: value })}
           />
-          <SelectField
-            label="학기"
-            name={`posts.${index}.semester`}
-            options={semesterOptions}
-            value={entry.semester}
-            required
-            onChange={(value) => onChange({ semester: value })}
-          />
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
+            <SelectField
+              label="연도"
+              name={`posts.${index}.examYear`}
+              options={examYearOptions}
+              value={
+                entry.examYear === null
+                  ? emptyExamPeriodOption
+                  : String(entry.examYear)
+              }
+              onChange={(value) =>
+                onChange({
+                  examYear:
+                    value === emptyExamPeriodOption ? null : Number(value),
+                })
+              }
+            />
+            <SelectField
+              label="학기"
+              name={`posts.${index}.semesterCode`}
+              options={semesterOptions}
+              value={
+                entry.semesterCode === "FIRST"
+                  ? "1학기"
+                  : entry.semesterCode === "SECOND"
+                    ? "2학기"
+                    : emptyExamPeriodOption
+              }
+              onChange={(value) =>
+                onChange({
+                  semester: value === emptyExamPeriodOption ? "" : value,
+                  semesterCode:
+                    value === "1학기"
+                      ? "FIRST"
+                      : value === "2학기"
+                        ? "SECOND"
+                        : null,
+                })
+              }
+            />
+          </div>
           <SelectField
             label="시험 유형"
             name={`posts.${index}.examType`}

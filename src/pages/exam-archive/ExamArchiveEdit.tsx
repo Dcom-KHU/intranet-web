@@ -47,13 +47,6 @@ const ExamArchiveEdit = () => {
   }
 
   const examTypeLabel = post.examType === "FINAL" ? "기말고사" : "중간고사";
-  const semesterSuffix = {
-    FIRST: "1",
-    SECOND: "2",
-    SUMMER: "SUMMER",
-    WINTER: "WINTER",
-    UNKNOWN: "UNKNOWN",
-  }[post.semesterCode ?? "FIRST"];
   const existingFileItems = (post.files ?? []).filter(
     (file) => typeof file !== "string",
   );
@@ -70,12 +63,15 @@ const ExamArchiveEdit = () => {
         professor: post.professor,
         examYear: post.examYear,
         semester:
-          post.semesterCode === "UNKNOWN" || post.examYear === null
-            ? "Unknown"
-            : post.examYear
-              ? `${post.examYear}-${semesterSuffix}`
-              : post.semester,
-        semesterCode: post.semesterCode,
+          post.semesterCode === "FIRST"
+            ? "1학기"
+            : post.semesterCode === "SECOND"
+              ? "2학기"
+              : "",
+        semesterCode:
+          post.semesterCode === "FIRST" || post.semesterCode === "SECOND"
+            ? post.semesterCode
+            : null,
         examType: examTypeLabel,
         examTypeCode: post.examType,
         content: post.description,
