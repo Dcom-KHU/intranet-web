@@ -50,6 +50,11 @@ export default function UploadForm({
   const isEditMode = Boolean(onSubmit);
   const isDirty =
     getEntriesSignature(entries) !== getEntriesSignature(initialEntries);
+  const totalSelectedFileSize = entries.reduce(
+    (total, entry) =>
+      total + entry.files.reduce((entryTotal, file) => entryTotal + file.size, 0),
+    0,
+  );
 
   const showMessage = (text: string, type: FormMessage["type"] = "error") => {
     setFormMessage({ type, text });
@@ -234,6 +239,7 @@ export default function UploadForm({
               mode={mode}
               index={index}
               isOnlyEntry={entries.length === 1}
+              totalSelectedFileSize={totalSelectedFileSize}
               onChange={(patch) => updateEntry(entry.id, patch)}
               onRemove={() => removeEntry(entry.id)}
             />

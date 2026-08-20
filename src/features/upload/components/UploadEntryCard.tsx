@@ -11,6 +11,8 @@ import {
   emptyExamPeriodOption,
   examYearOptions,
   examTypeOptions,
+  MAX_FILE_SIZE_BYTES,
+  MAX_UPLOAD_REQUEST_SIZE_BYTES,
   semesterOptions,
   uploadModeConfig,
 } from "../constants/uploadConfig";
@@ -31,6 +33,7 @@ type UploadEntryCardProps = {
   mode: UploadMode;
   index: number;
   isOnlyEntry: boolean;
+  totalSelectedFileSize: number;
   onChange: (patch: Partial<UploadPostDraft>) => void;
   onRemove: () => void;
 };
@@ -40,13 +43,14 @@ export default function UploadEntryCard({
   mode,
   index,
   isOnlyEntry,
+  totalSelectedFileSize,
   onChange,
   onRemove,
 }: UploadEntryCardProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragDepthRef = useRef(0);
   const [isDraggingFiles, setIsDraggingFiles] = useState(false);
-  const [invalidGalleryFiles, setInvalidGalleryFiles] = useState<string[]>([]);
+  const [fileUploadErrors, setFileUploadErrors] = useState<string[]>([]);
   const config = uploadModeConfig[mode];
   const placeholder = config.showExamFields
     ? "자료 설명을 입력하세요"
@@ -112,13 +116,14 @@ export default function UploadEntryCard({
   };
 
   const appendFiles = (selectedFiles: File[]) => {
+    const errors: string[] = [];
     const existingFileKeys = new Set(
       entry.files.map(
         (file) =>
           `${file.name}-${file.size}-${file.lastModified}-${file.type}`,
       ),
     );
-    const filesToAdd = selectedFiles.filter((file) => {
+    const uniqueFiles = selectedFiles.filter((file) => {
       const key = `${file.name}-${file.size}-${file.lastModified}-${file.type}`;
 
       if (existingFileKeys.has(key)) return false;
@@ -126,7 +131,44 @@ export default function UploadEntryCard({
       return true;
     });
 
-    onChange({ files: [...entry.files, ...filesToAdd] });
+    const invalidFormatFiles =
+      mode === "gallery"
+        ? uniqueFiles.filter((file) => {
+            const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
+            return !GALLERY_IMAGE_EXTENSIONS.includes(extension);
+          })
+        : [];
+    const validFormatFiles = uniqueFiles.filter(
+      (file) => !invalidFormatFiles.includes(file),
+    );
+    const oversizedFiles = validFormatFiles.filter(
+      (file) => file.size > MAX_FILE_SIZE_BYTES,
+    );
+    let filesToAdd = validFormatFiles.filter(
+      (file) => file.size <= MAX_FILE_SIZE_BYTES,
+    );
+
+    if (invalidFormatFiles.length > 0) {
+      errors.push(
+        `지원하지 않는 형식: ${invalidFormatFiles.map((file) => file.name).join(", ")}`,
+      );
+    }
+    if (oversizedFiles.length > 0) {
+      errors.push(
+        `파일당 20MB 초과: ${oversizedFiles.map((file) => file.name).join(", ")}`,
+      );
+    }
+
+    const addedFileSize = filesToAdd.reduce((sum, file) => sum + file.size, 0);
+    if (totalSelectedFileSize + addedFileSize > MAX_UPLOAD_REQUEST_SIZE_BYTES) {
+      errors.push("한 번의 등록 요청에는 최대 100MB까지 첨부할 수 있습니다.");
+      filesToAdd = [];
+    }
+
+    if (filesToAdd.length > 0) {
+      onChange({ files: [...entry.files, ...filesToAdd] });
+    }
+    if (errors.length > 0) setFileUploadErrors(errors);
   };
 
   const isFileDrag = (event: DragEvent<HTMLDivElement>) =>
@@ -166,27 +208,7 @@ export default function UploadEntryCard({
     dragDepthRef.current = 0;
     setIsDraggingFiles(false);
 
-    const droppedFiles = Array.from(event.dataTransfer.files);
-    if (mode !== "gallery") {
-      appendFiles(droppedFiles);
-      return;
-    }
-
-    const acceptedFiles: File[] = [];
-    const rejectedFileNames: string[] = [];
-
-    droppedFiles.forEach((file) => {
-      const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
-
-      if (GALLERY_IMAGE_EXTENSIONS.includes(extension)) {
-        acceptedFiles.push(file);
-      } else {
-        rejectedFileNames.push(file.name);
-      }
-    });
-
-    if (acceptedFiles.length > 0) appendFiles(acceptedFiles);
-    if (rejectedFileNames.length > 0) setInvalidGalleryFiles(rejectedFileNames);
+    appendFiles(Array.from(event.dataTransfer.files));
   };
 
   return (
@@ -436,20 +458,24 @@ export default function UploadEntryCard({
       />
 
       <Modal
-        isOpen={invalidGalleryFiles.length > 0}
-        title="지원하지 않는 파일 형식입니다"
+        isOpen={fileUploadErrors.length > 0}
+        title="첨부할 수 없는 파일이 있습니다"
         description={
-          <>
-            <p>활동사진은 JPG, JPEG, PNG, HEIC 파일만 첨부할 수 있습니다.</p>
-            <p className="mt-2 break-all text-red-400">
-              {invalidGalleryFiles.join(", ")}
-            </p>
-          </>
+          <div className="space-y-2">
+            {mode === "gallery" && (
+              <p>활동사진은 JPG, JPEG, PNG, HEIC 파일만 첨부할 수 있습니다.</p>
+            )}
+            {fileUploadErrors.map((error) => (
+              <p key={error} className="break-all text-red-400">
+                {error}
+              </p>
+            ))}
+          </div>
         }
         actionLabel="확인"
-        onAction={() => setInvalidGalleryFiles([])}
-        onClose={() => setInvalidGalleryFiles([])}
-        labelledById={`invalid-gallery-file-modal-${index}`}
+        onAction={() => setFileUploadErrors([])}
+        onClose={() => setFileUploadErrors([])}
+        labelledById={`file-upload-error-modal-${index}`}
       />
     </div>
   );
