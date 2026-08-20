@@ -4,12 +4,13 @@ import type { UploadPostDraft } from "../../upload/types/upload.type";
 import type { CreateNoticeRequestDto } from "../dto/create-notice.dto";
 import type { UpdateNoticeRequestDto } from "../dto/update-notice.dto";
 import { htmlToText } from "../../../utils/html";
+import { formatDate } from "../../../utils/date";
 
 export const toNotice = (dto: NoticeListItemDto): NoticeType => ({
   id: dto.noticeId,
   title: dto.title,
   author: dto.author,
-  date: dto.createdAt.slice(0, 10),
+  date: formatDate(dto.createdAt),
   hasAttachment: dto.hasFiles,
 });
 
@@ -18,7 +19,7 @@ export const toNoticeDetail = (dto: NoticeDetailDto): NoticeDetailType => ({
   title: dto.title,
   description: dto.content,
   author: dto.author,
-  date: dto.createdAt.slice(0, 10),
+  date: formatDate(dto.createdAt),
   files: (dto.files ?? []).map((file) => file.originalFileName),
   fileItems: (dto.files ?? []).map((file) => ({
     id: file.fileId,

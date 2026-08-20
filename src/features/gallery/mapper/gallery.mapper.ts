@@ -10,6 +10,7 @@ import type { UploadPostDraft } from "../../upload/types/upload.type";
 import type { CreateGalleryRequestDto } from "../dto/create-gallery.dto";
 import type { UpdateGalleryRequestDto } from "../dto/update-gallery.dto";
 import { htmlToText } from "../../../utils/html";
+import { formatDate } from "../../../utils/date";
 
 export const toCreateGalleryRequest = (
   post: UploadPostDraft,
@@ -34,7 +35,7 @@ export const toGalleryPostsPage = (
     id: album.albumId,
     imageUrl: album.coverImageUrl,
     title: album.eventName,
-    date: album.activityDate,
+    date: formatDate(album.activityDate),
     imageCount: album.imageCount,
   })),
   ...response.pageInfo,
@@ -45,7 +46,7 @@ export const toGalleryPostDetail = (
 ): GalleryPostDetail => ({
   id: response.albumId,
   title: response.eventName,
-  date: response.activityDate,
+  date: formatDate(response.activityDate),
   description: response.description,
   images: response.imageList,
 });

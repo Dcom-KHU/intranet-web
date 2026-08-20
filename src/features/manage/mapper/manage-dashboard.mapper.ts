@@ -1,5 +1,6 @@
 import type { AdminDashboardDto } from "../dto/manage-dashboard.dto";
 import type { AdminDashboard } from "../types/manage-dashboard.type";
+import { formatDate } from "../../../utils/date";
 
 export const toAdminDashboard = (
   dto: AdminDashboardDto,
@@ -11,13 +12,13 @@ export const toAdminDashboard = (
     name: user.name,
     studentNumber: user.studentId,
     email: user.email,
-    requestedAt: user.createdAt.slice(0, 10),
+    requestedAt: formatDate(user.createdAt),
   })),
   recentActiveMembers: dto.recentActiveMembers.map((user) => ({
     id: user.userId,
     name: user.name,
     studentNumber: user.studentId,
-    lastLoginAt: user.lastLoginAt.slice(0, 10),
+    lastLoginAt: formatDate(user.lastLoginAt),
   })),
   postCounts: {
     notices: dto.postCounts.noticeCount,

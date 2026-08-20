@@ -96,7 +96,7 @@ export default function MyCommentsPanel({
       header: "작성일",
       width: "w-28",
       cellClassName: "text-xs text-gray-400",
-      render: (comment) => comment.createdAt.slice(0, 10),
+      render: (comment) => comment.createdAt,
     },
     {
       key: "delete",

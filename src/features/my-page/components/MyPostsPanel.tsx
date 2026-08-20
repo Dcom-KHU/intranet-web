@@ -99,7 +99,7 @@ export default function MyPostsPanel({
       header: "작성일",
       width: "w-28",
       cellClassName: "text-xs text-gray-400",
-      render: (post) => post.createdAt.slice(0, 10),
+      render: (post) => post.createdAt,
     },
     {
       key: "delete",

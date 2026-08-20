@@ -34,6 +34,7 @@ export const getInfos = async ({
       },
     });
 
+    console.log("정보공유 게시글 목록 조회 응답:", response.data);
     return response.data.data;
 };
 

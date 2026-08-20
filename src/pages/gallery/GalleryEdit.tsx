@@ -23,7 +23,7 @@ const GalleryEdit = () => {
       submitLabel="수정"
       initialPost={{
         title: gallery.title,
-        date: gallery.date.replaceAll(".", "-"),
+        date: gallery.date,
         descriptionHtml: gallery.description,
         existingFiles: gallery.images,
       }}

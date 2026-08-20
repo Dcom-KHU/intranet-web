@@ -10,13 +10,14 @@ import {
   type ExamArchiveListType,
   type ExamArchiveType,
 } from "../types/exam-archive.type";
+import { formatDate } from "../../../utils/date";
 
 export const toExamArchive = (dto: ExamArchivesDto): ExamArchiveListType => ({
   id: dto.archiveId,
   subject: dto.subjectName,
   professor: dto.professorName,
   count: dto.recordCount,
-  date: dto.lastModifiedAt,
+  date: formatDate(dto.lastModifiedAt),
 });
 
 const semesterLabels: Record<ExamSemesterDto, string> = {
@@ -56,7 +57,7 @@ const toExamArchiveRecord = (
     studentNumber: dto.author.studentNumber,
     name: dto.author.name,
   },
-  date: dto.createdAt.slice(0, 10),
+  date: formatDate(dto.createdAt),
   description: dto.content,
   files: (dto.files ?? []).map((file) => ({
     id: file.fileId,
