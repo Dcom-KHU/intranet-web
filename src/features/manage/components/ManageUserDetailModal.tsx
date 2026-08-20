@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import { useManageUserDetail } from "../hooks/useManageUserDetail";
 import ManagedUserName from "./ManagedUserName";
+import Loading from "../../../components/Loading";
 
 type ManageUserDetailModalProps = {
   userId: number | null;
@@ -70,9 +71,11 @@ export default function ManageUserDetailModal({
         </div>
 
         {loading && (
-          <div className="flex min-h-52 items-center justify-center">
-            <div className="size-8 animate-spin rounded-full border-4 border-gray-200 border-t-[#4988C4]" />
-          </div>
+          <Loading
+            variant="inline"
+            message="회원 정보를 불러오는 중입니다."
+            className="min-h-52"
+          />
         )}
 
         {!loading && error && (
