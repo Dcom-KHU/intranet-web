@@ -11,6 +11,7 @@ export default function useAuth() {
     enabled: hasAccessToken,
     select: toUser,
     staleTime: 5 * 60 * 1000,
+    retry: false,
   });
 
   return {

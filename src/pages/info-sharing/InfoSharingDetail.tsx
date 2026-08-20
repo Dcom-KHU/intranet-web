@@ -10,7 +10,8 @@ import Loading from "../../components/Loading";
 import CommentSection from "../../features/comment/components/CommentSection";
 import UserDisplayName from "../../components/ui/UserDisplay";
 import PageBackButton from "../../components/ui/PageBackButton";
-import { deleteInfoPost, downloadInfoPostFile } from "@/features/info-sharing/api/info-sharing.api";
+import { downloadInfoPostFile } from "@/features/info-sharing/api/info-sharing.api";
+import { useInfoMutations } from "@/features/info-sharing/hooks/useInfoMutations";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import ConvertTime from "../../components/ConvertTime";
 import DetailQueryError from "../../components/DetailQueryError";
@@ -27,6 +28,7 @@ const InfoSharingDetail = () => {
       errorMessage,
     } = useInfoDetail(postId);
     const { currentUser } = useAuth();
+    const { deleteInfo } = useInfoMutations();
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
@@ -44,7 +46,7 @@ const InfoSharingDetail = () => {
     const handleDeletePost = async () => {
         setIsDeleting(true);
         try {
-          await deleteInfoPost(postId);
+          await deleteInfo(postId);
           navigate("/info");
         } catch (error) {
           console.error("정보공유 게시글 삭제 실패:", error);

@@ -1,13 +1,14 @@
 import UploadForm from "../../features/upload/components/UploadForm";
 import { useNavigate } from "react-router-dom";
-import { createNotices } from "../../features/notice/api/notice.api";
+import { useNoticeMutations } from "../../features/notice/hooks/useNoticeMutations";
 import type { UploadPostDraft } from "../../features/upload/types/upload.type";
 
 export default function NoticeUpload() {
   const navigate = useNavigate();
+  const { createNotice } = useNoticeMutations();
 
   const handleUpload = async (posts: UploadPostDraft[]) => {
-    await createNotices(posts);
+    await createNotice(posts);
     navigate("/notice");
   };
 

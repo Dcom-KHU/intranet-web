@@ -10,7 +10,7 @@ import type { MyCommentDto } from "../types/my.types";
 import ActivityBoardBadge from "./ActivityBoardBadge";
 import { GoTrash } from "react-icons/go";
 import ConfirmDeleteModal from "../../../components/ui/ConfirmDeleteModal";
-import { deleteMyComment } from "../api/my-activity.api";
+import { useMyActivityMutations } from "../hooks/useMyActivityMutations";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -39,6 +39,7 @@ export default function MyCommentsPanel({
   studentNumber: _studentNumber,
 }: MyCommentsPanelProps) {
   const navigate = useNavigate();
+  const { deleteMyComment } = useMyActivityMutations();
   const [currentPage, setCurrentPage] = useState(1);
   const [deleteTarget, setDeleteTarget] = useState<MyCommentDto | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -53,7 +54,7 @@ export default function MyCommentsPanel({
 
     setIsDeleting(true);
     try {
-      await deleteMyComment(deleteTarget.id, deleteTarget.type);
+      await deleteMyComment({ id: deleteTarget.id, type: deleteTarget.type });
       setDeleteTarget(null);
 
       if (data.length === 1 && currentPage > 1) {

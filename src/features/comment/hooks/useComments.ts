@@ -1,61 +1,66 @@
-import { useState, useEffect } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "../../../app/query-keys";
 import {
-    createComment as createCommentApi,
-    deleteComment as deleteCommentApi,
-    getCommentsByPostId,
-    updateComment as updateCommentApi,
-    type CommentTarget,
+  createComment as createCommentApi,
+  deleteComment as deleteCommentApi,
+  getCommentsByPostId,
+  updateComment as updateCommentApi,
+  type CommentTarget,
 } from "../api/comment.api";
-import { type Comment } from "../types/comment.type";
+import type { Comment } from "../types/comment.type";
 
-// 게시글에 해당하는 댓글 전체 조회
 export const useComments = (postId: number, target: CommentTarget) => {
-    const [data, setData] = useState<Comment[]>([]);
-    const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
+  const queryKey = queryKeys.comments(target, postId);
+  const query = useQuery({
+    queryKey,
+    queryFn: () => getCommentsByPostId(postId, target),
+    enabled: Number.isInteger(postId) && postId > 0,
+  });
 
-    useEffect(() => {
-        let ignore = false;
+  const createMutation = useMutation({
+    mutationFn: (content: string) => createCommentApi(postId, target, content),
+    onSuccess: (createdComment) => {
+      queryClient.setQueryData<Comment[]>(queryKey, (comments = []) => [
+        ...comments,
+        createdComment,
+      ]);
+    },
+  });
 
-        getCommentsByPostId(postId, target).then((comments) => {
-            if (ignore) return;
-            setData(comments);
-            setLoading(false);
-        });
+  const updateMutation = useMutation({
+    mutationFn: ({ commentId, content }: { commentId: number; content: string }) =>
+      updateCommentApi(postId, commentId, target, content),
+    onSuccess: (updatedComment) => {
+      queryClient.setQueryData<Comment[]>(queryKey, (comments = []) =>
+        comments.map((comment) =>
+          comment.id === updatedComment.id ? updatedComment : comment,
+        ),
+      );
+    },
+  });
 
-        return () => {
-            ignore = true;
-        };
-    }, [postId, target]);
+  const deleteMutation = useMutation({
+    mutationFn: (commentId: number) =>
+      deleteCommentApi(postId, commentId, target).then(() => commentId),
+    onSuccess: (deletedCommentId) => {
+      queryClient.setQueryData<Comment[]>(queryKey, (comments = []) =>
+        comments.filter((comment) => comment.id !== deletedCommentId),
+      );
+    },
+  });
 
-    const createComment = async (content: string) => {
-        const createdComment = await createCommentApi(
-            postId,
-            target,
-            content,
-        );
-        setData((comments) => [...comments, createdComment]);
-    };
-
-    const updateComment = async (commentId: number, content: string) => {
-        const updatedComment = await updateCommentApi(
-            postId,
-            commentId,
-            target,
-            content,
-        );
-        setData((comments) =>
-            comments.map((comment) =>
-                comment.id === commentId ? updatedComment : comment,
-            ),
-        );
-    };
-
-    const deleteComment = async (commentId: number) => {
-        await deleteCommentApi(postId, commentId, target);
-        setData((comments) =>
-            comments.filter((comment) => comment.id !== commentId),
-        );
-    };
-
-    return { data, loading, createComment, updateComment, deleteComment };
-}
+  return {
+    data: query.data ?? [],
+    loading: query.isPending,
+    createComment: async (content: string) => {
+      await createMutation.mutateAsync(content);
+    },
+    updateComment: async (commentId: number, content: string) => {
+      await updateMutation.mutateAsync({ commentId, content });
+    },
+    deleteComment: async (commentId: number) => {
+      await deleteMutation.mutateAsync(commentId);
+    },
+  };
+};

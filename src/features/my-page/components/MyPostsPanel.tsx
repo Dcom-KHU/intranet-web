@@ -10,7 +10,7 @@ import type { MyPostDto, MyPostType } from "../types/my.types";
 import ActivityBoardBadge from "./ActivityBoardBadge";
 import { GoTrash } from "react-icons/go";
 import ConfirmDeleteModal from "../../../components/ui/ConfirmDeleteModal";
-import { deleteMyPost } from "../api/my-activity.api";
+import { useMyActivityMutations } from "../hooks/useMyActivityMutations";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -49,6 +49,7 @@ export default function MyPostsPanel({
   isAdmin: _isAdmin,
 }: MyPostsPanelProps) {
   const navigate = useNavigate();
+  const { deleteMyPost } = useMyActivityMutations();
   const [currentPage, setCurrentPage] = useState(1);
   const [deleteTarget, setDeleteTarget] = useState<MyPostDto | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -63,7 +64,7 @@ export default function MyPostsPanel({
 
     setIsDeleting(true);
     try {
-      await deleteMyPost(deleteTarget.id, deleteTarget.type);
+      await deleteMyPost({ id: deleteTarget.id, type: deleteTarget.type });
       setDeleteTarget(null);
 
       if (data.length === 1 && currentPage > 1) {

@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { queryKeys } from "../../../app/query-keys";
 
 import { getExamArchiveById } from "../api/exam-archive.api";
 import {
@@ -18,7 +19,7 @@ const ERROR_MESSAGES: Record<DetailQueryErrorType, string> = {
 export const useExamArchiveDetail = (id: number) => {
   const isValidId = Number.isInteger(id) && id > 0;
   const query = useQuery({
-    queryKey: ["exam-archive-detail", id],
+    queryKey: queryKeys.examArchives.detail(id),
     queryFn: ({ signal }) => getExamArchiveById(id, signal),
     enabled: isValidId,
     retry: false,

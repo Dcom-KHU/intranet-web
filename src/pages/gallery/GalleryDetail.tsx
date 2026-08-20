@@ -15,7 +15,7 @@ import useAuth from "../../features/auth/hooks/useAuth";
 import CommentSection from "../../features/comment/components/CommentSection";
 import { useGalleryDetail } from "../../features/gallery/hooks/useGalleryDetail";
 import PageBackButton from "../../components/ui/PageBackButton";
-import { deleteGalleryPost } from "../../features/gallery/api/gallery.api";
+import { useGalleryMutations } from "../../features/gallery/hooks/useGalleryMutations";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import AuthenticatedImage from "../../components/ui/AuthenticatedImage";
 
@@ -26,6 +26,7 @@ const GalleryDetail = () => {
   const postId = Number(id);
   const { data: gallery, loading, error } = useGalleryDetail(postId);
   const { currentUser } = useAuth();
+  const { deleteGallery } = useGalleryMutations();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -33,7 +34,7 @@ const GalleryDetail = () => {
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
-      await deleteGalleryPost(postId);
+      await deleteGallery(postId);
       navigate("/gallery");
     } catch (deleteError) {
       console.error("활동 사진 삭제 실패:", deleteError);

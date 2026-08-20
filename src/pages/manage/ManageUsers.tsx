@@ -14,10 +14,7 @@ import ManageUserDetailModal from "../../features/manage/components/ManageUserDe
 import Modal from "../../components/ui/Modal";
 import useAuth from "../../features/auth/hooks/useAuth";
 import { AUTH_QUERY_KEY } from "../../features/auth/constants/auth.constants";
-import {
-  deleteManagedUser,
-  transferAdmin,
-} from "../../features/manage/api/manage.api";
+import { useManageMutations } from "../../features/manage/hooks/useManageMutations";
 import ManagedUserName from "../../features/manage/components/ManagedUserName";
 
 type SortType = "lastLogin" | "studentNumber" | "name";
@@ -38,6 +35,7 @@ const ManageUsers = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { currentUser } = useAuth();
+  const { deleteManagedUser, transferAdmin } = useManageMutations();
   const [sortType, setSortType] = useState<SortType>("lastLogin");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [appliedKeyword, setAppliedKeyword] = useState("");
@@ -102,7 +100,7 @@ const ManageUsers = () => {
 
     setIsTransferring(true);
     try {
-      await transferAdmin(currentUser.id, transferTarget.id);
+      await transferAdmin({ userId: currentUser.id, targetUserId: transferTarget.id });
       setTransferTarget(null);
       await queryClient.invalidateQueries({ queryKey: AUTH_QUERY_KEY });
       window.alert("관리자 권한이 이양되었습니다.");

@@ -1,13 +1,14 @@
 import UploadForm from "../../features/upload/components/UploadForm";
 import { useNavigate } from "react-router-dom";
-import { createInfoPosts } from "../../features/info-sharing/api/info-sharing.api";
+import { useInfoMutations } from "../../features/info-sharing/hooks/useInfoMutations";
 import type { UploadPostDraft } from "../../features/upload/types/upload.type";
 
 export default function InfoSharingUpload() {
   const navigate = useNavigate();
+  const { createInfo } = useInfoMutations();
 
   const handleUpload = async (posts: UploadPostDraft[]) => {
-    await createInfoPosts(posts);
+    await createInfo(posts);
     navigate("/info");
   };
 

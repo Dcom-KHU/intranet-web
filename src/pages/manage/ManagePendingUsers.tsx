@@ -5,7 +5,7 @@ import { Button } from "../../components/ui/Button";
 import PageBackButton from "../../components/ui/PageBackButton";
 import Pagination from "../../components/ui/Pagination";
 import { usePendingUsers } from "../../features/manage/hooks/usePendingUsers";
-import { approveUser, rejectUser } from "../../features/manage/api/manage.api";
+import { useManageMutations } from "../../features/manage/hooks/useManageMutations";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import ManageUserDetailModal from "../../features/manage/components/ManageUserDetailModal";
 
@@ -15,6 +15,7 @@ const ManagePendingUsers = () => {
   const [rejectUserId, setRejectUserId] = useState<number | null>(null);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const { data, loading, error, refetch } = usePendingUsers(page, 10);
+  const { approveUser, rejectUser } = useManageMutations();
 
   const handleUser = async (userId: number, action: "approve" | "reject") => {
     if (processingUserId !== null) return;

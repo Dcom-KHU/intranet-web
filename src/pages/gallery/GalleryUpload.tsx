@@ -1,13 +1,14 @@
 import UploadForm from "../../features/upload/components/UploadForm";
 import { useNavigate } from "react-router-dom";
-import { createGalleryPosts } from "../../features/gallery/api/gallery.api";
+import { useGalleryMutations } from "../../features/gallery/hooks/useGalleryMutations";
 import type { UploadPostDraft } from "../../features/upload/types/upload.type";
 
 export default function GalleryUpload() {
   const navigate = useNavigate();
+  const { createGallery } = useGalleryMutations();
 
   const handleUpload = async (posts: UploadPostDraft[]) => {
-    await createGalleryPosts(posts);
+    await createGallery(posts);
     navigate("/gallery");
   };
 

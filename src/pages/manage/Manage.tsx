@@ -15,12 +15,13 @@ import { Button } from "../../components/ui/Button";
 import Container from "../../components/ui/Container";
 import { useAdminDashboard } from "../../features/manage/hooks/useAdminDashboard";
 import type { DashboardSignupRequest } from "../../features/manage/types/manage-dashboard.type";
-import { approveUser, rejectUser } from "../../features/manage/api/manage.api";
+import { useManageMutations } from "../../features/manage/hooks/useManageMutations";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 
 const Manage = () => {
   const navigate = useNavigate();
   const { data: dashboard, loading, error, refetch } = useAdminDashboard();
+  const { approveUser, rejectUser } = useManageMutations();
   const [pendingUsers, setPendingUsers] = useState<DashboardSignupRequest[]>([]);
   const [pendingCount, setPendingCount] = useState(0);
   const [totalUserCount, setTotalUserCount] = useState(0);

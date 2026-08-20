@@ -10,7 +10,8 @@ import useAuth from "../../features/auth/hooks/useAuth";
 import UserDisplayName from "../../components/ui/UserDisplay";
 import PageBackButton from "../../components/ui/PageBackButton";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
-import { deleteNotice, downloadNoticeFile } from "../../features/notice/api/notice.api";
+import { downloadNoticeFile } from "../../features/notice/api/notice.api";
+import { useNoticeMutations } from "../../features/notice/hooks/useNoticeMutations";
 import ConvertTime from "../../components/ConvertTime";
 
 
@@ -23,6 +24,7 @@ const NoticeDetail = () => {
   const isAdmin = currentUser?.role === "ADMIN";
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const { deleteNotice } = useNoticeMutations();
 
   const handleDelete = async () => {
     setIsDeleting(true);

@@ -1,27 +1,21 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { queryKeys } from "../../../app/query-keys";
 import { getGalleryById } from "../api/gallery.api";
-import { type GalleryPostDetail } from "../types/gallery-post.type";
 
 export const useGalleryDetail = (id: number) => {
-  const [data, setData] = useState<GalleryPostDetail | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  useEffect(() => {
-    if (!id) return;
-
-    setLoading(true);
-    setError(null);
-
-    getGalleryById(id)
-      .then(setData)
-      .catch(setError)
-      .finally(() => setLoading(false));
-  }, [id]);
+  const isValidId = Number.isInteger(id) && id > 0;
+  const query = useQuery({
+    queryKey: queryKeys.gallery.detail(id),
+    queryFn: () => getGalleryById(id),
+    enabled: isValidId,
+  });
 
   return {
-    data,
-    loading,
-    error,
+    data: query.data ?? null,
+    loading: isValidId && query.isPending,
+    error: !isValidId
+      ? new Error("올바르지 않은 활동사진 ID입니다.")
+      : query.error,
+    refetch: query.refetch,
   };
 };

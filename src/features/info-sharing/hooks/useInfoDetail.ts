@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { queryKeys } from "../../../app/query-keys";
 
 import { getInfoDetailById } from "../api/info-sharing.api";
 import {
@@ -18,7 +19,7 @@ const ERROR_MESSAGES: Record<DetailQueryErrorType, string> = {
 export const useInfoDetail = (id: number) => {
   const isValidId = Number.isInteger(id) && id > 0;
   const query = useQuery({
-    queryKey: ["info-post-detail", id],
+    queryKey: queryKeys.infoPosts.detail(id),
     queryFn: ({ signal }) => getInfoDetailById(id, signal),
     enabled: isValidId,
     retry: false,

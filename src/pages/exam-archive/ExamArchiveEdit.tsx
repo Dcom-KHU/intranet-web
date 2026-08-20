@@ -3,7 +3,7 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import UploadForm from "../../features/upload/components/UploadForm";
 import Loading from "../../components/Loading";
 import useAuth from "../../features/auth/hooks/useAuth";
-import { updateExamPost } from "../../features/exam-archive/api/exam-archive.api";
+import { useExamArchiveMutations } from "../../features/exam-archive/hooks/useExamArchiveMutations";
 import { useExamArchiveDetail } from "../../features/exam-archive/hooks/useExamArchiveDetail";
 import DetailQueryError from "../../components/DetailQueryError";
 
@@ -13,6 +13,7 @@ const ExamArchiveEdit = () => {
   const archivePostId = Number(archiveId);
   const postId = Number(postIdParam);
   const { currentUser } = useAuth();
+  const { updateExamArchive } = useExamArchiveMutations();
   const {
     data: archive,
     loading,
@@ -81,7 +82,7 @@ const ExamArchiveEdit = () => {
         deleteFileIds: [],
       }}
       onSubmit={async (draft) => {
-        await updateExamPost(archivePostId, postId, draft);
+        await updateExamArchive({ archiveId: archivePostId, recordId: postId, post: draft });
         navigate(`/exam-archive/${archivePostId}`);
       }}
       onCancel={() => navigate(`/exam-archive/${archivePostId}`)}
