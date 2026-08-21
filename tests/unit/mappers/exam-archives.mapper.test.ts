@@ -16,6 +16,6 @@ describe("exam archive request mapper", () => {
   });
 
   it("수정 요청에서 시험 유형 코드와 삭제 파일 ID를 유지한다", () => {
-    expect(toUpdateExamArchiveRequest(draft)).toMatchObject({ examYear: null, semester: null, examType: "FINAL", deleteFileIds: [11], content: "시험 범위" });
+    expect(toUpdateExamArchiveRequest(draft)).toMatchObject({ subjectName: "자료구조", professorName: "홍길동", examYear: null, semester: null, examType: "FINAL", deleteFileIds: [11], content: "시험 범위" });
   });
 });
