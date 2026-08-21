@@ -47,7 +47,15 @@ const ExamArchiveEdit = () => {
     return <Navigate to={`/exam-archive/${archivePostId}`} replace />;
   }
 
-  const examTypeLabel = post.examType === "FINAL" ? "기말고사" : "중간고사";
+  const examTypeLabels = {
+    MIDTERM: "중간고사",
+    FINAL: "기말고사",
+    QUIZ: "퀴즈",
+    ASSIGNMENT: "과제",
+  } as const;
+  const examTypeLabel = post.examType
+    ? examTypeLabels[post.examType]
+    : "중간고사";
   const existingFileItems = (post.files ?? []).filter(
     (file) => typeof file !== "string",
   );

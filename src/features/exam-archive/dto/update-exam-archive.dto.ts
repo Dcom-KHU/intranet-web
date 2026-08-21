@@ -1,6 +1,8 @@
 import type { ExamSemesterDto, ExamTypeDto } from "./exam-archives.dto";
 
 export interface UpdateExamArchiveRequestDto {
+  subjectName: string;
+  professorName: string;
   examYear: number | null;
   semester: ExamSemesterDto | null;
   examType: ExamTypeDto | null;

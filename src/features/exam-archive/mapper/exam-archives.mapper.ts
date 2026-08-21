@@ -55,20 +55,19 @@ export const toCreateExamArchiveRequest = (
 export const toUpdateExamArchiveRequest = (
   post: UploadPostDraft,
 ): UpdateExamArchiveRequestDto => {
-  const examTypeMap = {
-    중간고사: "MIDTERM",
-    기말고사: "FINAL",
-  } as const;
+  const selectedExamType = post.examType.trim()
+    ? toCreateExamType(post.examType)
+    : post.examTypeCode;
 
   return {
+    subjectName: normalizeExamSubject(post.subject),
+    professorName: post.professor.trim(),
     examYear: post.examYear,
     semester:
       post.semesterCode === "FIRST" || post.semesterCode === "SECOND"
         ? post.semesterCode
         : null,
-    examType:
-      examTypeMap[post.examType as keyof typeof examTypeMap] ??
-      post.examTypeCode,
+    examType: selectedExamType,
     content: htmlToText(post.descriptionHtml),
     deleteFileIds: post.deleteFileIds,
   };
@@ -92,6 +91,8 @@ const semesterLabels: Record<ExamSemesterDto, string> = {
 const examTypeLabels: Record<ExamTypeDto, string> = {
   MIDTERM: "중간고사",
   FINAL: "기말고사",
+  QUIZ: "퀴즈",
+  ASSIGNMENT: "과제",
 };
 
 const toSemesterLabel = (dto: ExamArchiveRecordDto) => {

@@ -13,7 +13,7 @@ export type UploadPostDraft = {
   semester: string;
   semesterCode: "FIRST" | "SECOND" | "SUMMER" | "WINTER" | "UNKNOWN" | null;
   examType: string;
-  examTypeCode: "MIDTERM" | "FINAL" | null;
+  examTypeCode: "MIDTERM" | "FINAL" | "QUIZ" | "ASSIGNMENT" | null;
   title: string;
   date: string;
   location: string;
