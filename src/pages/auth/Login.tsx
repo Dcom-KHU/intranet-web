@@ -108,10 +108,20 @@ const Login = () => {
 
           <Button 
             type="submit" 
-            className="w-full"
+            className="relative flex min-h-10 w-full items-center justify-center disabled:cursor-wait disabled:opacity-80"
             disabled={login.isPending}
+            aria-busy={login.isPending}
           >
-            Login
+            <span className={login.isPending ? "invisible" : "visible"}>
+              Login
+            </span>
+            {login.isPending && (
+              <span
+                className="absolute size-5 animate-spin rounded-full border-2 border-white/40 border-t-white"
+                role="status"
+                aria-label="로그인 처리 중"
+              />
+            )}
           </Button>
 
           <div className="mt-5 flex justify-center items-center text-xs text-gray-500">
