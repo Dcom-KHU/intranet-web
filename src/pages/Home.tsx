@@ -59,47 +59,59 @@ const Home = () => {
                     </Container>
 
                     <Container title="공지사항" icon={IoNotificationsOutline} onViewAllClick={() => navigate("/notice")}>
-                        {notices?.slice(0, 5).map(item => (
-                            <div
-                                key={item.id}
-                                className="flex py-1 text-sm hover:font-bold cursor-pointer items-center justify-between overflow-hidden"
-                                onClick={() => navigate(`/notice/${item.id}`)}
-                            >
-                                <p className="min-w-0 truncate">
-                                    <span className="inline">
-                                    {item.title.length > 21
-                                        ? `${item.title.slice(0, 21)}...`
-                                        : item.title}
-                                    </span>
-                                </p>
-                                <p className="text-gray-400 text-xs flex-shrink-0 ml-2">
-                                    {item.date}
-                                </p>
+                        {notices?.length === 0 ? (
+                            <div className="min-h-[180px] flex items-center justify-center text-sm text-gray-400">
+                                현재 공지사항 게시글이 없습니다.
                             </div>
-                        ))}
+                        ) : (
+                            notices?.slice(0, 5).map(item => (
+                                <div
+                                    key={item.id}
+                                    className="flex py-1 text-sm hover:font-bold cursor-pointer items-center justify-between overflow-hidden"
+                                    onClick={() => navigate(`/notice/${item.id}`)}
+                                >
+                                    <p className="min-w-0 truncate">
+                                        <span className="inline">
+                                        {item.title.length > 21
+                                            ? `${item.title.slice(0, 21)}...`
+                                            : item.title}
+                                        </span>
+                                    </p>
+                                    <p className="text-gray-400 text-xs flex-shrink-0 ml-2">
+                                        {item.date}
+                                    </p>
+                                </div>
+                            ))
+                        )}
                     </Container> 
 
                     <Container title="정보공유" icon={IoChatbubbleOutline} onViewAllClick={() => navigate("/info")}>
-                        {infos?.slice(0, 5).map(item => (
-                            <div
-                                key={item.id}
-                                className="flex py-1 text-sm hover:font-bold cursor-pointer items-center justify-between overflow-hidden"
-                                onClick={() => navigate(`/info/${item.id}`)}
-                            >
-                                <p className="min-w-0 truncate">
-                                    {item.author.name}
-                                    {" | "}
-                                    <span className="inline">
-                                        {item.title.length > 18
-                                            ? `${item.title.slice(0, 18)}...`
-                                            : item.title}
-                                    </span>
-                                </p>
-                                <p className="text-gray-400 text-xs flex-shrink-0 ml-2">
-                                    {item.date}
-                                </p>
+                        {infos?.length === 0 ? (
+                            <div className="min-h-[180px] flex items-center justify-center text-sm text-gray-400">
+                                현재 정보공유 게시글이 없습니다.
                             </div>
-                        ))}
+                        ) : (
+                            infos?.slice(0, 5).map(item => (
+                                <div
+                                    key={item.id}
+                                    className="flex py-1 text-sm hover:font-bold cursor-pointer items-center justify-between overflow-hidden"
+                                    onClick={() => navigate(`/info/${item.id}`)}
+                                >
+                                    <p className="min-w-0 truncate">
+                                        {item.author.name}
+                                        {" | "}
+                                        <span className="inline">
+                                            {item.title.length > 18
+                                                ? `${item.title.slice(0, 18)}...`
+                                                : item.title}
+                                        </span>
+                                    </p>
+                                    <p className="text-gray-400 text-xs flex-shrink-0 ml-2">
+                                        {item.date}
+                                    </p>
+                                </div>
+                            ))
+                        )}
                     </Container>       
                     
                     
@@ -107,15 +119,21 @@ const Home = () => {
                     <div className="lg:col-span-3 [&>div]:h-full">
                         <Container title="활동사진" icon={IoImageOutline} onViewAllClick={() => navigate("/gallery")}>
                             <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-                                {galleryPost.slice(0,4).map((item) => (
-                                    <AuthenticatedImage
-                                        key={item.id}
-                                        src={item.imageUrl} 
-                                        alt={item.title} 
-                                        className="h-40 w-full cursor-pointer rounded-lg object-cover transition hover:opacity-80 sm:h-20 lg:h-40"
-                                        onClick={() => navigate(`/gallery/${item.id}`)}
-                                    />
-                                ))}
+                                {galleryPost?.length === 0 ? (
+                                    <div className="col-span-full min-h-[100px] flex items-center justify-center text-sm text-gray-400">
+                                        현재 활동사진 게시글이 없습니다.
+                                    </div>
+                                ) : (
+                                    galleryPost?.slice(0,4).map((item) => (
+                                        <AuthenticatedImage
+                                            key={item.id}
+                                            src={item.imageUrl} 
+                                            alt={item.title} 
+                                            className="h-40 w-full cursor-pointer rounded-lg object-cover transition hover:opacity-80 sm:h-20 lg:h-40"
+                                            onClick={() => navigate(`/gallery/${item.id}`)}
+                                        />
+                                    ))
+                                )}
                             </div>
                             
                         </Container>
