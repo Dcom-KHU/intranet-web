@@ -22,7 +22,6 @@ const NoticeDetail = () => {
   const { data: notice, loading, error } = useNoticeDetail(noticeId);
   const navigate = useNavigate();
   const { currentUser } = useAuth();
-  const isAdmin = currentUser?.role === "ADMIN";
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const { deleteNotice } = useNoticeMutations();
@@ -90,7 +89,7 @@ const NoticeDetail = () => {
                   </ul>
                 ) : null}
   
-                {isAdmin && (
+                {currentUser?.role === "ADMIN" && (
                   <div className="absolute bottom-6 right-6 flex items-center gap-3">
                     <button
                       type="button"
