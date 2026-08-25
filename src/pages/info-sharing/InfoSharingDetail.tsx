@@ -114,7 +114,10 @@ const InfoSharingDetail = () => {
                                 <HiOutlinePencil size={16} />
                             </button>
                           )}
-                          {currentUser?.role === "ADMIN" && (
+                          {(
+                            currentUser?.studentNumber === info.author.studentNumber || 
+                            currentUser?.role === "ADMIN" 
+                          ) && (
                             <button
                                 type="button"
                                 aria-label="삭제"
