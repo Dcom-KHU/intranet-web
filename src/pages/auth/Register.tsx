@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Input from "../../components/ui/Input";
+import PasswordInput from "../../components/ui/PasswordInput";
 import InputLabel from "../../components/ui/InputLabel";
 import { Button } from "../../components/ui/Button";
 import Modal from "../../components/ui/Modal";
@@ -10,8 +11,8 @@ import PageBackButton from "@/components/ui/PageBackButton";
 const ErrorMessage = ({ message }: { message?: string }) =>
   message ? <p className="mt-1 text-xs text-red-500">{message}</p> : null;
 
-const GreenCheck = () => (
-  <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-green-500 text-base">
+const GreenCheck = ({ className = "right-3" }: { className?: string }) => (
+  <span className={`pointer-events-none absolute inset-y-0 ${className} flex items-center text-green-500 text-base`}>
     ✓
   </span>
 );
@@ -134,7 +135,7 @@ const Register = () => {
               <div className="relative flex-1">
                 <Input
                   type="text"
-                  placeholder="Enter your user ID"
+                  placeholder="ID를 입력해주세요"
                   value={userID}
                   onChange={(e) => handleUserIDChange(e.target.value)}
                 />
@@ -156,13 +157,14 @@ const Register = () => {
           <div className="mb-6">
             <InputLabel>비밀번호</InputLabel>
             <div className="relative">
-              <Input
-                type="password"
-                placeholder="Enter your password"
+              <PasswordInput
+                placeholder="비밀번호를 입력해주세요"
                 value={password}
+                autoComplete="new-password"
+                className="pr-16"
                 onChange={(e) => handlePasswordChange(e.target.value)}
               />
-              {isPasswordValid && <GreenCheck />}
+              {isPasswordValid && <GreenCheck className="right-10" />}
             </div>
             <ErrorMessage message={errors.password} />
           </div>
@@ -170,13 +172,14 @@ const Register = () => {
           <div className="mb-8">
             <InputLabel>비밀번호 확인</InputLabel>
             <div className="relative">
-              <Input
-                type="password"
+              <PasswordInput
                 placeholder="비밀번호를 다시 입력해주세요"
                 value={confirmPassword}
+                autoComplete="new-password"
+                className="pr-16"
                 onChange={(e) => handleConfirmPasswordChange(e.target.value)}
               />
-              {isConfirmPasswordValid && <GreenCheck />}
+              {isConfirmPasswordValid && <GreenCheck className="right-10" />}
             </div>
             <ErrorMessage message={errors.confirmPassword} />
           </div>
