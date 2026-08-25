@@ -22,7 +22,6 @@ const NoticeDetail = () => {
   const { data: notice, loading, error } = useNoticeDetail(noticeId);
   const navigate = useNavigate();
   const { currentUser } = useAuth();
-  const isAdmin = currentUser?.role === "ADMIN";
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const { deleteNotice } = useNoticeMutations();
@@ -48,13 +47,12 @@ const NoticeDetail = () => {
   return(
     <div className="px-4 py-8 sm:px-6 lg:px-20">
         <PageBackButton fallbackPath="/notice" />
+        <h1 className="text-2xl font-bold ml-1 text-[#0F2854]">
+          {notice.title}
+        </h1>
 
         <section className="overflow-hidden mt-7 rounded-2xl border border-gray-200">
-          <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-7 py-4">
-            <h2 className="text-sm font-semibold text-[#0F2854]">
-              {notice.title}
-            </h2>
-          </div>
+          
   
           <div className="bg-white">
               <article
@@ -90,7 +88,7 @@ const NoticeDetail = () => {
                   </ul>
                 ) : null}
   
-                {isAdmin && (
+                {currentUser?.role === "ADMIN" && (
                   <div className="absolute bottom-6 right-6 flex items-center gap-3">
                     <button
                       type="button"

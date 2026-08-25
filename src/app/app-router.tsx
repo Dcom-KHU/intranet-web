@@ -102,6 +102,11 @@ const protectedRoutes: AppRoute[] = [
     protected: true,
   },
   {
+    path: "/exam-archive/:archiveId/upload",
+    element: <ExamArchiveUpload />,
+    protected: true,
+  },
+  {
     path: "/exam-archive/:id",
     element: <ExamArchiveDetail />,
     protected: true,

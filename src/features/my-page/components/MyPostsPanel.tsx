@@ -12,6 +12,7 @@ import { GoTrash } from "react-icons/go";
 import ConfirmDeleteModal from "../../../components/ui/ConfirmDeleteModal";
 import { useMyActivityMutations } from "../hooks/useMyActivityMutations";
 import { logClientError } from "../../../utils/logger";
+import { getMyPostDeletionId } from "../utils/myPost";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -55,9 +56,18 @@ export default function MyPostsPanel() {
   const handleDelete = async () => {
     if (!deleteTarget || isDeleting) return;
 
+    // 게시글이 족보인지 확인하고, 족보라면 recordId를 id로 설정 
+    const deletionId = getMyPostDeletionId(deleteTarget);
+    if (deletionId === null) {
+      setDeleteTarget(null);
+      window.alert("삭제할 게시글 정보를 확인할 수 없습니다.");
+      return;
+    }
+
     setIsDeleting(true);
     try {
-      await deleteMyPost({ id: deleteTarget.id, type: deleteTarget.type });
+      // 족보는 id(archive ID) 대신 recordId를 사용하여 삭제 요청을 보내야 함
+      await deleteMyPost({ id: deletionId, type: deleteTarget.type });
       setDeleteTarget(null);
 
       if (data.length === 1 && currentPage > 1) {
@@ -133,7 +143,9 @@ export default function MyPostsPanel() {
         <DataTable
           columns={columns}
           data={data}
-          rowKey={(post) => `${post.type}-${post.id}`}
+          rowKey={(post) =>
+            `${post.type}-${post.id}-${post.type === "archives" ? post.recordId : "post"}`
+          }
           onRowClick={(post) => {
             const { path } = getPostTypeMeta(post.type);
 
