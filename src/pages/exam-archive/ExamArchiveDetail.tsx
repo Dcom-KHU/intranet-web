@@ -63,7 +63,15 @@ const ExamArchiveDetail = () => {
       <PageBackButton fallbackPath="/exam-archive" />
 
       <div className="mb-8 flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold text-[#4988C4] whitespace-nowrap">족보</h1>
+        <div className="flex flex-col gap-2 ml-1 mt-2">
+          <h3 className="text-sm font-semibold text-[#4988C4] whitespace-nowrap">족보</h3>
+          <div className="flex flex-row gap-3 items-baseline">
+            <h1 className="text-3xl font-bold text-[#0F2854]">
+              {data.subject}
+            </h1>
+            <span className="text-sm text-gray-500"><strong>{data.professor}</strong> 교수님</span>
+          </div>
+        </div>
 
         <Button
           variant="third"
@@ -76,12 +84,7 @@ const ExamArchiveDetail = () => {
       </div>
 
       <section className="overflow-hidden rounded-2xl border border-gray-200">
-        <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-7 py-4">
-          <h2 className="text-sm font-semibold text-[#0F2854]">
-            {data.subject}
-          </h2>
-          <span className="text-sm text-gray-500">{data.professor} 교수님</span>
-        </div>
+        
 
         <div className="bg-white">
           {data.posts.map((post) => (

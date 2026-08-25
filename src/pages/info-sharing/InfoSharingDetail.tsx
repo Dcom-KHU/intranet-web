@@ -60,12 +60,12 @@ const InfoSharingDetail = () => {
         <div className="px-4 py-8 sm:px-6 lg:px-20">
             <PageBackButton fallbackPath="/info" />
 
+            <h1 className="text-2xl font-bold ml-1 text-[#0F2854]">
+                {info.title}
+            </h1>
+
             <section className="overflow-hidden mt-7 rounded-2xl border border-gray-200">
-                <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-7 py-4">
-                    <h2 className="text-sm font-semibold text-[#0F2854]">
-                        {info.title}
-                    </h2>
-                </div>
+                
         
                 <div className="bg-white">
                     <article
