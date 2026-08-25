@@ -26,6 +26,7 @@ export interface GalleryAlbumDetailDto {
   albumId: number;
   eventName: string;
   activityDate: string;
+  place?: string | null;
   imageList: string[];
   description: string;
 }

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { IoCalendarOutline } from "react-icons/io5";
+import { IoCalendarOutline, IoLocationOutline } from "react-icons/io5";
 import { HiPhotograph } from "react-icons/hi";
 import AuthenticatedImage from "./AuthenticatedImage";
 
@@ -19,6 +19,8 @@ type GalleryCardProps = BaseCardProps & {
 type DetailCardProps = BaseCardProps & {
   variant: "detail";
   description?: string;
+  location?: string;
+  actions?: ReactNode;
   children: ReactNode;
   imageUrl?: never;
   imageCount?: never;
@@ -28,7 +30,15 @@ type CardProps = GalleryCardProps | DetailCardProps;
 
 const Card = (props: CardProps) => {
   if (props.variant === "detail") {
-    const { title, date, description, children, onClick } = props;
+    const {
+      title,
+      date,
+      location,
+      description,
+      actions,
+      children,
+      onClick,
+    } = props;
 
     return (
       <article
@@ -45,12 +55,24 @@ const Card = (props: CardProps) => {
               <IoCalendarOutline size={14} />
               {date}
             </span>
+            {location && (
+              <span className="flex items-center gap-1">
+                <IoLocationOutline size={14} />
+                {location}
+              </span>
+            )}
           </div>
 
           {description && (
             <p className="mt-7 whitespace-pre-line text-sm leading-6 text-[#0F2854]">
               {description}
             </p>
+          )}
+
+          {actions && (
+            <div className="mt-6 flex items-center justify-end gap-3">
+              {actions}
+            </div>
           )}
         </div>
       </article>

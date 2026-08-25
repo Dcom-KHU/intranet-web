@@ -17,6 +17,7 @@ export const toCreateGalleryRequest = (
 ): CreateGalleryRequestDto => ({
   eventName: post.title,
   activityDate: post.date,
+  place: post.location.trim(),
   description: htmlToText(post.descriptionHtml),
 });
 
@@ -25,6 +26,7 @@ export const toUpdateGalleryRequest = (
 ): UpdateGalleryRequestDto => ({
   eventName: post.title,
   activityDate: post.date,
+  place: post.location.trim(),
   description: htmlToText(post.descriptionHtml),
 });
 
@@ -47,6 +49,7 @@ export const toGalleryPostDetail = (
   id: response.albumId,
   title: response.eventName,
   date: formatDate(response.activityDate),
+  location: response.place?.trim() || undefined,
   description: response.description,
   images: response.imageList,
 });

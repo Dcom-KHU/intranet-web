@@ -8,6 +8,7 @@ export const queryKeys = {
   },
   gallery: {
     all: ["gallery"] as const,
+    lists: ["gallery", "list"] as const,
     list: (page: number, size: number, keyword: string) =>
       ["gallery", "list", page, size, keyword] as const,
     detail: (id: number) => ["gallery", "detail", id] as const,

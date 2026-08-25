@@ -10,6 +10,7 @@ import { logClientError } from "../../utils/logger";
 
 type AuthenticatedImageProps = Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> & {
   src: string;
+  imageClassName?: string;
 };
 
 type AuthenticatedImageState = {
@@ -21,6 +22,7 @@ const AuthenticatedImage = ({
   src,
   alt,
   className = "",
+  imageClassName = "h-full w-full object-cover",
   ...imageProps
 }: AuthenticatedImageProps) => {
   const [image, setImage] = useState<AuthenticatedImageState | null>(null);
@@ -77,7 +79,7 @@ const AuthenticatedImage = ({
         <img
           src={imageSrc}
           alt={alt}
-          className="h-full w-full object-cover"
+          className={imageClassName}
           {...restImageProps}
         />
       )}

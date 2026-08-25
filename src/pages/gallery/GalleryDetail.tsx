@@ -64,44 +64,70 @@ const GalleryDetail = () => {
   }
 
   return (
-    <div className="px-4 py-8 sm:px-6 lg:px-20">
-      <PageBackButton fallbackPath="/gallery" />
+    <div className="px-6 py-8 sm:px-10 lg:px-16">
+      <div className="mx-auto w-full max-w-[760px]">
+        <PageBackButton fallbackPath="/gallery" />
 
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-xl font-bold text-[#4988C4]">활동 사진</h1>
-      </div>
+        <div className="mb-5 flex items-center justify-between">
+          <h1 className="text-xl font-bold text-[#4988C4]">활동 사진</h1>
+        </div>
 
-      <div className="relative">
+        <div>
         <Card
           variant="detail"
           title={gallery.title}
           date={gallery.date}
+          location={gallery.location}
           description={gallery.description}
+          actions={
+            currentUser?.role === "ADMIN" ? (
+              <>
+                <button
+                  type="button"
+                  aria-label="활동 사진 수정"
+                  className="text-gray-400 transition-all [#4988C4]"
+                  onClick={() => navigate(`/gallery/${postId}/edit`)}
+                >
+                  <HiOutlinePencil size={16} />
+                </button>
+                <button
+                  type="button"
+                  aria-label="활동 사진 삭제"
+                  disabled={isDeleting}
+                  className="text-gray-400 transition-all red-400 disabled:cursor-not-allowed disabled:opacity-50"
+                  onClick={() => setIsDeleteModalOpen(true)}
+                >
+                  <GoTrash size={16} />
+                </button>
+              </>
+            ) : undefined
+          }
         >
-          <div className="relative">
+          <div className="relative aspect-video w-full overflow-hidden">
             <button
               type="button"
               aria-label="이전 사진"
-              className="gallery-prev absolute left-3 top-1/2 z-10 -translate-y-1/2 p-2 text-white/80 transition-all hover:text-white"
+              className="gallery-prev absolute left-2 top-1/2 z-10 -translate-y-1/2 p-1 text-white/80 transition-all hover:text-white"
             >
               <HiChevronLeft 
                 className="text-white/80 drop-shadow-[0_0_4px_rgba(0,0,0,0.6)] transition-all hover:text-blue-400"
-                size={36} 
+                size={28} 
               />
             </button>
 
             <button
               type="button"
               aria-label="다음 사진"
-              className="gallery-next absolute right-3 top-1/2 z-10 -translate-y-1/2 p-2 text-white/80 transition-all hover:text-white"
+              className="gallery-next absolute right-2 top-1/2 z-10 -translate-y-1/2 p-1 text-white/80 transition-all hover:text-white"
             >
               <HiChevronRight 
                 className="text-white/80 drop-shadow-[0_0_4px_rgba(0,0,0,0.6)] transition-all hover:text-blue-400"
-                size={36} 
+                size={28} 
               />
             </button>
 
             <Swiper
+              className="h-full w-full"
               modules={[Navigation, Pagination]}
               navigation={{
                 prevEl: ".gallery-prev",
@@ -112,46 +138,26 @@ const GalleryDetail = () => {
               onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
             >
               {gallery.images.map((image, index) => (
-                <SwiperSlide key={`${image}-${index}`}>
+                <SwiperSlide key={`${image}-${index}`} className="h-full">
                   <AuthenticatedImage
                     src={image}
                     alt={`${gallery.title} ${index + 1}`}
-                    className="h-[260px] w-full object-cover sm:h-[340px] lg:h-[420px]"
+                    className="h-full w-full"
+                    imageClassName="h-full w-full object-cover"
                   />
                 </SwiperSlide>
               ))}
             </Swiper>
 
-            <span className="absolute z-20 bottom-4 right-4 rounded-full bg-black/30 px-3 py-1 text-xs text-white">
+            <span className="absolute z-20 bottom-3 right-3 rounded-full bg-black/30 px-2.5 py-0.5 text-xs text-white">
               {activeIndex + 1} / {gallery.images.length}
             </span>
           </div>
         </Card>
+        </div>
 
-        {currentUser?.role === "ADMIN" && (
-          <div className="absolute bottom-6 right-6 flex items-center gap-3">
-            <button
-              type="button"
-              aria-label="활동 사진 수정"
-              className="text-gray-400 transition-all [#4988C4]"
-              onClick={() => navigate(`/gallery/${postId}/edit`)}
-            >
-              <HiOutlinePencil size={16} />
-            </button>
-            <button
-              type="button"
-              aria-label="활동 사진 삭제"
-              disabled={isDeleting}
-              className="text-gray-400 transition-all red-400 disabled:cursor-not-allowed disabled:opacity-50"
-              onClick={() => setIsDeleteModalOpen(true)}
-            >
-              <GoTrash size={16} />
-            </button>
-          </div>
-        )}
+        <CommentSection postId={postId} target="photo-posts" />
       </div>
-
-      <CommentSection postId={postId} target="photo-posts" />
       <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}
         description="삭제한 활동 사진 게시글은 복구할 수 없습니다."

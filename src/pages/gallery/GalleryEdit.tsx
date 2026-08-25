@@ -25,6 +25,7 @@ const GalleryEdit = () => {
       initialPost={{
         title: gallery.title,
         date: gallery.date,
+        location: gallery.location ?? "",
         descriptionHtml: gallery.description,
         existingFiles: gallery.images,
       }}

@@ -19,5 +19,6 @@ export interface GalleryPostDetail {
     title: string;
     description: string;
     date: string;
+    location?: string;
     images: string[];
 }
