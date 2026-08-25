@@ -84,8 +84,6 @@ const ExamArchiveDetail = () => {
       </div>
 
       <section className="overflow-hidden rounded-2xl border border-gray-200">
-        
-
         <div className="bg-white">
           {data.posts.map((post) => (
             <article
