@@ -97,9 +97,10 @@ const Gallery = () => {
           ))}
         </div>
         {!error && gallery.length === 0 && (
-          <p className="py-10 text-center text-sm text-gray-400">
+          <div className="flex min-h-[300px] w-full items-center justify-center text-center text-sm text-gray-400">
+
             {GALLERY_TEXT.empty}
-          </p>
+          </div>
         )}
         {error && (
           <p className="py-10 text-center text-sm text-red-500">{error}</p>
