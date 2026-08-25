@@ -17,6 +17,7 @@ import { AUTH_QUERY_KEY } from "../../features/auth/constants/auth.constants";
 import { useManageMutations } from "../../features/manage/hooks/useManageMutations";
 import ManagedUserName from "../../features/manage/components/ManagedUserName";
 import { logClientError } from "../../utils/logger";
+import { queryKeys } from "../../app/query-keys";
 
 type SortType = "lastLogin" | "studentNumber" | "name";
 
@@ -50,6 +51,9 @@ const ManageUsers = () => {
     name: string;
   } | null>(null);
   const [isTransferring, setIsTransferring] = useState(false);
+  const [transferResult, setTransferResult] = useState<
+    "success" | "error" | null
+  >(null);
 
   const { data, loading, error, refetch } = useManageUsers(
     page,
@@ -103,15 +107,25 @@ const ManageUsers = () => {
     try {
       await transferAdmin({ userId: currentUser.id, targetUserId: transferTarget.id });
       setTransferTarget(null);
-      await queryClient.invalidateQueries({ queryKey: AUTH_QUERY_KEY });
-      window.alert("관리자 권한이 이양되었습니다.");
-      navigate("/");
+      setTransferResult("success");
     } catch (requestError) {
       logClientError("관리자 권한 이양 실패", requestError);
-      window.alert("관리자 권한 이양에 실패했습니다.");
+      setTransferTarget(null);
+      setTransferResult("error");
     } finally {
       setIsTransferring(false);
     }
+  };
+
+  const closeTransferResultModal = () => {
+    const wasSuccessful = transferResult === "success";
+    setTransferResult(null);
+
+    if (!wasSuccessful) return;
+
+    navigate("/home", { replace: true });
+    queryClient.removeQueries({ queryKey: queryKeys.manage.all });
+    void queryClient.invalidateQueries({ queryKey: AUTH_QUERY_KEY });
   };
 
   if (loading) return <Loading />;
@@ -337,6 +351,23 @@ const ManageUsers = () => {
           isTransferring ? undefined : () => setTransferTarget(null)
         }
         labelledById="transfer-admin-modal-title"
+      />
+      <Modal
+        isOpen={transferResult !== null}
+        title={
+          transferResult === "success"
+            ? "관리자 권한이 이양되었습니다."
+            : "관리자 권한 이양에 실패했습니다."
+        }
+        description={
+          transferResult === "success"
+            ? "이제 일반 회원으로 전환됩니다."
+            : "잠시 후 다시 시도해주세요."
+        }
+        actionLabel="확인"
+        onAction={closeTransferResultModal}
+        onClose={closeTransferResultModal}
+        labelledById="transfer-admin-result-modal-title"
       />
     </div>
   );

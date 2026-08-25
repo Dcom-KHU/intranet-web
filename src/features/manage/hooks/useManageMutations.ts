@@ -10,7 +10,6 @@ export function useManageMutations() {
   const remove = useMutation({ mutationFn: deleteManagedUser, onSuccess: refresh });
   const transfer = useMutation({
     mutationFn: ({ userId, targetUserId }: { userId: number; targetUserId: number }) => transferAdmin(userId, targetUserId),
-    onSuccess: () => queryClient.invalidateQueries(),
   });
   return { approveUser: approve.mutateAsync, rejectUser: reject.mutateAsync, deleteManagedUser: remove.mutateAsync, transferAdmin: transfer.mutateAsync };
 }
