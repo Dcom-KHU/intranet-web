@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import useAuth from "../../auth/hooks/useAuth";
+import { AUTH_QUERY_KEY } from "../../auth/constants/auth.constants";
+import type UserDto from "../../auth/dto/user.dto";
 import type { User } from "../../auth/types/user.type";
 import { completePasswordReset } from "../../auth/utils/auth.utils";
 import { updateMySettings } from "../api/my-profile.api";
@@ -12,6 +15,7 @@ const toEditableUser = (
 ): User | null => (user ? { ...user, password: "" } : null);
 
 export function useProfileEdit() {
+  const queryClient = useQueryClient();
   const { currentUser, isAuthLoading } = useAuth();
   const [savedUser, setSavedUser] = useState<User | null>(null);
   const [saving, setSaving] = useState(false);
@@ -41,6 +45,18 @@ export function useProfileEdit() {
         studentNumber: updated.studentId,
         phoneNumber: updated.phoneNumber,
       });
+
+      queryClient.setQueryData<UserDto>(AUTH_QUERY_KEY, (cachedUser) =>
+        cachedUser
+          ? {
+              ...cachedUser,
+              name: updated.name,
+              email: updated.email,
+              studentId: updated.studentId,
+              phoneNumber: updated.phoneNumber,
+            }
+          : cachedUser,
+      );
 
       if (nextUser.password) {
         completePasswordReset();
