@@ -2,6 +2,7 @@ export const queryKeys = {
   home: ["home-dashboard"] as const,
   notices: {
     all: ["notices"] as const,
+    lists: ["notices", "list"] as const,
     list: (page: number, size: number, keyword: string) =>
       ["notices", "list", page, size, keyword] as const,
     detail: (id: number) => ["notices", "detail", id] as const,
@@ -15,6 +16,8 @@ export const queryKeys = {
   },
   examArchives: {
     all: ["exam-archives"] as const,
+    lists: ["exam-archives", "list"] as const,
+    searches: ["exam-archives", "search"] as const,
     list: (page: number, size: number) =>
       ["exam-archives", "list", page, size] as const,
     search: (keyword: string, page: number, size: number) =>
@@ -23,6 +26,7 @@ export const queryKeys = {
   },
   infoPosts: {
     all: ["info-posts"] as const,
+    lists: ["info-posts", "list"] as const,
     list: (page: number, size: number, keyword: string) =>
       ["info-posts", "list", page, size, keyword] as const,
     detail: (id: number) => ["info-posts", "detail", id] as const,
