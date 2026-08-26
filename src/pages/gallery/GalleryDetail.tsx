@@ -19,10 +19,12 @@ import { useGalleryMutations } from "../../features/gallery/hooks/useGalleryMuta
 import { logClientError } from "../../utils/logger";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import AuthenticatedImage from "../../components/ui/AuthenticatedImage";
+import useAlertModal from "../../components/ui/useAlertModal";
 
 
 const GalleryDetail = () => {
   const navigate = useNavigate();
+  const { showAlert, alertModal } = useAlertModal();
   const { id } = useParams();
   const postId = Number(id);
   const { data: gallery, loading, error } = useGalleryDetail(postId);
@@ -39,7 +41,8 @@ const GalleryDetail = () => {
       navigate("/gallery");
     } catch (deleteError) {
       logClientError("활동 사진 삭제 실패", deleteError);
-      window.alert("활동 사진 삭제에 실패했습니다.");
+      setIsDeleteModalOpen(false);
+      showAlert("활동 사진 삭제에 실패했습니다.");
       setIsDeleting(false);
     }
   };
@@ -165,6 +168,7 @@ const GalleryDetail = () => {
         onConfirm={() => void handleDelete()}
         onCancel={() => setIsDeleteModalOpen(false)}
       />
+      {alertModal}
     </div>
   );
 };

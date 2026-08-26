@@ -12,7 +12,9 @@ import { GoTrash } from "react-icons/go";
 import ConfirmDeleteModal from "../../../components/ui/ConfirmDeleteModal";
 import { useMyActivityMutations } from "../hooks/useMyActivityMutations";
 import { logClientError } from "../../../utils/logger";
-import { getMyPostDeletionId } from "../utils/myPost";
+import { canDeleteMyPost, getMyPostDeletionId } from "../utils/myPost";
+import useAuth from "../../auth/hooks/useAuth";
+import useAlertModal from "../../../components/ui/useAlertModal";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -43,6 +45,8 @@ const getPostTypeMeta = (type: string) =>
 
 export default function MyPostsPanel() {
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
+  const { showAlert, alertModal } = useAlertModal();
   const { deleteMyPost } = useMyActivityMutations();
   const [currentPage, setCurrentPage] = useState(1);
   const [deleteTarget, setDeleteTarget] = useState<MyPostDto | null>(null);
@@ -54,13 +58,17 @@ export default function MyPostsPanel() {
   const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
 
   const handleDelete = async () => {
-    if (!deleteTarget || isDeleting) return;
+    if (
+      !deleteTarget ||
+      isDeleting ||
+      !canDeleteMyPost(deleteTarget, currentUser?.role)
+    ) return;
 
     // 게시글이 족보인지 확인하고, 족보라면 recordId를 id로 설정 
     const deletionId = getMyPostDeletionId(deleteTarget);
     if (deletionId === null) {
       setDeleteTarget(null);
-      window.alert("삭제할 게시글 정보를 확인할 수 없습니다.");
+      showAlert("삭제할 게시글 정보를 확인할 수 없습니다.", "안내");
       return;
     }
 
@@ -77,7 +85,8 @@ export default function MyPostsPanel() {
       }
     } catch (requestError) {
       logClientError("내가 쓴 글 삭제 실패", requestError);
-      window.alert("게시글 삭제에 실패했습니다.");
+      setDeleteTarget(null);
+      showAlert("게시글 삭제에 실패했습니다.");
     } finally {
       setIsDeleting(false);
     }
@@ -110,19 +119,33 @@ export default function MyPostsPanel() {
       header: "",
       width: "w-12",
       cellClassName: "text-gray-400",
-      render: (post) => (
-        <button
-          type="button"
-          aria-label={`${post.title} 삭제`}
-          className="rounded-full p-1 transition-all hover:bg-red-50 hover:text-red-400"
-          onClick={(event) => {
-            event.stopPropagation();
-            setDeleteTarget(post);
-          }}
-        >
-          <GoTrash size={16} />
-        </button>
-      ),
+      render: (post) => {
+        const canDelete = canDeleteMyPost(post, currentUser?.role);
+
+        return (
+          <button
+            type="button"
+            aria-label={
+              canDelete
+                ? `${post.title} 삭제`
+                : `${post.title} 삭제 권한 없음`
+            }
+            title={
+              canDelete
+                ? undefined
+                : "현재 관리자만 삭제할 수 있는 게시글입니다."
+            }
+            disabled={!canDelete}
+            className="rounded-full p-1 transition-all hover:bg-red-50 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-400"
+            onClick={(event) => {
+              event.stopPropagation();
+              if (canDelete) setDeleteTarget(post);
+            }}
+          >
+            <GoTrash size={16} />
+          </button>
+        );
+      },
     },
   ];
 
@@ -173,6 +196,7 @@ export default function MyPostsPanel() {
         onConfirm={() => void handleDelete()}
         onCancel={() => setDeleteTarget(null)}
       />
+      {alertModal}
     </section>
   );
 }

@@ -12,6 +12,7 @@ import { GoTrash } from "react-icons/go";
 import ConfirmDeleteModal from "../../../components/ui/ConfirmDeleteModal";
 import { useMyActivityMutations } from "../hooks/useMyActivityMutations";
 import { logClientError } from "../../../utils/logger";
+import useAlertModal from "../../../components/ui/useAlertModal";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -34,6 +35,7 @@ const getCommentTypeMeta = (type: string) =>
 
 export default function MyCommentsPanel() {
   const navigate = useNavigate();
+  const { showAlert, alertModal } = useAlertModal();
   const { deleteMyComment } = useMyActivityMutations();
   const [currentPage, setCurrentPage] = useState(1);
   const [deleteTarget, setDeleteTarget] = useState<MyCommentDto | null>(null);
@@ -59,7 +61,8 @@ export default function MyCommentsPanel() {
       }
     } catch (requestError) {
       logClientError("내가 쓴 댓글 삭제 실패", requestError);
-      window.alert("댓글 삭제에 실패했습니다.");
+      setDeleteTarget(null);
+      showAlert("댓글 삭제에 실패했습니다.");
     } finally {
       setIsDeleting(false);
     }
@@ -160,6 +163,7 @@ export default function MyCommentsPanel() {
         onConfirm={() => void handleDelete()}
         onCancel={() => setDeleteTarget(null)}
       />
+      {alertModal}
     </section>
   );
 }

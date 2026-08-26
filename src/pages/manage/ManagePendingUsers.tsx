@@ -9,8 +9,10 @@ import { useManageMutations } from "../../features/manage/hooks/useManageMutatio
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import ManageUserDetailModal from "../../features/manage/components/ManageUserDetailModal";
 import { logClientError } from "../../utils/logger";
+import useAlertModal from "../../components/ui/useAlertModal";
 
 const ManagePendingUsers = () => {
+  const { showAlert, alertModal } = useAlertModal();
   const [page, setPage] = useState(0);
   const [processingUserId, setProcessingUserId] = useState<number | null>(null);
   const [rejectUserId, setRejectUserId] = useState<number | null>(null);
@@ -35,8 +37,8 @@ const ManagePendingUsers = () => {
         `회원 ${action === "approve" ? "승인" : "거절"} 실패`,
         requestError,
       );
-      window.alert(
-        `회원 ${action === "approve" ? "승인" : "거절"}에 실패했습니다.`
+      showAlert(
+        `회원 ${action === "approve" ? "승인" : "거절"}에 실패했습니다.`,
       );
     } finally {
       setProcessingUserId(null);
@@ -213,6 +215,7 @@ const ManagePendingUsers = () => {
         }
         onClose={() => setSelectedUserId(null)}
       />
+      {alertModal}
     </div>
   );
 };

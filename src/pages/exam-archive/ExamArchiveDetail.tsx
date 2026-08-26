@@ -18,10 +18,12 @@ import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import ConvertTime from "../../components/ConvertTime";
 import DetailQueryError from "../../components/DetailQueryError";
 import RichTextContent from "../../components/ui/RichTextContent";
+import useAlertModal from "../../components/ui/useAlertModal";
 
 
 const ExamArchiveDetail = () => {
   const navigate = useNavigate();
+  const { showAlert, alertModal } = useAlertModal();
   const { id } = useParams();
   const archiveId = Number(id);
   const {
@@ -54,7 +56,8 @@ const ExamArchiveDetail = () => {
       navigate("/exam-archive");
     } catch (error) {
       logClientError("족보 게시글 삭제 실패", error);
-      window.alert("족보 게시글 삭제에 실패했습니다.");
+      setDeleteRecordId(null);
+      showAlert("족보 게시글 삭제에 실패했습니다.");
       setIsDeleting(false);
     }
   };
@@ -178,6 +181,7 @@ const ExamArchiveDetail = () => {
         onConfirm={() => void handleDeletePost()}
         onCancel={() => setDeleteRecordId(null)}
       />
+      {alertModal}
     </div>
   );
 };

@@ -15,10 +15,12 @@ import { useNoticeMutations } from "../../features/notice/hooks/useNoticeMutatio
 import { logClientError } from "../../utils/logger";
 import ConvertTime from "../../components/ConvertTime";
 import RichTextContent from "../../components/ui/RichTextContent";
+import useAlertModal from "../../components/ui/useAlertModal";
 
 
 const NoticeDetail = () => {
   const { id } = useParams();
+  const { showAlert, alertModal } = useAlertModal();
   const noticeId = Number(id);
   const { data: notice, loading, error } = useNoticeDetail(noticeId);
   const navigate = useNavigate();
@@ -35,7 +37,8 @@ const NoticeDetail = () => {
       navigate("/notice");
     } catch (deleteError) {
       logClientError("공지사항 삭제 실패", deleteError);
-      window.alert("공지사항 삭제에 실패했습니다.");
+      setIsDeleteModalOpen(false);
+      showAlert("공지사항 삭제에 실패했습니다.");
       setIsDeleting(false);
     }
   };
@@ -122,6 +125,7 @@ const NoticeDetail = () => {
           onConfirm={() => void handleDelete()}
           onCancel={() => setIsDeleteModalOpen(false)}
         />
+        {alertModal}
     </div>
 
   );
