@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import type { MyPostDto } from "@/features/my-page/types/my.types";
-import { getMyPostDeletionId } from "@/features/my-page/utils/myPost";
+import {
+  canDeleteMyPost,
+  getMyPostDeletionId,
+} from "@/features/my-page/utils/myPost";
 
 describe("my post deletion target", () => {
   it("족보는 recordId를, 다른 게시판은 게시글 id를 삭제 대상으로 사용한다", () => {
@@ -11,5 +14,12 @@ describe("my post deletion target", () => {
     expect(getMyPostDeletionId(archive)).toBe(27);
     expect(getMyPostDeletionId(infoPost)).toBe(31);
     expect(getMyPostDeletionId(invalidArchive)).toBeNull();
+
+    const formerAdminNotice = { id: 40, type: "notices" } as MyPostDto;
+    const formerAdminGallery = { id: 41, type: "photo-posts" } as MyPostDto;
+    expect(canDeleteMyPost(formerAdminNotice, "USER")).toBe(false);
+    expect(canDeleteMyPost(formerAdminGallery, "USER")).toBe(false);
+    expect(canDeleteMyPost(formerAdminNotice, "ADMIN")).toBe(true);
+    expect(canDeleteMyPost(infoPost, "USER")).toBe(true);
   });
 });
