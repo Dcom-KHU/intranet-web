@@ -54,5 +54,5 @@ export const semesterOptions = [emptyExamPeriodOption, "1학기", "2학기"];
 
 export const examTypeOptions = ["중간고사", "기말고사", "퀴즈", "과제"];
 
-export const MAX_FILE_SIZE_BYTES = 20 * 1024 * 1024;
+export const MAX_FILE_SIZE_BYTES = 100 * 1024 * 1024;
 export const MAX_UPLOAD_REQUEST_SIZE_BYTES = 100 * 1024 * 1024;

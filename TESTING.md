@@ -20,7 +20,7 @@
 | 기능 | 테스트 수 | 테스트 파일 | 보호하는 내용 |
 | --- | ---: | --- | --- |
 | 날짜 표시 | 3개 | `date/date.test.ts` | 일반 날짜, 관리자 날짜·시간, 잘못된 서버 날짜 처리 |
-| 파일 업로드 검증 | 4개 | `upload/fileValidation.test.ts` | 파일당 20MB, 요청당 100MB, 활동사진 확장자, 중복 파일 |
+| 파일 업로드 검증 | 4개 | `upload/fileValidation.test.ts` | 파일당 100MB, 요청당 100MB, 활동사진 확장자, 중복 파일 |
 | 업로드 필수 입력 | 6개 | `upload/uploadValidation.test.ts` | 족보 과목·교수, 제목, 본문, 활동 날짜, 활동사진, 정상 제출 |
 | 회원 입력 검증 | 5개 | `auth/authValidation.test.ts` | 아이디, 비밀번호, 비밀번호 확인, 이메일, 전화번호 |
 | 공지 요청 변환 | 2개 | `mappers/notice.mapper.test.ts` | HTML 본문 변환, 삭제 파일 ID 유지 |

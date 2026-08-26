@@ -133,7 +133,7 @@ export default function UploadEntryCard({
     }
     if (oversizedFiles.length > 0) {
       errors.push(
-        `파일당 20MB 초과: ${oversizedFiles.map((file) => file.name).join(", ")}`,
+        `파일당 100MB 초과: ${oversizedFiles.map((file) => file.name).join(", ")}`,
       );
     }
 

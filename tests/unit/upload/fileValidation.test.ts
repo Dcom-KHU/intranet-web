@@ -12,7 +12,7 @@ const sizedFile = (name: string, size: number, type = "application/octet-stream"
 };
 
 describe("upload file validation", () => {
-  it("파일 하나가 정확히 20MB이면 허용하고 1바이트 초과하면 거절한다", () => {
+  it("파일 하나가 정확히 100MB이면 허용하고 1바이트 초과하면 거절한다", () => {
     const allowed = sizedFile("allowed.pdf", MAX_FILE_SIZE_BYTES);
     const oversized = sizedFile("oversized.pdf", MAX_FILE_SIZE_BYTES + 1);
     const result = validateUploadFiles({ selectedFiles: [allowed, oversized], existingFiles: [], mode: "notice", totalSelectedFileSize: 0 });
