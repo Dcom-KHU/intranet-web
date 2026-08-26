@@ -1,14 +1,20 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useLocation, useOutlet } from "react-router-dom";
 
-export default function PageTransition() {
+type PageTransitionProps = {
+  animateOnMount?: boolean;
+};
+
+export default function PageTransition({
+  animateOnMount = false,
+}: PageTransitionProps) {
   const location = useLocation();
   const outlet = useOutlet();
   const shouldReduceMotion = useReducedMotion();
 
   return (
     <div className="min-h-[60vh] overflow-x-clip">
-      <AnimatePresence mode="wait" initial={false}>
+      <AnimatePresence mode="wait" initial={animateOnMount}>
         <motion.div
           key={location.key}
           initial={{ opacity: shouldReduceMotion ? 1 : 0 }}

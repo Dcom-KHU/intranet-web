@@ -9,7 +9,7 @@ export default function AppLayout() {
   const { isLoggedIn } = useAuth();
 
   if (!isLoggedIn) {
-    return <PageTransition />;
+    return <PageTransition animateOnMount />;
   }
 
   return (

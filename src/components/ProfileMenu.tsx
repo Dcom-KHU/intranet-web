@@ -37,6 +37,8 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
   };
 
   const requestLogout = () => {
+    if (logout.isPending) return;
+
     if (hasUnsavedChanges) {
       setIsLogoutModalOpen(true);
       return;
@@ -107,11 +109,21 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
             </button>
 
             <button
-              className="w-full rounded-md bg-[#0F2854] py-2 text-sm text-white transition-all [#1B3F7F]"
+              className="relative flex min-h-9 w-full items-center justify-center rounded-md bg-[#0F2854] py-2 text-sm text-white transition-all [#1B3F7F] disabled:cursor-wait disabled:opacity-80"
               disabled={logout.isPending}
+              aria-busy={logout.isPending}
               onClick={requestLogout}
             >
-              로그아웃
+              <span className={logout.isPending ? "invisible" : "visible"}>
+                로그아웃
+              </span>
+              {logout.isPending && (
+                <span
+                  className="absolute size-5 animate-spin rounded-full border-2 border-white/40 border-t-white"
+                  role="status"
+                  aria-label="로그아웃 처리 중"
+                />
+              )}
             </button>
           </div>
         </div>

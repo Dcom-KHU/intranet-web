@@ -229,7 +229,7 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<RootLayout />}>
       {/* Public Routes */}
-      <Route element={<PageTransition />}>
+      <Route element={<PageTransition animateOnMount />}>
         {publicRoutes.map(renderRoute)}
       </Route>
 
