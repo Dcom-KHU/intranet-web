@@ -17,9 +17,11 @@ import { useAdminDashboard } from "../../features/manage/hooks/useAdminDashboard
 import { useManageMutations } from "../../features/manage/hooks/useManageMutations";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import { logClientError } from "../../utils/logger";
+import useAlertModal from "../../components/ui/useAlertModal";
 
 const Manage = () => {
   const navigate = useNavigate();
+  const { showAlert, alertModal } = useAlertModal();
   const { data: dashboard, loading, error, refetch } = useAdminDashboard();
   const { approveUser, rejectUser } = useManageMutations();
   const [processingUserId, setProcessingUserId] = useState<number | null>(null);
@@ -34,7 +36,7 @@ const Manage = () => {
       await refetch();
     } catch (error) {
       logClientError("회원 승인 실패", error);
-      window.alert("회원 승인에 실패했습니다.");
+      showAlert("회원 승인에 실패했습니다.");
     } finally {
       setProcessingUserId(null);
     }
@@ -49,7 +51,8 @@ const Manage = () => {
       await refetch();
     } catch (error) {
       logClientError("회원 거절 실패", error);
-      window.alert("회원 거절에 실패했습니다.");
+      setRejectUserId(null);
+      showAlert("회원 거절에 실패했습니다.");
     } finally {
       setProcessingUserId(null);
       setRejectUserId(null);
@@ -232,6 +235,7 @@ const Manage = () => {
         }}
         onCancel={() => setRejectUserId(null)}
       />
+      {alertModal}
     </div>
   );
 };

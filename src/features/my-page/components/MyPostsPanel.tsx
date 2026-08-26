@@ -14,6 +14,7 @@ import { useMyActivityMutations } from "../hooks/useMyActivityMutations";
 import { logClientError } from "../../../utils/logger";
 import { canDeleteMyPost, getMyPostDeletionId } from "../utils/myPost";
 import useAuth from "../../auth/hooks/useAuth";
+import useAlertModal from "../../../components/ui/useAlertModal";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -45,6 +46,7 @@ const getPostTypeMeta = (type: string) =>
 export default function MyPostsPanel() {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
+  const { showAlert, alertModal } = useAlertModal();
   const { deleteMyPost } = useMyActivityMutations();
   const [currentPage, setCurrentPage] = useState(1);
   const [deleteTarget, setDeleteTarget] = useState<MyPostDto | null>(null);
@@ -66,7 +68,7 @@ export default function MyPostsPanel() {
     const deletionId = getMyPostDeletionId(deleteTarget);
     if (deletionId === null) {
       setDeleteTarget(null);
-      window.alert("삭제할 게시글 정보를 확인할 수 없습니다.");
+      showAlert("삭제할 게시글 정보를 확인할 수 없습니다.", "안내");
       return;
     }
 
@@ -83,7 +85,8 @@ export default function MyPostsPanel() {
       }
     } catch (requestError) {
       logClientError("내가 쓴 글 삭제 실패", requestError);
-      window.alert("게시글 삭제에 실패했습니다.");
+      setDeleteTarget(null);
+      showAlert("게시글 삭제에 실패했습니다.");
     } finally {
       setIsDeleting(false);
     }
@@ -193,6 +196,7 @@ export default function MyPostsPanel() {
         onConfirm={() => void handleDelete()}
         onCancel={() => setDeleteTarget(null)}
       />
+      {alertModal}
     </section>
   );
 }

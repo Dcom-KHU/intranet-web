@@ -17,10 +17,12 @@ import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import ConvertTime from "../../components/ConvertTime";
 import DetailQueryError from "../../components/DetailQueryError";
 import RichTextContent from "../../components/ui/RichTextContent";
+import useAlertModal from "../../components/ui/useAlertModal";
 
 
 const InfoSharingDetail = () => {
     const navigate = useNavigate();
+    const { showAlert, alertModal } = useAlertModal();
     const { id } = useParams();
     const postId = Number(id);
     const {
@@ -52,7 +54,8 @@ const InfoSharingDetail = () => {
           navigate("/info");
         } catch (error) {
           logClientError("정보공유 게시글 삭제 실패", error);
-          window.alert("게시글 삭제에 실패했습니다.");
+          setIsDeleteModalOpen(false);
+          showAlert("게시글 삭제에 실패했습니다.");
           setIsDeleting(false);
         }
     };
@@ -143,6 +146,7 @@ const InfoSharingDetail = () => {
               onConfirm={() => void handleDeletePost()}
               onCancel={() => setIsDeleteModalOpen(false)}
             />
+            {alertModal}
         </div>
     );
 }
