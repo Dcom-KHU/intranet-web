@@ -56,6 +56,8 @@ export default function UploadEntryCard({
     extensions: [
       StarterKit.configure({
         dropcursor: false,
+        link: false,
+        underline: false,
         undoRedo: {
           newGroupDelay: 0,
         },
