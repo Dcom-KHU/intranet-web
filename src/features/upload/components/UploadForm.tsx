@@ -1,4 +1,4 @@
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { IoAdd } from "react-icons/io5";
 import axios from "axios";
 
@@ -19,6 +19,7 @@ import UploadEntryCard from "./UploadEntryCard";
 import PageBackButton from "../../../components/ui/PageBackButton";
 import { getUploadValidationError } from "../utils/uploadValidation";
 import { logClientError } from "../../../utils/logger";
+import useUnsavedChanges from "../context/useUnsavedChanges";
 
 type FormMessage = {
   type: "error" | "success";
@@ -45,12 +46,19 @@ export default function UploadForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [formMessage, setFormMessage] = useState<FormMessage | null>(null);
+  const { setHasUnsavedChanges } = useUnsavedChanges();
 
   const config = uploadModeConfig[mode];
   const canAddMultiplePosts = config.allowMultiplePosts && !onSubmit;
   const isEditMode = Boolean(onSubmit);
   const isDirty =
     getEntriesSignature(entries) !== getEntriesSignature(initialEntries);
+
+  useEffect(() => {
+    setHasUnsavedChanges(isDirty);
+
+    return () => setHasUnsavedChanges(false);
+  }, [isDirty, setHasUnsavedChanges]);
   const totalSelectedFileSize = entries.reduce(
     (total, entry) =>
       total + entry.files.reduce((entryTotal, file) => entryTotal + file.size, 0),

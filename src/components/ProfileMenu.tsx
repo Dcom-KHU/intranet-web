@@ -5,6 +5,8 @@ import useLogout from "../features/auth/hooks/useLogout";
 import { useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import { clearAuthSession, getRefreshToken } from "@/features/auth/utils/auth-storage";
+import Modal from "./ui/Modal";
+import useUnsavedChanges from "../features/upload/context/useUnsavedChanges";
 
 interface ProfileMenuProps {
   user: AuthUser;
@@ -14,7 +16,34 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
   const navigate = useNavigate();
   const logout = useLogout();
   const [isOpen, setIsOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { hasUnsavedChanges } = useUnsavedChanges();
+
+  const handleLogout = () => {
+    const refreshToken = getRefreshToken();
+
+    if (!refreshToken) {
+      clearAuthSession();
+      navigate("/", { replace: true });
+      return;
+    }
+
+    logout.mutate(refreshToken, {
+      onSettled: () => {
+        navigate("/", { replace: true });
+      },
+    });
+  };
+
+  const requestLogout = () => {
+    if (hasUnsavedChanges) {
+      setIsLogoutModalOpen(true);
+      return;
+    }
+
+    handleLogout();
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -80,27 +109,27 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
             <button
               className="w-full rounded-md bg-[#0F2854] py-2 text-sm text-white transition-all [#1B3F7F]"
               disabled={logout.isPending}
-              onClick={() => {
-                const refreshToken = getRefreshToken();
-
-                if (!refreshToken) {
-                  clearAuthSession();
-                  navigate("/", { replace: true });
-                  return;
-                }
-
-                logout.mutate(refreshToken, {
-                  onSettled: () => {
-                    navigate("/", { replace: true });
-                  },
-                });
-              }}
+              onClick={requestLogout}
             >
               로그아웃
             </button>
           </div>
         </div>
       )}
+
+      <Modal
+        isOpen={isLogoutModalOpen}
+        title="작성 중인 내용이 저장되지 않습니다."
+        description="로그아웃하시겠습니까?"
+        actionLabel="로그아웃"
+        onAction={() => {
+          setIsLogoutModalOpen(false);
+          handleLogout();
+        }}
+        secondaryActionLabel="취소"
+        onSecondaryAction={() => setIsLogoutModalOpen(false)}
+        labelledById="unsaved-logout-modal-title"
+      />
     </div>
   );
 };
