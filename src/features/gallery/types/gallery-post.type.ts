@@ -21,4 +21,9 @@ export interface GalleryPostDetail {
     date: string;
     location?: string;
     images: string[];
+    imageItems: Array<{
+      id: number;
+      name: string;
+      url: string;
+    }>;
 }

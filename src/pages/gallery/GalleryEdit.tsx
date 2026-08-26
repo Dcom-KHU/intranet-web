@@ -27,7 +27,7 @@ const GalleryEdit = () => {
         date: gallery.date,
         location: gallery.location ?? "",
         descriptionHtml: gallery.description,
-        existingFiles: gallery.images,
+        existingFileItems: gallery.imageItems,
       }}
       onSubmit={async (post) => {
         await updateGallery({ id: postId, post });

@@ -27,7 +27,19 @@ export const toUpdateGalleryRequest = (
   activityDate: post.date,
   place: post.location.trim(),
   description: post.descriptionHtml,
+  deleteFileIds: post.deleteFileIds,
 });
+
+const toGalleryImageItem = (url: string) => {
+  const imageId = Number(url.match(/\/images\/(\d+)(?:[/?#]|$)/)?.[1]);
+  if (!Number.isInteger(imageId) || imageId <= 0) return null;
+
+  return {
+    id: imageId,
+    name: `이미지 ${imageId}`,
+    url,
+  };
+};
 
 export const toGalleryPostsPage = (
   response: GalleryAlbumsResponseDto["data"],
@@ -51,4 +63,7 @@ export const toGalleryPostDetail = (
   location: response.place?.trim() || undefined,
   description: response.description,
   images: response.imageList,
+  imageItems: response.imageList
+    .map(toGalleryImageItem)
+    .filter((image): image is NonNullable<typeof image> => image !== null),
 });
