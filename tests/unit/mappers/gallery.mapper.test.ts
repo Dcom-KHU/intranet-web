@@ -5,8 +5,13 @@ import { toCreateGalleryRequest, toUpdateGalleryRequest } from "@/features/galle
 const draft = { title: "개강총회", date: "2026-03-10", location: " 학생회관 ", descriptionHtml: "<p>활동 <strong>사진</strong></p>" } as UploadPostDraft;
 
 describe("gallery request mapper", () => {
-  it("등록과 수정 요청에 행사명, 활동 날짜, 텍스트 설명을 동일하게 전달한다", () => {
-    expect(toCreateGalleryRequest(draft)).toEqual({ eventName: "개강총회", activityDate: "2026-03-10", place: "학생회관", description: "활동 사진" });
+  it("등록과 수정 요청에 행사 정보와 HTML 설명을 동일하게 전달한다", () => {
+    expect(toCreateGalleryRequest(draft)).toEqual({
+      eventName: "개강총회",
+      activityDate: "2026-03-10",
+      place: "학생회관",
+      description: draft.descriptionHtml,
+    });
     expect(toUpdateGalleryRequest(draft)).toEqual(toCreateGalleryRequest(draft));
   });
 });

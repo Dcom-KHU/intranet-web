@@ -11,7 +11,6 @@ import type {
   UpdateInfoPostResponseDataDto,
 } from "../dto/update-info-post.dto";
 import type { CreateInfoPostRequestDto } from "../dto/create-info-post.dto";
-import { htmlToText } from "../../../utils/html";
 import { formatDate } from "../../../utils/date";
 
 export const toInfoPostList = (
@@ -49,14 +48,14 @@ export const toCreateInfoPostRequest = (
   post: UploadPostDraft,
 ): CreateInfoPostRequestDto => ({
   title: post.title,
-  content: htmlToText(post.descriptionHtml),
+  content: post.descriptionHtml,
 });
 
 export const toUpdateInfoPostRequest = (
   post: UploadPostDraft,
 ): UpdateInfoPostRequestDto => ({
   title: post.title,
-  content: htmlToText(post.descriptionHtml),
+  content: post.descriptionHtml,
   deleteFileIds: post.deleteFileIds,
 });
 

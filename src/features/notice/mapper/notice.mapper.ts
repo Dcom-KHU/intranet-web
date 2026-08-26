@@ -3,7 +3,6 @@ import type { NoticeDetailType, NoticeType } from "../types/notice.type";
 import type { UploadPostDraft } from "../../upload/types/upload.type";
 import type { CreateNoticeRequestDto } from "../dto/create-notice.dto";
 import type { UpdateNoticeRequestDto } from "../dto/update-notice.dto";
-import { htmlToText } from "../../../utils/html";
 import { formatDate } from "../../../utils/date";
 
 export const toNotice = (dto: NoticeListItemDto): NoticeType => ({
@@ -32,13 +31,13 @@ export const toCreateNoticeRequest = (
   post: UploadPostDraft,
 ): CreateNoticeRequestDto => ({
   title: post.title,
-  content: htmlToText(post.descriptionHtml),
+  content: post.descriptionHtml,
 });
 
 export const toUpdateNoticeRequest = (
   post: UploadPostDraft,
 ): UpdateNoticeRequestDto => ({
   title: post.title,
-  content: htmlToText(post.descriptionHtml),
+  content: post.descriptionHtml,
   deleteFileIds: post.deleteFileIds,
 });

@@ -12,10 +12,22 @@ describe("exam archive request mapper", () => {
   it("선택하지 않은 연도와 학기는 null로 전달한다", () => {
     const request = toCreateExamArchiveRequest(draft);
     expect(request.professorName).toBe("홍길동");
-    expect(request.records[0]).toMatchObject({ examYear: null, semester: null, content: "시험 범위" });
+    expect(request.records[0]).toMatchObject({
+      examYear: null,
+      semester: null,
+      content: draft.descriptionHtml,
+    });
   });
 
   it("수정 요청에서 시험 유형 코드와 삭제 파일 ID를 유지한다", () => {
-    expect(toUpdateExamArchiveRequest(draft)).toMatchObject({ subjectName: "자료구조", professorName: "홍길동", examYear: null, semester: null, examType: "FINAL", deleteFileIds: [11], content: "시험 범위" });
+    expect(toUpdateExamArchiveRequest(draft)).toMatchObject({
+      subjectName: "자료구조",
+      professorName: "홍길동",
+      examYear: null,
+      semester: null,
+      examType: "FINAL",
+      deleteFileIds: [11],
+      content: draft.descriptionHtml,
+    });
   });
 });

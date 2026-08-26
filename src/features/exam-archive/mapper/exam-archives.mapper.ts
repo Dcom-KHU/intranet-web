@@ -11,7 +11,6 @@ import {
   type ExamArchiveType,
 } from "../types/exam-archive.type";
 import { formatDate } from "../../../utils/date";
-import { htmlToText } from "../../../utils/html";
 import type { UploadPostDraft } from "../../upload/types/upload.type";
 import type {
   CreateExamArchiveExamType,
@@ -41,7 +40,7 @@ const toCreateExamArchiveRecord = (
       ? post.semesterCode
       : null,
   examType: toCreateExamType(post.examType),
-  content: htmlToText(post.descriptionHtml),
+  content: post.descriptionHtml,
 });
 
 export const toCreateExamArchiveRequest = (
@@ -68,7 +67,7 @@ export const toUpdateExamArchiveRequest = (
         ? post.semesterCode
         : null,
     examType: selectedExamType,
-    content: htmlToText(post.descriptionHtml),
+    content: post.descriptionHtml,
     deleteFileIds: post.deleteFileIds,
   };
 };

@@ -9,7 +9,6 @@ import type {
 import type { UploadPostDraft } from "../../upload/types/upload.type";
 import type { CreateGalleryRequestDto } from "../dto/create-gallery.dto";
 import type { UpdateGalleryRequestDto } from "../dto/update-gallery.dto";
-import { htmlToText } from "../../../utils/html";
 import { formatDate } from "../../../utils/date";
 
 export const toCreateGalleryRequest = (
@@ -18,7 +17,7 @@ export const toCreateGalleryRequest = (
   eventName: post.title,
   activityDate: post.date,
   place: post.location.trim(),
-  description: htmlToText(post.descriptionHtml),
+  description: post.descriptionHtml,
 });
 
 export const toUpdateGalleryRequest = (
@@ -27,7 +26,7 @@ export const toUpdateGalleryRequest = (
   eventName: post.title,
   activityDate: post.date,
   place: post.location.trim(),
-  description: htmlToText(post.descriptionHtml),
+  description: post.descriptionHtml,
 });
 
 export const toGalleryPostsPage = (

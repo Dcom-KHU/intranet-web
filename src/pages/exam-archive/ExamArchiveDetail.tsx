@@ -17,6 +17,7 @@ import { logClientError } from "../../utils/logger";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import ConvertTime from "../../components/ConvertTime";
 import DetailQueryError from "../../components/DetailQueryError";
+import RichTextContent from "../../components/ui/RichTextContent";
 
 
 const ExamArchiveDetail = () => {
@@ -101,9 +102,10 @@ const ExamArchiveDetail = () => {
               </div>
 
               {post.description && (
-                <p className="mb-6 whitespace-pre-line text-sm leading-6 text-gray-900">
-                  {post.description}
-                </p>
+                <RichTextContent
+                  html={post.description}
+                  className="mb-6"
+                />
               )}
 
               {post.files && post.files.length > 0 ? (

@@ -14,6 +14,7 @@ import { downloadNoticeFile } from "../../features/notice/api/notice.api";
 import { useNoticeMutations } from "../../features/notice/hooks/useNoticeMutations";
 import { logClientError } from "../../utils/logger";
 import ConvertTime from "../../components/ConvertTime";
+import RichTextContent from "../../components/ui/RichTextContent";
 
 
 const NoticeDetail = () => {
@@ -66,9 +67,10 @@ const NoticeDetail = () => {
                   </time>
                 </div>
   
-                  <p className="mb-6 whitespace-pre-line text-sm leading-6 text-gray-900">
-                    {notice.description}
-                  </p>
+                  <RichTextContent
+                    html={notice.description}
+                    className="mb-6"
+                  />
   
                 {notice.fileItems?.length ? (
                   <ul className="space-y-3">

@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { IoCalendarOutline, IoLocationOutline } from "react-icons/io5";
 import { HiPhotograph } from "react-icons/hi";
 import AuthenticatedImage from "./AuthenticatedImage";
+import RichTextContent from "./RichTextContent";
 
 
 type BaseCardProps = {
@@ -64,9 +65,10 @@ const Card = (props: CardProps) => {
           </div>
 
           {description && (
-            <p className="mt-7 whitespace-pre-line text-sm leading-6 text-[#0F2854]">
-              {description}
-            </p>
+            <RichTextContent
+              html={description}
+              className="mt-7 text-[#0F2854]"
+            />
           )}
 
           {actions && (

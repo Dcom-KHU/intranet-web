@@ -16,6 +16,7 @@ import { logClientError } from "@/utils/logger";
 import ConfirmDeleteModal from "../../components/ui/ConfirmDeleteModal";
 import ConvertTime from "../../components/ConvertTime";
 import DetailQueryError from "../../components/DetailQueryError";
+import RichTextContent from "../../components/ui/RichTextContent";
 
 
 const InfoSharingDetail = () => {
@@ -81,9 +82,10 @@ const InfoSharingDetail = () => {
                         </time>
                         </div>
         
-                        <p className="mb-6 whitespace-pre-line text-sm leading-6 text-gray-900">
-                            {info.description}
-                        </p>
+                        <RichTextContent
+                          html={info.description}
+                          className="mb-6"
+                        />
         
                         {info.attachmentItems?.length ? (
                         <ul className="space-y-3">
