@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { authApi } from "../api/auth.api";
 import toUser from "../mapper/user.mapper";
-import { ACCESS_TOKEN_KEY, AUTH_QUERY_KEY } from "../constants/auth.constants";
+import { AUTH_QUERY_KEY } from "../constants/auth.constants";
+import { getAccessToken } from "../utils/auth-storage";
 
 export default function useAuth() {
-  const hasAccessToken = Boolean(localStorage.getItem(ACCESS_TOKEN_KEY));
+  const hasAccessToken = Boolean(getAccessToken());
   const query = useQuery({
     queryKey: AUTH_QUERY_KEY,
     queryFn: authApi.me,

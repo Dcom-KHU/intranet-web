@@ -4,7 +4,7 @@ import UserDisplayName from "./ui/UserDisplay";
 import useLogout from "../features/auth/hooks/useLogout";
 import { useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
-import { REFRESH_TOKEN_KEY } from "@/features/auth/constants/auth.constants";
+import { clearAuthSession, getRefreshToken } from "@/features/auth/utils/auth-storage";
 
 interface ProfileMenuProps {
   user: AuthUser;
@@ -81,9 +81,10 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
               className="w-full rounded-md bg-[#0F2854] py-2 text-sm text-white transition-all [#1B3F7F]"
               disabled={logout.isPending}
               onClick={() => {
-                const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
+                const refreshToken = getRefreshToken();
 
                 if (!refreshToken) {
+                  clearAuthSession();
                   navigate("/", { replace: true });
                   return;
                 }

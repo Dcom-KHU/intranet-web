@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { authApi } from "../api/auth.api";
-import { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY, AUTH_QUERY_KEY } from "../constants/auth.constants";
+import { AUTH_QUERY_KEY } from "../constants/auth.constants";
+import { clearAuthSession } from "../utils/auth-storage";
 
 export default function useLogout() {
   const queryClient = useQueryClient();
@@ -9,8 +10,7 @@ export default function useLogout() {
     mutationFn: (refreshToken: string) => authApi.logout(refreshToken),
     
     onSettled: () => {
-      localStorage.removeItem(ACCESS_TOKEN_KEY);
-      localStorage.removeItem(REFRESH_TOKEN_KEY);
+      clearAuthSession();
 
       queryClient.removeQueries({ 
         queryKey: AUTH_QUERY_KEY 

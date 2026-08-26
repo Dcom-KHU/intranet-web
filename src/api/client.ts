@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getAccessToken } from '@/features/auth/utils/auth-storage';
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
@@ -12,7 +13,7 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('access_token');
+  const token = getAccessToken();
   const isPublicAuthRequest = [
     '/api/auth/login',
     '/api/auth/check-login-id',

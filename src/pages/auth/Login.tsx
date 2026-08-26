@@ -5,6 +5,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { MdInfoOutline } from "react-icons/md";
 
 import useLogin from "@/features/auth/hooks/useLogin";
+import {
+  getSavedLoginId,
+  setSavedLoginId,
+} from "@/features/auth/utils/auth-storage";
 
 import Input from "../../components/ui/Input";
 import PasswordInput from "../../components/ui/PasswordInput";
@@ -28,8 +32,10 @@ const Login = () => {
   const navigate = useNavigate();
   const login = useLogin();
 
-  const [userID, setUserID] = useState("");
+  const savedLoginId = getSavedLoginId();
+  const [userID, setUserID] = useState(savedLoginId);
   const [password, setPassword] = useState("");
+  const [saveLoginId, setSaveLoginId] = useState(Boolean(savedLoginId));
   const [loginMessage, setLoginMessage] = useState("");
   
 
@@ -40,6 +46,7 @@ const Login = () => {
       const response = await login.mutateAsync({
         loginId: userID,
         password,
+        saveLoginId,
       });
 
       navigate(
@@ -87,7 +94,7 @@ const Login = () => {
               }}
             />
           </div>
-          <div className="mb-10">
+          <div className="mb-5">
             <InputLabel>비밀번호</InputLabel>
             <PasswordInput
               id="password"
@@ -99,6 +106,20 @@ const Login = () => {
               }}
             />
           </div>
+
+          <label className="mb-8 flex w-fit cursor-pointer items-center gap-2 text-sm text-gray-600">
+            <input
+              type="checkbox"
+              checked={saveLoginId}
+              onChange={(event) => {
+                const checked = event.target.checked;
+                setSaveLoginId(checked);
+                if (!checked) setSavedLoginId(null);
+              }}
+              className="size-4 cursor-pointer rounded border-gray-300 accent-[#0F2854]"
+            />
+            아이디 저장
+          </label>
 
           {loginMessage && (
             <p className="mb-5 text-center text-xs text-red-500" role="alert">

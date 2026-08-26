@@ -1,11 +1,12 @@
 import type { InternalAxiosRequestConfig } from "axios";
 
 import { api } from "@/api/client";
-import {
-  ACCESS_TOKEN_KEY,
-  REFRESH_TOKEN_KEY,
-} from "../constants/auth.constants";
 import type { TokenRefresh } from "../types/token-refresh.type";
+import {
+  clearAuthSession,
+  getRefreshToken,
+  storeRefreshedTokens,
+} from "../utils/auth-storage";
 import { refreshTokens } from "./auth.api";
 
 type RetryableRequestConfig = InternalAxiosRequestConfig & {
@@ -15,13 +16,8 @@ type RetryableRequestConfig = InternalAxiosRequestConfig & {
 let refreshPromise: Promise<TokenRefresh> | null = null;
 let interceptorId: number | null = null;
 
-const clearTokens = () => {
-  localStorage.removeItem(ACCESS_TOKEN_KEY);
-  localStorage.removeItem(REFRESH_TOKEN_KEY);
-};
-
 const redirectToSessionExpired = () => {
-  clearTokens();
+  clearAuthSession();
 
   if (window.location.pathname !== "/session-expired") {
     window.location.replace("/session-expired");
@@ -62,7 +58,7 @@ export const setupAuthResponseInterceptor = () => {
         return Promise.reject(error);
       }
 
-      const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
+      const refreshToken = getRefreshToken();
       if (!refreshToken) {
         redirectToSessionExpired();
         return Promise.reject(error);
@@ -74,8 +70,7 @@ export const setupAuthResponseInterceptor = () => {
         refreshPromise ??= refreshTokens(refreshToken);
         const tokens = await refreshPromise;
 
-        localStorage.setItem(ACCESS_TOKEN_KEY, tokens.accessToken);
-        localStorage.setItem(REFRESH_TOKEN_KEY, tokens.refreshToken);
+        storeRefreshedTokens(tokens);
         originalRequest.headers.Authorization = `Bearer ${tokens.accessToken}`;
 
         return api(originalRequest);

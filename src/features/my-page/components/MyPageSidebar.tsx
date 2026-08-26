@@ -10,10 +10,7 @@ import {
 import { useNavigate } from "react-router-dom";
 
 import Modal from "../../../components/ui/Modal";
-import {
-  ACCESS_TOKEN_KEY,
-  REFRESH_TOKEN_KEY,
-} from "../../auth/constants/auth.constants";
+import { clearAuthSession } from "../../auth/utils/auth-storage";
 import { withdrawMe } from "../api/my-activity.api";
 import type { ActiveMenu } from "../types/my.types";
 import { logClientError } from "../../../utils/logger";
@@ -77,8 +74,7 @@ export default function MyPageSidebar({
 
     try {
       await withdrawMe();
-      localStorage.removeItem(ACCESS_TOKEN_KEY);
-      localStorage.removeItem(REFRESH_TOKEN_KEY);
+      clearAuthSession();
       navigate("/", { replace: true });
     } catch (error) {
       logClientError("회원 탈퇴 실패", error);
