@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { MdInfoOutline } from "react-icons/md";
+import { MdCheck, MdInfoOutline } from "react-icons/md";
 
 import useLogin from "@/features/auth/hooks/useLogin";
 import {
@@ -107,17 +107,26 @@ const Login = () => {
             />
           </div>
 
-          <label className="mb-8 flex w-fit cursor-pointer items-center gap-2 text-xs text-gray-600">
-            <input
-              type="checkbox"
-              checked={saveLoginId}
-              onChange={(event) => {
-                const checked = event.target.checked;
-                setSaveLoginId(checked);
-                if (!checked) setSavedLoginId(null);
-              }}
-              className="size-4 cursor-pointer rounded border-gray-300 accent-[#0F2854]"
-            />
+          <label className="mb-8 flex w-fit cursor-pointer items-center gap-1 text-xs text-gray-400">
+            <span className="relative flex size-3 shrink-0 items-center justify-center">
+              <input
+                type="checkbox"
+                checked={saveLoginId}
+                onChange={(event) => {
+                  const checked = event.target.checked;
+                  setSaveLoginId(checked);
+                  if (!checked) setSavedLoginId(null);
+                }}
+                className="peer size-3 cursor-pointer appearance-none rounded-[3px] border border-gray-300 bg-white transition-colors checked:border-[#0F2854] checked:bg-[#0F2854] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4988C4]/30"
+              />
+              {saveLoginId && (
+                <MdCheck
+                  className="pointer-events-none absolute text-white"
+                  size={11}
+                  aria-hidden="true"
+                />
+              )}
+            </span>
             아이디 저장
           </label>
 
