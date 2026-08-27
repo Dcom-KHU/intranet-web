@@ -1,6 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate, useParams } from "react-router-dom";
-import { HiChevronLeft, HiChevronRight, HiOutlinePencil } from "react-icons/hi";
+import {
+  HiChevronLeft,
+  HiChevronRight,
+  HiOutlinePencil,
+  HiX,
+} from "react-icons/hi";
 import { GoTrash } from "react-icons/go";
 import { Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -33,6 +39,37 @@ const GalleryDetail = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (previewIndex === null || !gallery) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setPreviewIndex(null);
+      } else if (event.key === "ArrowLeft") {
+        setPreviewIndex((current) =>
+          current === null
+            ? null
+            : (current - 1 + gallery.images.length) % gallery.images.length,
+        );
+      } else if (event.key === "ArrowRight") {
+        setPreviewIndex((current) =>
+          current === null ? null : (current + 1) % gallery.images.length,
+        );
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [gallery, previewIndex]);
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -142,12 +179,19 @@ const GalleryDetail = () => {
             >
               {gallery.images.map((image, index) => (
                 <SwiperSlide key={`${image}-${index}`} className="h-full">
-                  <AuthenticatedImage
-                    src={image}
-                    alt={`${gallery.title} ${index + 1}`}
-                    className="h-full w-full"
-                    imageClassName="h-full w-full object-cover"
-                  />
+                  <button
+                    type="button"
+                    className="h-full w-full cursor-zoom-in"
+                    aria-label={`${gallery.title} ${index + 1} 크게 보기`}
+                    onClick={() => setPreviewIndex(index)}
+                  >
+                    <AuthenticatedImage
+                      src={image}
+                      alt={`${gallery.title} ${index + 1}`}
+                      className="h-full w-full"
+                      imageClassName="h-full w-full object-cover"
+                    />
+                  </button>
                 </SwiperSlide>
               ))}
             </Swiper>
@@ -161,6 +205,72 @@ const GalleryDetail = () => {
 
         <CommentSection postId={postId} target="photo-posts" />
       </div>
+      {previewIndex !== null &&
+        createPortal(
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 sm:p-8"
+          role="dialog"
+          aria-modal="true"
+          aria-label="활동사진 크게 보기"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setPreviewIndex(null);
+          }}
+        >
+          <button
+            type="button"
+            className="absolute right-4 top-4 z-10 rounded-full bg-black/40 p-2 text-white transition hover:bg-white/20 sm:right-7 sm:top-7"
+            aria-label="확대 사진 닫기"
+            onClick={() => setPreviewIndex(null)}
+          >
+            <HiX size={28} />
+          </button>
+
+          {gallery.images.length > 1 && (
+            <>
+              <button
+                type="button"
+                className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/40 p-2 text-white transition hover:bg-white/20 sm:left-6"
+                aria-label="이전 사진"
+                onClick={() =>
+                  setPreviewIndex(
+                    (previewIndex - 1 + gallery.images.length) %
+                      gallery.images.length,
+                  )
+                }
+              >
+                <HiChevronLeft size={32} />
+              </button>
+              <button
+                type="button"
+                className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/40 p-2 text-white transition hover:bg-white/20 sm:right-6"
+                aria-label="다음 사진"
+                onClick={() =>
+                  setPreviewIndex((previewIndex + 1) % gallery.images.length)
+                }
+              >
+                <HiChevronRight size={32} />
+              </button>
+            </>
+          )}
+
+          <div
+            className="h-full w-full"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <AuthenticatedImage
+              src={gallery.images[previewIndex]}
+              alt={`${gallery.title} ${previewIndex + 1} 크게 보기`}
+              className="h-full w-full bg-transparent"
+              imageClassName="h-full w-full object-contain"
+            />
+          </div>
+
+          <span className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black/50 px-3 py-1 text-xs text-white sm:bottom-7">
+            {previewIndex + 1} / {gallery.images.length}
+          </span>
+        </div>,
+        document.body,
+        )}
       <ConfirmDeleteModal
         isOpen={isDeleteModalOpen}
         description="삭제한 활동 사진 게시글은 복구할 수 없습니다."

@@ -5,6 +5,8 @@ import useLogout from "../features/auth/hooks/useLogout";
 import { useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
 import { clearAuthSession, getRefreshToken } from "@/features/auth/utils/auth-storage";
+import Modal from "./ui/Modal";
+import useUnsavedChanges from "../features/upload/context/useUnsavedChanges";
 
 interface ProfileMenuProps {
   user: AuthUser;
@@ -14,7 +16,36 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
   const navigate = useNavigate();
   const logout = useLogout();
   const [isOpen, setIsOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { hasUnsavedChanges } = useUnsavedChanges();
+
+  const handleLogout = () => {
+    const refreshToken = getRefreshToken();
+
+    if (!refreshToken) {
+      clearAuthSession();
+      navigate("/", { replace: true });
+      return;
+    }
+
+    logout.mutate(refreshToken, {
+      onSettled: () => {
+        navigate("/", { replace: true });
+      },
+    });
+  };
+
+  const requestLogout = () => {
+    if (logout.isPending) return;
+
+    if (hasUnsavedChanges) {
+      setIsLogoutModalOpen(true);
+      return;
+    }
+
+    handleLogout();
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -78,29 +109,39 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
             </button>
 
             <button
-              className="w-full rounded-md bg-[#0F2854] py-2 text-sm text-white transition-all [#1B3F7F]"
+              className="relative flex min-h-9 w-full items-center justify-center rounded-md bg-[#0F2854] py-2 text-sm text-white transition-all [#1B3F7F] disabled:cursor-wait disabled:opacity-80"
               disabled={logout.isPending}
-              onClick={() => {
-                const refreshToken = getRefreshToken();
-
-                if (!refreshToken) {
-                  clearAuthSession();
-                  navigate("/", { replace: true });
-                  return;
-                }
-
-                logout.mutate(refreshToken, {
-                  onSettled: () => {
-                    navigate("/", { replace: true });
-                  },
-                });
-              }}
+              aria-busy={logout.isPending}
+              onClick={requestLogout}
             >
-              로그아웃
+              <span className={logout.isPending ? "invisible" : "visible"}>
+                로그아웃
+              </span>
+              {logout.isPending && (
+                <span
+                  className="absolute size-5 animate-spin rounded-full border-2 border-white/40 border-t-white"
+                  role="status"
+                  aria-label="로그아웃 처리 중"
+                />
+              )}
             </button>
           </div>
         </div>
       )}
+
+      <Modal
+        isOpen={isLogoutModalOpen}
+        title="작성 중인 내용이 저장되지 않습니다."
+        description="로그아웃하시겠습니까?"
+        actionLabel="로그아웃"
+        onAction={() => {
+          setIsLogoutModalOpen(false);
+          handleLogout();
+        }}
+        secondaryActionLabel="취소"
+        onSecondaryAction={() => setIsLogoutModalOpen(false)}
+        labelledById="unsaved-logout-modal-title"
+      />
     </div>
   );
 };

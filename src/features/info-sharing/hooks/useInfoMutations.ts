@@ -5,9 +5,31 @@ import { createInfoPosts, deleteInfoPost, updateInfoPost } from "../api/info-sha
 
 export function useInfoMutations() {
   const queryClient = useQueryClient();
-  const refresh = () => queryClient.invalidateQueries({ queryKey: queryKeys.infoPosts.all });
-  const create = useMutation({ mutationFn: createInfoPosts, onSuccess: refresh });
-  const update = useMutation({ mutationFn: ({ id, post }: { id: number; post: UploadPostDraft }) => updateInfoPost(id, post), onSuccess: refresh });
-  const remove = useMutation({ mutationFn: deleteInfoPost, onSuccess: refresh });
+  const refreshLists = () =>
+    queryClient.invalidateQueries({ queryKey: queryKeys.infoPosts.lists });
+  const create = useMutation({
+    mutationFn: createInfoPosts,
+    onSuccess: refreshLists,
+  });
+  const update = useMutation({
+    mutationFn: ({ id, post }: { id: number; post: UploadPostDraft }) =>
+      updateInfoPost(id, post),
+    onSuccess: (_, { id }) =>
+      Promise.all([
+        refreshLists(),
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.infoPosts.detail(id),
+        }),
+      ]),
+  });
+  const remove = useMutation({
+    mutationFn: deleteInfoPost,
+    onSuccess: async (_, deletedId) => {
+      await queryClient.cancelQueries({
+        queryKey: queryKeys.infoPosts.detail(deletedId),
+      });
+      return refreshLists();
+    },
+  });
   return { createInfo: create.mutateAsync, updateInfo: update.mutateAsync, deleteInfo: remove.mutateAsync };
 }

@@ -25,7 +25,10 @@ export function useGalleryMutations() {
   });
   const remove = useMutation({
     mutationFn: deleteGalleryPost,
-    onSuccess: (_, deletedId) => {
+    onSuccess: async (_, deletedId) => {
+      await queryClient.cancelQueries({
+        queryKey: queryKeys.gallery.detail(deletedId),
+      });
       queryClient.setQueriesData<GalleryPostsPage>(
         { queryKey: queryKeys.gallery.lists },
         (page) =>
@@ -37,10 +40,6 @@ export function useGalleryMutations() {
               }
             : page,
       );
-      queryClient.removeQueries({
-        queryKey: queryKeys.gallery.detail(deletedId),
-        exact: true,
-      });
       return refreshLists();
     },
   });
