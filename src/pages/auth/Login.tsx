@@ -107,7 +107,7 @@ const Login = () => {
             />
           </div>
 
-          <label className="mb-8 flex w-fit cursor-pointer items-center gap-2 text-sm text-gray-600">
+          <label className="mb-8 flex w-fit cursor-pointer items-center gap-2 text-xs text-gray-600">
             <input
               type="checkbox"
               checked={saveLoginId}
