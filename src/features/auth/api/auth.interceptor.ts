@@ -51,10 +51,14 @@ export const setupAuthResponseInterceptor = () => {
       if (
         axiosError.response?.status !== 401 ||
         !originalRequest ||
-        originalRequest._retry ||
         !hadAccessToken ||
         originalRequest.url?.endsWith("/api/auth/refresh")
       ) {
+        return Promise.reject(error);
+      }
+
+      if (originalRequest._retry) {
+        redirectToSessionExpired();
         return Promise.reject(error);
       }
 
