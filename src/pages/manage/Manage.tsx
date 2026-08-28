@@ -135,6 +135,8 @@ const Manage = () => {
                               className="flex-1 px-0"
                               variant="third"
                               disabled={processingUserId !== null}
+                              isLoading={processingUserId === user.id}
+                              loadingLabel="회원 승인 처리 중"
                               onClick={() => void handleApprove(user.id)}
                             >
                               승인
@@ -230,6 +232,8 @@ const Manage = () => {
         title="가입 요청을 거절하시겠습니까?"
         description="거절된 회원 정보는 데이터베이스에서 영구 삭제됩니다."
         isDeleting={processingUserId !== null}
+        actionLabel="거절"
+        loadingLabel="가입 요청 거절 처리 중"
         onConfirm={() => {
           if (rejectUserId !== null) void handleReject(rejectUserId);
         }}

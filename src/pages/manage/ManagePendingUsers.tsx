@@ -163,6 +163,8 @@ const ManagePendingUsers = () => {
                         variant="third"
                         className="flex-1 rounded-lg px-0 py-1.5 text-xs"
                         disabled={processingUserId !== null}
+                        isLoading={processingUserId === user.id}
+                        loadingLabel="회원 승인 처리 중"
                         onClick={(event) => {
                           event.stopPropagation();
                           void handleUser(user.id, "approve");
@@ -203,6 +205,8 @@ const ManagePendingUsers = () => {
         title="가입 요청을 거절하시겠습니까?"
         description="거절 시 해당 사용자는 인트라넷 사용이 어려우며, 해당 작업은 되돌릴 수 없습니다."
         isDeleting={processingUserId !== null}
+        actionLabel="거절"
+        loadingLabel="가입 요청 거절 처리 중"
         onConfirm={() => {
           if (rejectUserId !== null) void handleUser(rejectUserId, "reject");
         }}

@@ -345,6 +345,8 @@ const ManageUsers = () => {
           </>
         }
         actionLabel="이양"
+        isActionLoading={isTransferring}
+        loadingLabel="관리자 권한 이양 중"
         onAction={isTransferring ? undefined : () => void handleTransferAdmin()}
         secondaryActionLabel="취소"
         onSecondaryAction={

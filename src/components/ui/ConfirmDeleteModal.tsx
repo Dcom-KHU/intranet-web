@@ -5,6 +5,8 @@ type ConfirmDeleteModalProps = {
   title?: string;
   description: string;
   isDeleting?: boolean;
+  actionLabel?: string;
+  loadingLabel?: string;
   onConfirm: () => void;
   onCancel: () => void;
 };
@@ -14,6 +16,8 @@ export default function ConfirmDeleteModal({
   title = "정말 삭제하시겠습니까?",
   description,
   isDeleting = false,
+  actionLabel = "삭제",
+  loadingLabel = "삭제 처리 중",
   onConfirm,
   onCancel,
 }: ConfirmDeleteModalProps) {
@@ -22,7 +26,9 @@ export default function ConfirmDeleteModal({
       isOpen={isOpen}
       title={title}
       description={description}
-      actionLabel={isDeleting ? "삭제 중" : "삭제"}
+      actionLabel={actionLabel}
+      isActionLoading={isDeleting}
+      loadingLabel={loadingLabel}
       onAction={isDeleting ? undefined : onConfirm}
       secondaryActionLabel="취소"
       onSecondaryAction={isDeleting ? undefined : onCancel}
