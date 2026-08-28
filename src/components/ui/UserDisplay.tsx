@@ -21,7 +21,7 @@ export default function UserDisplayName({ user, className = "" }: Props) {
     <span
       className={`inline-flex items-center gap-1 text-sm leading-none ${className}`}
     >
-      <span className="inline-flex items-center justify-center rounded bg-slate-200 px-1 py-1 text-xs font-bold leading-none shadow-sm">
+      <span className="inline-flex items-center justify-center rounded bg-slate-200 px-1 py-1.5 text-xs font-bold leading-none shadow-sm">
         {getDisplayedStudentNumber(user.studentNumber)}
       </span>
       <span className="leading-none">{user.name}</span>
