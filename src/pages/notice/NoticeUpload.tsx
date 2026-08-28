@@ -9,7 +9,7 @@ export default function NoticeUpload() {
 
   const handleUpload = async (posts: UploadPostDraft[]) => {
     await createNotice(posts);
-    navigate("/notice");
+    navigate("/notice", { replace: true });
   };
 
   return (

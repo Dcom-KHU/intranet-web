@@ -91,7 +91,7 @@ const ExamArchiveEdit = () => {
       }}
       onSubmit={async (draft) => {
         await updateExamArchive({ archiveId: archivePostId, recordId: postId, post: draft });
-        navigate(`/exam-archive/${archivePostId}`);
+        navigate(`/exam-archive/${archivePostId}`, { replace: true });
       }}
       onCancel={() => navigate(`/exam-archive/${archivePostId}`)}
     />

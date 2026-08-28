@@ -9,7 +9,7 @@ export default function GalleryUpload() {
 
   const handleUpload = async (posts: UploadPostDraft[]) => {
     await createGallery(posts);
-    navigate("/gallery");
+    navigate("/gallery", { replace: true });
   };
 
   return (

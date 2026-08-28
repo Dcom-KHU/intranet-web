@@ -30,7 +30,7 @@ const NoticeEdit = () => {
       }}
       onSubmit={async (post) => {
         await updateNotice({ id: postId, post });
-        navigate(`/notice/${postId}`);
+        navigate(`/notice/${postId}`, { replace: true });
       }}
       onCancel={() => navigate(`/notice/${postId}`)}
     />

@@ -34,7 +34,7 @@ export default function ExamArchiveUpload() {
 
   const handleUpload = async (posts: UploadPostDraft[]) => {
     await createExamArchives(posts);
-    navigate(returnPath);
+    navigate(returnPath, { replace: true });
   };
 
   return (

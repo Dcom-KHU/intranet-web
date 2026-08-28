@@ -9,7 +9,7 @@ export default function InfoSharingUpload() {
 
   const handleUpload = async (posts: UploadPostDraft[]) => {
     await createInfo(posts);
-    navigate("/info");
+    navigate("/info", { replace: true });
   };
 
   return (

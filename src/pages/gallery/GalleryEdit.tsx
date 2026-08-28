@@ -31,7 +31,7 @@ const GalleryEdit = () => {
       }}
       onSubmit={async (post) => {
         await updateGallery({ id: postId, post });
-        navigate(`/gallery/${postId}`);
+        navigate(`/gallery/${postId}`, { replace: true });
       }}
       onCancel={() => navigate(`/gallery/${postId}`)}
     />

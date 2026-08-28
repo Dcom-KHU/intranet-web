@@ -48,7 +48,7 @@ const InfoSharingEdit = () => {
       }}
       onSubmit={async (post) => {
         await updateInfo({ id: postId, post });
-        navigate(`/info/${postId}`);
+        navigate(`/info/${postId}`, { replace: true });
       }}
       onCancel={() => navigate(`/info/${postId}`)}
     />
