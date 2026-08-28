@@ -123,8 +123,10 @@ export default function ProfilePanel({
           className="px-4 text-xs"
           onClick={form.isEditing ? form.handleSave : form.startEditing}
           disabled={saving}
+          isLoading={saving}
+          loadingLabel="회원 정보 저장 중"
         >
-          {saving ? "저장 중..." : form.isEditing ? "저장" : "정보 수정"}
+          {form.isEditing ? "저장" : "정보 수정"}
         </Button>
       </div>
     </section>

@@ -146,7 +146,9 @@ export default function MyPageSidebar({
             )}
           </>
         }
-        actionLabel={isWithdrawing ? "탈퇴 처리 중..." : "탈퇴하기"}
+        actionLabel="탈퇴하기"
+        isActionLoading={isWithdrawing}
+        loadingLabel="회원 탈퇴 처리 중"
         onAction={() => {
           if (!isWithdrawing) void handleWithdraw();
         }}

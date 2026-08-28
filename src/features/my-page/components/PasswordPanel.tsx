@@ -177,10 +177,12 @@ export default function PasswordPanel({
           variant="secondary"
           fullWidth={false}
           disabled={saving}
+          isLoading={saving}
+          loadingLabel="비밀번호 변경 중"
           className="px-4 text-xs"
           onClick={handlePasswordSave}
         >
-          {saving ? "변경 중..." : "비밀번호 변경"}
+          비밀번호 변경
         </Button>
       </div>
     </section>

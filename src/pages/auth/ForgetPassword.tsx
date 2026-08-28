@@ -92,8 +92,10 @@ export default function ForgetPassword() {
             type="submit"
             className="w-full"
             disabled={passwordReset.isPending}
+            isLoading={passwordReset.isPending}
+            loadingLabel="임시 비밀번호 전송 중"
           >
-            {passwordReset.isPending ? "전송 중..." : "임시 비밀번호 전송"}
+            임시 비밀번호 전송
           </Button>
         </form>
 

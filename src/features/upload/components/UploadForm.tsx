@@ -230,11 +230,13 @@ export default function UploadForm({
             variant="primary"
             fullWidth={false}
             disabled={isSubmitting}
+            isLoading={isSubmitting}
+            loadingLabel={onSubmit ? "게시글 수정 중" : "게시글 업로드 중"}
             className={`h-9 min-w-[74px] rounded-full bg-[#4B7FF3] px-5 py-0 text-xs transition-all [#3767D7] disabled:cursor-not-allowed disabled:opacity-60 ${
               !canAddMultiplePosts ? "ml-auto" : ""
             }`}
           >
-            {isSubmitting ? "업로드 중" : submitLabel}
+            {submitLabel}
           </Button>
         </div>
         </form>
