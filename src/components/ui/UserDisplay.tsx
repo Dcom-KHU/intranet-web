@@ -5,6 +5,7 @@ type Props = {
     studentNumber: string | number;
     name: string;
   };
+  className?: string;
 };
 
 const getDisplayedStudentNumber = (studentNumber: string | number) => {
@@ -15,13 +16,15 @@ const getDisplayedStudentNumber = (studentNumber: string | number) => {
     : normalizedStudentNumber.slice(2, 4);
 };
 
-export default function UserDisplayName({ user }: Props) {
+export default function UserDisplayName({ user, className = "" }: Props) {
   return (
-    <span className="flex flex-row items-center gap-1 text-sm">
-      <div className="flex h-6 items-center justify-center rounded bg-slate-200 px-1 text-xs font-bold shadow-sm">
+    <span
+      className={`inline-flex items-center gap-1 text-sm leading-none ${className}`}
+    >
+      <span className="inline-flex items-center justify-center rounded bg-slate-200 px-1 py-1 text-xs font-bold leading-none shadow-sm">
         {getDisplayedStudentNumber(user.studentNumber)}
-      </div>
-      {user.name}
+      </span>
+      <span className="leading-none">{user.name}</span>
     </span>
   );
 }

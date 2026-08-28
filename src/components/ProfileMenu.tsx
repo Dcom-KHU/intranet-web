@@ -66,7 +66,7 @@ const ProfileMenu = ({ user }: ProfileMenuProps) => {
         onClick={() => setIsOpen((prev) => !prev)}
         className="flex items-center gap-2 rounded-md py-1 transition md:px-2"
       >
-        <UserDisplayName user={user} />
+        <UserDisplayName user={user} className="md:items-baseline" />
 
         <FaUserCircle
           size={26}

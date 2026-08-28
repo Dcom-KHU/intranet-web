@@ -31,7 +31,7 @@ export default function DesktopNavbar({
         </h2>
 
         <div className="flex items-center gap-20 whitespace-nowrap">
-          <ul className="flex flex-row items-center gap-10 text-sm">
+          <ul className="flex flex-row items-baseline gap-10 text-sm">
             {navMenu.map((item) => (
               <li
                 key={item.path}
@@ -55,7 +55,7 @@ export default function DesktopNavbar({
               </li>
             )}
 
-            <li className="flex items-center gap-6">
+            <li className="flex items-baseline gap-6">
               {profileMenu}
             </li>
           </ul>
