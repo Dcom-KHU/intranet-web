@@ -92,7 +92,7 @@ export default function Modal({
           )}
           <button
             type="button"
-            className="relative min-h-8 min-w-14 rounded-full px-4 py-2 text-xs font-medium text-red-600 outline outline-1 outline-red-500 disabled:cursor-wait disabled:opacity-80"
+            className="relative inline-flex min-h-8 min-w-14 items-center justify-center rounded-full px-4 py-2 text-xs font-medium text-red-600 outline outline-1 outline-red-500 disabled:cursor-wait disabled:opacity-80"
             disabled={isActionLoading}
             aria-busy={isActionLoading || undefined}
             onClick={onAction}
@@ -102,7 +102,7 @@ export default function Modal({
             </span>
             {isActionLoading && (
               <span
-                className="absolute left-1/2 top-1/2 size-4 -translate-x-1/2 -translate-y-1/2 animate-spin rounded-full border-2 border-red-200 border-t-red-600"
+                className="absolute size-5 animate-spin rounded-full border-2 border-red-200 border-t-red-600"
                 role="status"
                 aria-label={loadingLabel}
               />

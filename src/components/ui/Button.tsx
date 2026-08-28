@@ -10,7 +10,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 const baseStyle =
-  "relative py-2 rounded-xl transition-all font-medium";
+  "relative inline-flex items-center justify-center py-2 rounded-xl transition-all font-medium";
 
 const variants: Record<Variant, string> = {
   // 남색 배경에 흰색 텍스트, 호버 시 밝은 파란색 배경
@@ -49,7 +49,7 @@ export function Button({
         <>
           <span className="invisible">{children}</span>
           <span
-            className="absolute left-1/2 top-1/2 size-4 -translate-x-1/2 -translate-y-1/2 animate-spin rounded-full border-2 border-current/30 border-t-current"
+            className="absolute size-5 animate-spin rounded-full border-2 border-current/30 border-t-current"
             role="status"
             aria-label={loadingLabel}
           />
