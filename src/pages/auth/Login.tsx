@@ -15,15 +15,14 @@ import PasswordInput from "../../components/ui/PasswordInput";
 import InputLabel from "../../components/ui/InputLabel";
 import { Button } from "../../components/ui/Button";
 import dcomLogo from "../../assets/dcom-logo-black.png";
+import { getApiErrorMessage } from "../../utils/api-error-message";
 
 
 
 
 const loginMessages = {
   invalidCredentials: "아이디 또는 비밀번호가 올바르지 않습니다.",
-  pendingApproval: "가입 승인 대기 중입니다. 관리자 승인 후 로그인할 수 있습니다.",
-  rejected: "가입이 승인되지 않은 계정입니다. 관리자에게 문의해주세요.",
-  withdrawn: "탈퇴한 회원입니다. 다시 회원가입을 진행해주세요.",
+  forbidden: "현재 로그인할 수 없는 계정입니다. 관리자에게 문의해주세요.",
   networkError: "네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
 };
 
@@ -64,7 +63,9 @@ const Login = () => {
         }
 
         if (status === 403) {
-          setLoginMessage(loginMessages.withdrawn);
+          setLoginMessage(
+            getApiErrorMessage(error.response?.data) ?? loginMessages.forbidden,
+          );
           return;
         }
       }
