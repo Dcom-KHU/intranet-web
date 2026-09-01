@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { MdCheck, MdInfoOutline } from "react-icons/md";
 
 import useLogin from "@/features/auth/hooks/useLogin";
+import SessionFetchError from "@/features/auth/errors/SessionFetchError";
 import {
   getSavedLoginId,
   setSavedLoginId,
@@ -23,6 +24,8 @@ import { getApiErrorMessage } from "../../utils/api-error-message";
 const loginMessages = {
   invalidCredentials: "아이디 또는 비밀번호가 올바르지 않습니다.",
   forbidden: "현재 로그인할 수 없는 계정입니다. 관리자에게 문의해주세요.",
+  sessionFetchFailed:
+    "로그인은 완료되었지만 사용자 정보를 확인하지 못했습니다. 다시 로그인해주세요.",
   networkError: "네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
 };
 
@@ -54,6 +57,11 @@ const Login = () => {
           : "/home"
       );
     } catch (error) {
+      if (error instanceof SessionFetchError) {
+        setLoginMessage(loginMessages.sessionFetchFailed);
+        return;
+      }
+
       if (axios.isAxiosError(error)) {
         const status = error.response?.status;
 

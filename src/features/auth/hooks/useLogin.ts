@@ -7,6 +7,7 @@ import {
   setSavedLoginId,
   storeAuthTokens,
 } from "../utils/auth-storage";
+import SessionFetchError from "../errors/SessionFetchError";
 
 type LoginVariables = LoginRequest & {
   saveLoginId: boolean;
@@ -35,7 +36,7 @@ export default function useLogin() {
         // /me 실패는 "로그인 실패"가 아니라 "세션 확인 실패"임을 구분
         clearAuthTokens();
         queryClient.removeQueries({ queryKey: AUTH_QUERY_KEY });
-        throw new Error("SESSION_FETCH_FAILED", { cause: meError });
+        throw new SessionFetchError(meError);
       }
     },
     onError: () => {
