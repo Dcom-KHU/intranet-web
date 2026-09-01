@@ -24,6 +24,7 @@ import { getApiErrorMessage } from "../../utils/api-error-message";
 const loginMessages = {
   invalidCredentials: "아이디 또는 비밀번호가 올바르지 않습니다.",
   forbidden: "현재 로그인할 수 없는 계정입니다. 관리자에게 문의해주세요.",
+  requestFailed: "로그인 요청을 처리하지 못했습니다. 잠시 후 다시 시도해주세요.",
   sessionFetchFailed:
     "로그인은 완료되었지만 사용자 정보를 확인하지 못했습니다. 다시 로그인해주세요.",
   networkError: "네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
@@ -64,6 +65,12 @@ const Login = () => {
 
       if (axios.isAxiosError(error)) {
         const status = error.response?.status;
+        const responseMessage = getApiErrorMessage(error.response?.data);
+
+        if (responseMessage) {
+          setLoginMessage(responseMessage);
+          return;
+        }
 
         if (status === 401) {
           setLoginMessage(loginMessages.invalidCredentials);
@@ -74,6 +81,11 @@ const Login = () => {
           setLoginMessage(
             getApiErrorMessage(error.response?.data) ?? loginMessages.forbidden,
           );
+          return;
+        }
+
+        if (error.response) {
+          setLoginMessage(loginMessages.requestFailed);
           return;
         }
       }
