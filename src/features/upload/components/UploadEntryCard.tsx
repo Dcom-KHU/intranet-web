@@ -350,8 +350,12 @@ export default function UploadEntryCard({
         readOnly
       />
 
+      {(entry.files.length > 0 ||
+        entry.existingFiles.length > 0 ||
+        entry.existingFileItems.length > 0) && (
+        <div className="mb-4 mt-5 space-y-2">
       {entry.files.length > 0 && (
-        <ul className="mb-4 space-y-2">
+        <ul className="space-y-2">
           {entry.files.map((file) => (
             <li
               key={`${file.name}-${file.size}-${file.lastModified}`}
@@ -374,7 +378,7 @@ export default function UploadEntryCard({
       )}
 
       {entry.existingFiles.length > 0 && (
-        <ul className="mb-4 space-y-2">
+        <ul className="space-y-2">
           {entry.existingFiles.map((file) => (
             <li key={file} className="flex w-fit items-center gap-1 text-xs">
               <span className="text-[#4988C4] underline underline-offset-2">
@@ -394,7 +398,7 @@ export default function UploadEntryCard({
       )}
 
       {entry.existingFileItems.length > 0 && (
-        <ul className="mb-4 space-y-2">
+        <ul className="space-y-2">
           {entry.existingFileItems.map((file) => (
             <li key={file.id} className="flex w-fit items-center gap-1 text-xs">
               <span className="text-[#4988C4] underline underline-offset-2">
@@ -411,6 +415,8 @@ export default function UploadEntryCard({
             </li>
           ))}
         </ul>
+      )}
+        </div>
       )}
 
       <UploadToolbar
