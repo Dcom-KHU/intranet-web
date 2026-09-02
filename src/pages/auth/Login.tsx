@@ -100,7 +100,17 @@ const Login = () => {
   return (
     <div className="flex h-screen flex-col items-center justify-center">
       <div className="w-full max-w-md bg-white p-8">
-        <img src={dcomLogo} alt="dcom-logo" className="mx-auto mb-6 block w-20" />
+        <img
+          src={dcomLogo}
+          alt="경희대학교 D.COM 로고"
+          className="mx-auto mb-3 block w-20"
+        />
+        <h1 className="text-center text-base font-bold text-[#0F2854]">
+          경희대학교 D.COM
+        </h1>
+        <p className="mb-6 mt-1 text-center text-xs text-gray-400">
+          디닷컴 공식 인트라넷
+        </p>
         <form onSubmit={handleLogin}>
           <div className="mb-5">
             <InputLabel>User ID</InputLabel>

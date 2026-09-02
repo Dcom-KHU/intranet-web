@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://intranet.dcom.club/sitemap.xml
