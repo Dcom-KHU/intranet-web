@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import useAuth from "../../features/auth/hooks/useAuth";
@@ -12,6 +11,7 @@ import Pagination from "../../components/ui/Pagination";
 import Loading from "../../components/Loading";
 import SearchBar from "../../components/ui/SearchBar";
 import SearchResultSummary from "../../components/ui/SearchResultSummary";
+import useSearchListState from "../../hooks/useSearchListState";
 
 
 const ITEMS_PER_PAGE = 8;
@@ -29,9 +29,14 @@ const Gallery = () => {
   const { currentUser } = useAuth();
   const isAdmin = currentUser?.role === "ADMIN";
 
-  const [page, setPage] = useState(0);
-  const [searchKeyword, setSearchKeyword] = useState("");
-  const [appliedKeyword, setAppliedKeyword] = useState("");
+  const {
+    page,
+    setPage,
+    searchKeyword,
+    setSearchKeyword,
+    appliedKeyword,
+    applySearch,
+  } = useSearchListState();
   const { data: gallery, pageInfo, loading, error } = useGallery(
     page,
     ITEMS_PER_PAGE,
@@ -58,10 +63,7 @@ const Gallery = () => {
         <SearchBar
           value={searchKeyword}
           onChange={setSearchKeyword}
-          onSearch={() => {
-            setPage(0);
-            setAppliedKeyword(searchKeyword.trim());
-          }}
+          onSearch={applySearch}
           placeholder={GALLERY_TEXT.searchPlaceholder}
         />
 

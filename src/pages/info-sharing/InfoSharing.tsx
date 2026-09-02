@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { HiUpload } from "react-icons/hi";
@@ -13,6 +12,7 @@ import ConvertTime from "@/components/ConvertTime";
 import Pagination from "@/components/ui/Pagination";
 import SearchResultSummary from "@/components/ui/SearchResultSummary";
 import Loading from "../../components/Loading";
+import useSearchListState from "../../hooks/useSearchListState";
 
 
 const INFOSHARING_TEXT = {
@@ -30,9 +30,14 @@ const INFOSHARING_TEXT = {
 
 const InfoSharing = () => {
   const navigate = useNavigate();
-  const [searchKeyword, setSearchKeyword] = useState("");
-  const [appliedKeyword, setAppliedKeyword] = useState("");
-  const [page, setPage] = useState(0);
+  const {
+    page,
+    setPage,
+    searchKeyword,
+    setSearchKeyword,
+    appliedKeyword,
+    applySearch,
+  } = useSearchListState();
   const size = 10;
   const { data: infos, pageInfo, loading, error } = useInfos(
     page,
@@ -103,10 +108,7 @@ const InfoSharing = () => {
         <SearchBar
           value={searchKeyword}
           onChange={setSearchKeyword}
-          onSearch={() => {
-            setPage(0);
-            setAppliedKeyword(searchKeyword.trim());
-          }}
+          onSearch={applySearch}
           placeholder={INFOSHARING_TEXT.searchPlaceholder}
         />
 

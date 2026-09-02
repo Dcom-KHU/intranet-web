@@ -14,6 +14,7 @@ import Pagination from "@/components/ui/Pagination";
 import { normalizeExamSubject } from "../../features/exam-archive/utils/exam-archive.utils";
 import SearchResultSummary from "../../components/ui/SearchResultSummary";
 import Loading from "../../components/Loading";
+import useSearchListState from "../../hooks/useSearchListState";
 
 const SEARCH_LOADING_TIME = 250;
 
@@ -34,10 +35,14 @@ const ExamArchive = () => {
   const navigate = useNavigate();
 
   const size = 10;
-  const [page, setPage] = useState(0);
-
-  const [searchKeyword, setSearchKeyword] = useState("");
-  const [appliedKeyword, setAppliedKeyword] = useState("");
+  const {
+    page,
+    setPage,
+    searchKeyword,
+    setSearchKeyword,
+    appliedKeyword,
+    applySearch,
+  } = useSearchListState(normalizeExamSubject);
   const [isSearching, setIsSearching] = useState(false);
 
   const searchTimerRef = useRef<number | null>(null);
@@ -92,8 +97,7 @@ const ExamArchive = () => {
     setIsSearching(true);
 
     searchTimerRef.current = window.setTimeout(() => {
-      setPage(0);
-      setAppliedKeyword(normalizeExamSubject(searchKeyword));
+      applySearch();
       setIsSearching(false);
     }, SEARCH_LOADING_TIME);
   };

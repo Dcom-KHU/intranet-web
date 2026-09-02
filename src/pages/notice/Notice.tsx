@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { HiUpload } from "react-icons/hi";
@@ -13,6 +12,7 @@ import { useNotices } from "../../features/notice/hooks/useNotices";
 import type { NoticeType } from "../../features/notice/types/notice.type";
 import SearchResultSummary from "../../components/ui/SearchResultSummary";
 import Loading from "../../components/Loading";
+import useSearchListState from "../../hooks/useSearchListState";
 
 const NOTICE_TEXT = {
   pageTitle: "공지사항",
@@ -31,9 +31,14 @@ const Notice = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
   const isAdmin = currentUser?.role === "ADMIN";
-  const [searchKeyword, setSearchKeyword] = useState("");
-  const [appliedKeyword, setAppliedKeyword] = useState("");
-  const [page, setPage] = useState(0);
+  const {
+    page,
+    setPage,
+    searchKeyword,
+    setSearchKeyword,
+    appliedKeyword,
+    applySearch,
+  } = useSearchListState();
   const size = 10;
   const { data: notices, pageInfo, loading, error } = useNotices(
     page,
@@ -103,10 +108,7 @@ const Notice = () => {
         <SearchBar
           value={searchKeyword}
           onChange={setSearchKeyword}
-          onSearch={() => {
-            setPage(0);
-            setAppliedKeyword(searchKeyword.trim());
-          }}
+          onSearch={applySearch}
           placeholder={NOTICE_TEXT.searchPlaceholder}
         />
 
