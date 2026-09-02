@@ -10,6 +10,7 @@ import {
 import AppLayout from "./app-layout";
 import ScrollToTop from "../components/ScrollToTop";
 import PageTransition from "../components/PageTransition";
+import RouteMetadata from "../components/RouteMetadata";
 
 import Login from "../pages/auth/Login";
 import ForgetPassword from "../pages/auth/ForgetPassword";
@@ -49,6 +50,7 @@ export default function AppRouter() {
 function RootLayout() {
   return (
     <>
+      <RouteMetadata />
       <ScrollToTop />
       <Outlet />
     </>

@@ -10,18 +10,21 @@
 }
 
 @layer components {
-  .upload-editor ol {
+  .upload-editor ol,
+  .rich-text-content ol {
     counter-reset: upload-list-item;
     list-style: none;
     padding-left: 2rem;
   }
 
-  .upload-editor ol > li {
+  .upload-editor ol > li,
+  .rich-text-content ol > li {
     position: relative;
     counter-increment: upload-list-item;
   }
 
-  .upload-editor ol > li::before {
+  .upload-editor ol > li::before,
+  .rich-text-content ol > li::before {
     position: absolute;
     right: calc(100% + 0.375rem);
     min-width: 1.625rem;
